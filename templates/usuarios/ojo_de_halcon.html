@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css_extra %}
+<link rel="stylesheet" href="{% static 'css/paginas/admin.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="halcon-shell">
+    <div class="halcon-card">
+        <!-- Bienvenida del Creador -->
+        <div class="halcon-welcome">
+            <i class="fas fa-eye"></i>
+            <div>
+                <h1>Bienvenido al Ojo de Halcón, Creador</h1>
+                <p>Panel de control de la nave nodriza. Supervisa el universo competitivo de LeBrum.</p>
+            </div>
+        </div>
+
+        <!-- Métricas rápidas -->
+        <div class="halcon-stats">
+            <div class="halcon-stat">
+                <i class="fas fa-users"></i>
+                <div class="stat-valor">{{ total_jugadores }}</div>
+                <div class="stat-label">Jugadores registrados</div>
+            </div>
+
+            <div class="halcon-stat">
+                <i class="fas fa-trophy"></i>
+                <div class="stat-valor">{{ torneos|length }}</div>
+                <div class="stat-label">Torneos creados</div>
+            </div>
+
+            <div class="halcon-stat">
+                <i class="fas fa-user-shield"></i>
+                <div class="stat-valor">
+                    {% if request.user.is_superuser %}Superusuario{% else %}Staff{% endif %}
+                </div>
+                <div class="stat-label">Nivel de acceso</div>
+            </div>
+        </div>
+
+        <!-- Botón grande: Crear torneo -->
+        <div class="halcon-crear-accion">
+            <a href="/admin-secreto/torneos/torneo/add/" class="halcon-boton--crear">
+                <i class="fas fa-plus-circle"></i>
+                + Crear Nuevo Torneo
+            </a>
+        </div>
+
+        <!-- Tarjeta ancha: torneos creados -->
+        <div class="halcon-card halcon-tabla-card">
+            <h3><i class="fas fa-satellite"></i> Torneos creados</h3>
+
+            {% if torneos %}
+            <div class="halcon-tabla-wrap">
+                <table class="halcon-tabla">
+                    <thead>
+                        <tr>
+                            <th>Torneo</th>
+                            <th>Videojuego</th>
+                            <th>Modalidad</th>
+                            <th>Ocupación</th>
+                            <th>Estado</th>
+                            <th>Creado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for torneo in torneos %}
+                        <tr>
+                            <td class="celda-nombre">{{ torneo.nombre }}</td>
+                            <td class="celda-muted">{{ torneo.juego.nombre }}</td>
+                            <td class="celda-muted">{{ torneo.modalidad }}</td>
+                            <td>
+                                <div class="halcon-ocupacion">
+                                    <div class="barra">
+                                        <span style="width: {% if torneo.cupo_maximo %}{% widthratio torneo.plazas_ocupadas torneo.cupo_maximo 100 %}{% else %}0{% endif %}%;"></span>
+                                    </div>
+                                    <span class="num">{{ torneo.plazas_ocupadas }}/{{ torneo.cupo_maximo }}</span>
+                                </div>
+                            </td>
+                            <td>
+                                {% if torneo.estado == 'Abierto' %}
+                                    <span class="halcon-estado halcon-estado--abierto">Abierto</span>
+                                {% elif torneo.estado == 'Lleno' %}
+                                    <span class="halcon-estado halcon-estado--lleno">Lleno</span>
+                                {% elif torneo.estado == 'En Curso' %}
+                                    <span class="halcon-estado halcon-estado--curso">En Curso</span>
+                                {% else %}
+                                    <span class="halcon-estado halcon-estado--finalizado">Finalizado</span>
+                                {% endif %}
+                            </td>
+                            <td class="celda-muted">{{ torneo.creado_el|date:'d/m/Y' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="halcon-vacio">
+                <i class="fas fa-spa"></i>
+                <p>El universo está en paz. No hay torneos activos.</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Accesos rápidos -->
+        <div class="halcon-acciones">
+            <a href="/admin-secreto/" class="halcon-boton halcon-boton--gold">
+                <i class="fas fa-database"></i> Django Admin
+            </a>
+            <a href="{% url 'panel_control' %}" class="halcon-boton halcon-boton--neon">
+                <i class="fas fa-sliders-h"></i> Panel de Control
+            </a>
+            <a href="{% url 'perfil' %}" class="halcon-boton halcon-boton--ghost">
+                <i class="fas fa-user"></i> Mi perfil
+            </a>
+            <a href="{% url 'lobby' %}" class="halcon-boton halcon-boton--ghost">
+                <i class="fas fa-home"></i> Volver al lobby
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

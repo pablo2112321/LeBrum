@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css_extra %}
+<link rel="stylesheet" href="{% static 'css/paginas/ranking.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="ranking-wrapper">
+    
+    <div class="ranking-header">
+        <div class="header-badge"><i class="fas fa-trophy"></i> LEADERBOARD OFICIAL</div>
+        <h1 class="ranking-title">TABLA DE CLASIFICACIÓN</h1>
+        <p class="ranking-subtitle">Los gladiadores con más victorias y puntos en la plataforma LeBrum</p>
+    </div>
+
+    <div class="podium-container">
+        
+        {% for jugador in ranking %}
+            {% if forloop.counter == 2 %}
+            <div class="podium-card rank-silver">
+                <div class="podium-badge silver-badge"><i class="fas fa-medal"></i> #2 PLATA</div>
+                <div class="podium-avatar-container silver-border">
+                    <img src="{% static 'img/Usuario.jpg' %}" alt="{{ jugador.username }}" class="podium-avatar">
+                </div>
+                <h3 class="podium-name">{{ jugador.username }}</h3>
+                <span class="podium-role">PRO GAMER</span>
+                <div class="podium-score">
+                    <span class="pts-number">{{ jugador.puntos|default:0 }}</span>
+                    <span class="pts-label">PUNTOS</span>
+                </div>
+            </div>
+            {% endif %}
+        {% endfor %}
+
+        {% for jugador in ranking %}
+            {% if forloop.counter == 1 %}
+            <div class="podium-card rank-gold">
+                <div class="crown-icon"><i class="fas fa-crown"></i></div>
+                <div class="podium-badge gold-badge">TOP 1 CAMPEÓN</div>
+                <div class="podium-avatar-container gold-border">
+                    <img src="{% static 'img/Usuario.jpg' %}" alt="{{ jugador.username }}" class="podium-avatar">
+                </div>
+                <h3 class="podium-name gold-text">{{ jugador.username }}</h3>
+                <span class="podium-role gold-role"><i class="fas fa-fire"></i> IMBATIBLE</span>
+                <div class="podium-score gold-score">
+                    <span class="pts-number">{{ jugador.puntos|default:0 }}</span>
+                    <span class="pts-label">PUNTOS</span>
+                </div>
+            </div>
+            {% endif %}
+        {% endfor %}
+
+        {% for jugador in ranking %}
+            {% if forloop.counter == 3 %}
+            <div class="podium-card rank-bronze">
+                <div class="podium-badge bronze-badge"><i class="fas fa-award"></i> #3 BRONCE</div>
+                <div class="podium-avatar-container bronze-border">
+                    <img src="{% static 'img/Usuario.jpg' %}" alt="{{ jugador.username }}" class="podium-avatar">
+                </div>
+                <h3 class="podium-name">{{ jugador.username }}</h3>
+                <span class="podium-role">PRO GAMER</span>
+                <div class="podium-score">
+                    <span class="pts-number">{{ jugador.puntos|default:0 }}</span>
+                    <span class="pts-label">PUNTOS</span>
+                </div>
+            </div>
+            {% endif %}
+        {% endfor %}
+
+    </div>
+
+    <div class="leaderboard-table-card">
+        <div class="table-header-row">
+            <span class="col-pos">POSICIÓN</span>
+            <span class="col-player">JUGADOR</span>
+            <span class="col-stats">VICTORIAS</span>
+            <span class="col-points">PUNTOS TOTALES</span>
+        </div>
+
+        <div class="table-body">
+            {% for jugador in ranking %}
+                <div class="ranking-row {% if jugador == request.user %}my-player-row{% endif %}">
+                    <div class="col-pos">
+                        <span class="rank-badge {% if jugador == request.user %}my-rank{% endif %}">
+                            #{{ forloop.counter }}
+                        </span>
+                    </div>
+                    <div class="col-player">
+                        <div class="row-avatar-frame {% if jugador == request.user %}my-avatar{% endif %}">
+                            <img src="{% static 'img/Usuario.jpg' %}" alt="{{ jugador.username }}">
+                        </div>
+                        <div class="player-details">
+                            <span class="player-name">{{ jugador.username }}</span>
+                            {% if jugador == request.user %}
+                                <span class="player-sub my-sub"><i class="fas fa-user-astronaut"></i> Tu Posición</span>
+                            {% else %}
+                                <span class="player-sub">Jugador Verificado</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-stats">
+                        <span class="win-count"><i class="fas fa-check-circle"></i> {{ jugador.victorias|default:0 }} W</span>
+                    </div>
+                    <div class="col-points">
+                        <span class="pts-pill {% if jugador == request.user %}my-pts{% endif %}">
+                            {{ jugador.puntos|default:0 }} PTS
+                        </span>
+                    </div>
+                </div>
+            {% empty %}
+                <div style="padding: 30px; text-align: center; color: #94a3b8;">
+                    No hay jugadores registrados en el ranking todavía.
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

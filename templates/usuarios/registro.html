@@ -1,0 +1,278 @@
+{% extends 'auth_base.html' %}
+{% load static %}
+
+{% block title %}Registro | LeBrum{% endblock %}
+
+{% block content %}
+<a href="{% url 'lobby' %}" class="btn-volver">
+    <i class="fas fa-arrow-left"></i> Volver al Lobby
+</a>
+
+<div class="auth-page">
+    <div class="auth-card glass-card">
+        <div class="auth-brand">
+            <img src="{% static 'img/Logo.png' %}" alt="LeBrum Logo" class="auth-logo">
+            <div>
+                <h1>Registro LeBrum</h1>
+                <p>Activa tu cuenta y lidera a tu escuadrón con estilo galáctico.</p>
+            </div>
+        </div>
+
+        {% if messages %}
+        <div class="auth-messages">
+            {% for message in messages %}
+                <div class="auth-alert {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form method="post" action="{% url 'registro' %}" class="auth-form" id="form-registro" novalidate>
+            {% csrf_token %}
+
+            <label class="auth-field">
+                <span><i class="fas fa-user-astronaut"></i> Usuario</span>
+                {{ form.username }}
+                <small class="field-feedback" id="fb-username"></small>
+                {% if form.username.errors %}
+                    <small class="field-error">{{ form.username.errors.0 }}</small>
+                {% endif %}
+            </label>
+
+            <label class="auth-field">
+                <span><i class="fas fa-id-badge"></i> Tag de Jugador</span>
+                {{ form.tag_jugador }}
+                <small class="field-feedback" id="fb-tag"></small>
+                {% if form.tag_jugador.errors %}
+                    <small class="field-error">{{ form.tag_jugador.errors.0 }}</small>
+                {% endif %}
+            </label>
+
+            <label class="auth-field">
+                <span><i class="fas fa-envelope"></i> Correo electrónico</span>
+                {{ form.email }}
+                <small class="field-feedback" id="fb-email"></small>
+                {% if form.email.errors %}
+                    <small class="field-error">{{ form.email.errors.0 }}</small>
+                {% endif %}
+            </label>
+
+            <label class="auth-field">
+                <span><i class="fas fa-lock"></i> Contraseña</span>
+                {{ form.password1 }}
+                <small class="field-feedback" id="fb-pass1"></small>
+                {% if form.password1.errors %}
+                    <small class="field-error">{{ form.password1.errors.0 }}</small>
+                {% endif %}
+            </label>
+
+            <label class="auth-field">
+                <span><i class="fas fa-lock"></i> Confirmar contraseña</span>
+                {{ form.password2 }}
+                <small class="field-feedback" id="fb-pass2"></small>
+                {% if form.password2.errors %}
+                    <small class="field-error">{{ form.password2.errors.0 }}</small>
+                {% endif %}
+            </label>
+
+            <div class="auth-divider">Vincular cuenta de juego (opcional)</div>
+
+            <div class="game-sync-row">
+                <label class="game-sync-field">
+                    <input type="checkbox" name="check_riot" id="check_riot">
+                    <span>Riot Games ID</span>
+                </label>
+                <input class="game-input" type="text" name="id_riot" id="id_riot" placeholder="Nombre#TAG">
+            </div>
+
+            <div class="game-sync-row">
+                <label class="game-sync-field">
+                    <input type="checkbox" name="check_steam" id="check_steam">
+                    <span>Steam ID64</span>
+                </label>
+                <input class="game-input" type="text" name="id_steam" id="id_steam" placeholder="17 dígitos">
+            </div>
+
+            <button type="submit" class="btn-neon btn-neon--primary">
+                <i class="fas fa-rocket"></i> Crear cuenta
+            </button>
+
+            <div class="auth-footer">
+                <p style="margin:0;color:var(--text-muted);">¿Ya tienes una cuenta?</p>
+                <a href="{% url 'login' %}">Inicia sesión aquí</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('form-registro');
+    if (!form) return;
+
+    const username = document.getElementById('id_username');
+    const tag = document.getElementById('id_tag_jugador');
+    const email = document.getElementById('id_email');
+    const pass1 = document.getElementById('id_password1');
+    const pass2 = document.getElementById('id_password2');
+
+    const fbUsername = document.getElementById('fb-username');
+    const fbTag = document.getElementById('fb-tag');
+    const fbEmail = document.getElementById('fb-email');
+    const fbPass1 = document.getElementById('fb-pass1');
+    const fbPass2 = document.getElementById('fb-pass2');
+
+    const DOMINIOS_PERMITIDOS = ['gmail.com', 'outlook.com', 'hotmail.com', 'yahoo.com', 'live.com'];
+
+    function marcarCampo(input, ok) {
+        const box = input.closest('.auth-field');
+        if (!box) return;
+        box.classList.remove('valid', 'invalid');
+        if (ok === true) box.classList.add('valid');
+        else if (ok === false) box.classList.add('invalid');
+    }
+
+    function setFeedback(el, mensaje, tipo) {
+        if (!el) return;
+        el.textContent = mensaje;
+        el.className = 'field-feedback ' + (tipo || '');
+        const input = el.closest('.auth-field') ? el.closest('.auth-field').querySelector('input, select') : null;
+        if (input) marcarCampo(input, tipo === 'fb-ok');
+    }
+
+    function clearFeedback(el) {
+        if (!el) return;
+        el.textContent = '';
+        el.className = 'field-feedback';
+        const input = el.closest('.auth-field') ? el.closest('.auth-field').querySelector('input, select') : null;
+        if (input) marcarCampo(input, null);
+    }
+
+    function debounce(fn, ms) {
+        let timer;
+        return function () {
+            const args = arguments;
+            clearTimeout(timer);
+            timer = setTimeout(function () { fn.apply(null, args); }, ms);
+        };
+    }
+
+    /* --- Usuario: formato local + disponibilidad AJAX --- */
+    function validarUsernameLocal(valor) {
+        if (valor.length === 0) { clearFeedback(fbUsername); return false; }
+        if (valor.length < 3) { setFeedback(fbUsername, 'Mínimo 3 caracteres.', 'fb-err'); return false; }
+        if (valor.length > 16) { setFeedback(fbUsername, 'Máximo 16 caracteres.', 'fb-err'); return false; }
+        if (!/^[a-zA-Z0-9_-]+$/.test(valor)) { setFeedback(fbUsername, 'Solo letras, números, - y _.', 'fb-err'); return false; }
+        return true;
+    }
+
+    const checkUsername = debounce(function () {
+        const valor = username.value.trim();
+        if (!validarUsernameLocal(valor)) return;
+        setFeedback(fbUsername, 'Verificando...', 'fb-warn');
+        fetch("{% url 'verificar_usuario' %}?valor=" + encodeURIComponent(valor))
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                if (data.disponible) setFeedback(fbUsername, 'Usuario disponible', 'fb-ok');
+                else setFeedback(fbUsername, 'Este usuario ya está en uso', 'fb-err');
+            })
+            .catch(function () { setFeedback(fbUsername, 'No se pudo verificar', 'fb-err'); });
+    }, 400);
+    username.addEventListener('input', checkUsername);
+
+    /* --- Tag de jugador: formato local + disponibilidad AJAX --- */
+    function validarTagLocal(valor) {
+        if (valor.length === 0) { clearFeedback(fbTag); return false; }
+        if (valor.length < 3) { setFeedback(fbTag, 'Mínimo 3 caracteres.', 'fb-err'); return false; }
+        if (valor.length > 20) { setFeedback(fbTag, 'Máximo 20 caracteres.', 'fb-err'); return false; }
+        if (!/^[a-zA-Z0-9_#-]+$/.test(valor)) { setFeedback(fbTag, 'Solo letras, números, #, - y _.', 'fb-err'); return false; }
+        return true;
+    }
+
+    const checkTag = debounce(function () {
+        const valor = tag.value.trim();
+        if (!validarTagLocal(valor)) return;
+        setFeedback(fbTag, 'Verificando...', 'fb-warn');
+        fetch("{% url 'verificar_tag' %}?valor=" + encodeURIComponent(valor))
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                if (data.disponible) setFeedback(fbTag, 'Tag disponible', 'fb-ok');
+                else setFeedback(fbTag, 'Este tag ya está en uso', 'fb-err');
+            })
+            .catch(function () { setFeedback(fbTag, 'No se pudo verificar', 'fb-err'); });
+    }, 400);
+    tag.addEventListener('input', checkTag);
+
+    /* --- Correo electrónico: formato + dominio permitido --- */
+    function validarEmail() {
+        const valor = email.value.trim().toLowerCase();
+        if (valor.length === 0) { clearFeedback(fbEmail); return false; }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(valor)) {
+            setFeedback(fbEmail, 'Formato de correo no válido.', 'fb-err');
+            return false;
+        }
+        const dominio = valor.split('@')[1];
+        if (DOMINIOS_PERMITIDOS.indexOf(dominio) === -1) {
+            setFeedback(fbEmail, 'Solo Gmail, Outlook, Hotmail, Yahoo o Live.', 'fb-err');
+            return false;
+        }
+        setFeedback(fbEmail, 'Correo válido', 'fb-ok');
+        return true;
+    }
+    email.addEventListener('input', validarEmail);
+
+    /* --- Contraseña: mín 8 caracteres, máx 50, mínimo 3 números --- */
+    function validarPass1() {
+        const valor = pass1.value;
+        if (valor.length === 0) { clearFeedback(fbPass1); return false; }
+        if (valor.length < 8) { setFeedback(fbPass1, 'Mínimo 8 caracteres.', 'fb-err'); return false; }
+        if (valor.length > 50) { setFeedback(fbPass1, 'Máximo 50 caracteres.', 'fb-err'); return false; }
+        if (!/^[a-zA-Z0-9]+$/.test(valor)) {
+            setFeedback(fbPass1, 'Solo letras y números.', 'fb-err');
+            return false;
+        }
+        const numeros = (valor.match(/[0-9]/g) || []).length;
+        if (numeros < 3) { setFeedback(fbPass1, 'Debe incluir al menos 3 números.', 'fb-err'); return false; }
+        setFeedback(fbPass1, 'Contraseña válida', 'fb-ok');
+        if (pass2.value.length > 0) validarPass2();
+        return true;
+    }
+    pass1.addEventListener('input', validarPass1);
+
+    /* --- Confirmar contraseña: coincidencia --- */
+    function validarPass2() {
+        const valor = pass2.value;
+        if (valor.length === 0) { clearFeedback(fbPass2); return false; }
+        if (valor !== pass1.value) {
+            setFeedback(fbPass2, 'Las contraseñas no coinciden.', 'fb-err');
+            return false;
+        }
+        setFeedback(fbPass2, 'Coinciden', 'fb-ok');
+        return true;
+    }
+    pass2.addEventListener('input', validarPass2);
+
+    /* --- Validación final al enviar --- */
+    form.addEventListener('submit', function (evento) {
+        const validaciones = [
+            [username, validarUsernameLocal(username.value.trim())],
+            [tag, validarTagLocal(tag.value.trim())],
+            [email, validarEmail()],
+            [pass1, validarPass1()],
+            [pass2, validarPass2()],
+        ];
+
+        for (let i = 0; i < validaciones.length; i++) {
+            if (!validaciones[i][1]) {
+                evento.preventDefault();
+                const input = validaciones[i][0];
+                input.focus();
+                input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

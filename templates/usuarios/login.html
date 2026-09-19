@@ -1,0 +1,145 @@
+{% extends 'auth_base.html' %}
+{% load static %}
+
+{% block title %}Iniciar Sesión | LeBrum{% endblock %}
+
+{% block content %}
+<a href="{% url 'lobby' %}" class="btn-volver">
+    <i class="fas fa-arrow-left"></i> Volver al Lobby
+</a>
+
+<div class="auth-page">
+    <div class="glass-card">
+        <div class="auth-brand">
+            <img src="{% static 'img/Logo.png' %}" alt="LeBrum Logo" class="auth-logo">
+            <div>
+                <h1>LeBrum</h1>
+                <p>Entra y domina la escena competitiva.</p>
+            </div>
+        </div>
+
+        {% if messages %}
+        <div class="auth-messages">
+            {% for message in messages %}
+                <div class="auth-alert {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if form.errors %}
+        <div class="auth-alert auth-alert-error">
+            <i class="fas fa-exclamation-triangle"></i>
+            Usuario o contraseña incorrectos. Revisa tus datos e intenta de nuevo.
+        </div>
+        {% endif %}
+
+        <form method="post" action="{% url 'login' %}" class="auth-form" id="form-login" novalidate>
+            {% csrf_token %}
+
+            <label class="auth-field">
+                <span><i class="fas fa-user-astronaut"></i> Usuario o correo</span>
+                <input type="text" name="username" id="id_username" placeholder="usuario o correo" required autofocus>
+                <small class="field-feedback" id="fb-login-user"></small>
+            </label>
+
+            <label class="auth-field">
+                <span><i class="fas fa-lock"></i> Contraseña</span>
+                <input type="password" name="password" id="id_password" placeholder="tu contraseña" required>
+                <small class="field-feedback" id="fb-login-pass"></small>
+            </label>
+
+            <div style="display:flex;gap:12px;align-items:center;justify-content:space-between;">
+                <label class="game-sync-field" style="gap:8px;">
+                    <input type="checkbox" name="remember" id="remember">
+                    <span style="font-weight:600;color:var(--text-muted);">Recordarme</span>
+                </label>
+                <a href="#" style="color:var(--neon-cyan);font-weight:700;text-decoration:none;">¿Olvidaste tu contraseña?</a>
+            </div>
+
+            <button type="submit" class="btn-neon btn-neon--primary">
+                <i class="fas fa-rocket"></i> Ingresar
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            <p style="margin:0;color:var(--text-muted);">¿No tienes cuenta?</p>
+            <a href="{% url 'registro' %}">Regístrate aquí</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('form-login');
+    if (!form) return;
+
+    const userInput = document.getElementById('id_username');
+    const passInput = document.getElementById('id_password');
+    const fbUser = document.getElementById('fb-login-user');
+    const fbPass = document.getElementById('fb-login-pass');
+
+    function marcarCampo(input, ok) {
+        const box = input.closest('.auth-field');
+        if (!box) return;
+        box.classList.remove('valid', 'invalid');
+        if (ok === true) box.classList.add('valid');
+        else if (ok === false) box.classList.add('invalid');
+    }
+
+    function setFeedback(input, el, mensaje, ok) {
+        if (!el) return;
+        el.textContent = mensaje;
+        el.className = 'field-feedback ' + (ok ? 'fb-ok' : 'fb-err');
+        marcarCampo(input, ok ? true : false);
+    }
+
+    function clearFeedback(input, el) {
+        if (!el) return;
+        el.textContent = '';
+        el.className = 'field-feedback';
+        marcarCampo(input, null);
+    }
+
+    function validarUsuario() {
+        const valor = userInput.value.trim();
+        if (valor.length === 0) {
+            clearFeedback(userInput, fbUser);
+            return false;
+        }
+        setFeedback(userInput, fbUser, 'Se ve bien', true);
+        return true;
+    }
+
+    function validarPassword() {
+        const valor = passInput.value;
+        if (valor.length === 0) {
+            clearFeedback(passInput, fbPass);
+            return false;
+        }
+        setFeedback(passInput, fbPass, 'Se ve bien', true);
+        return true;
+    }
+
+    userInput.addEventListener('input', validarUsuario);
+    passInput.addEventListener('input', validarPassword);
+
+    form.addEventListener('submit', function (evento) {
+        const okUser = validarUsuario();
+        const okPass = validarPassword();
+
+        if (!okUser || !okPass) {
+            evento.preventDefault();
+            if (!okUser) {
+                setFeedback(userInput, fbUser, 'Ingresa tu usuario o correo', false);
+                userInput.focus();
+            } else {
+                setFeedback(passInput, fbPass, 'Ingresa tu contraseña', false);
+                passInput.focus();
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

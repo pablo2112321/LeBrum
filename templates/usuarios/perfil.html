@@ -1,0 +1,422 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css_extra %}
+<link rel="stylesheet" href="{% static 'css/paginas/perfil.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="loadout-shell">
+
+    <!-- Cabecera del inventario -->
+    <header class="loadout-topbar">
+        <div class="loadout-topbar-txt">
+            <span class="loadout-eyebrow"><i class="fas fa-skull"></i> DELABRUMA // LOADOUT DE AGENTE</span>
+            <h1 class="loadout-title">INVENTARIO DEL AGENTE</h1>
+        </div>
+        <div class="loadout-conexion loadout-conexion--{{ estado_conexion_css }}">
+            <i class="fas fa-circle"></i> {{ request.user.get_estado_conexion_display }}
+        </div>
+    </header>
+
+    <!-- Mensajes flash -->
+    {% if messages %}
+        <div class="loadout-messages">
+            {% for message in messages %}
+                <div class="loadout-alert {% if message.tags %}{{ message.tags }}{% endif %}">
+                    <i class="fas fa-check-circle"></i> {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Alerta: ID competitivo pendiente (se actualiza en tiempo real vía JS) -->
+    <div class="loadout-pendiente {% if tiene_id_competitivo %}is-hidden{% endif %}" id="id-pendiente-alert">
+        <i class="fas fa-exclamation-triangle"></i>
+        <div>
+            <strong>ID COMPETITIVO PENDIENTE</strong>
+            <span>Registra tu Riot ID o tu Steam ID en el Slot 01 para desbloquear la arena competitiva.</span>
+        </div>
+    </div>
+
+    <form method="post" action="{% url 'perfil' %}" novalidate class="loadout-form" id="loadout-form">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="loadout-form-error">
+                {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="loadout-grid">
+
+            <!-- ============ COLUMNA IZQUIERDA: ID CARD DEL JUGADOR ============ -->
+            <aside class="loadout-idcard">
+                <span class="loadout-corner loadout-corner--tl"></span>
+                <span class="loadout-corner loadout-corner--br"></span>
+
+                <div class="loadout-avatar-wrap">
+                    <div class="loadout-avatar">
+                        {% if request.user.avatar %}
+                            <img src="{{ request.user.avatar }}" alt="{{ request.user.username }}">
+                        {% else %}
+                            <img src="{% static 'img/Usuario.jpg' %}" alt="{{ request.user.username }}">
+                        {% endif %}
+                    </div>
+                    <span class="loadout-dot loadout-dot--{{ estado_conexion_css }}"
+                          title="{{ request.user.get_estado_conexion_display }}" id="id-card-dot"></span>
+                </div>
+
+                <div class="loadout-id-nombre" id="preview-nombre">{{ request.user.username }}</div>
+                <div class="loadout-id-tag" id="preview-tag">
+                    <i class="fas fa-id-badge"></i> {{ request.user.tag_jugador|default:'Sin tag' }}
+                </div>
+
+                <!-- Rango DeLaBruma con barra de XP -->
+                <div class="loadout-rango rango-nivel-{{ request.user.rango_nivel }}">
+                    <div class="loadout-rango-head">
+                        <span class="loadout-rango-nombre"><i class="fas fa-skull"></i> {{ request.user.rango }}</span>
+                        <span class="loadout-rango-xp"><i class="fas fa-bolt"></i> {{ request.user.puntos_xp }} XP</span>
+                    </div>
+                    <div class="loadout-rango-bar">
+                        <span class="loadout-rango-fill" style="width: {{ request.user.progreso_rango }}%;"></span>
+                    </div>
+                    <div class="loadout-rango-next">
+                        {% if request.user.rango_siguiente %}
+                            PRÓXIMO RANGO: {{ request.user.rango_siguiente }}
+                        {% else %}
+                            RANGO MÁXIMO ALCANZADO
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Preview en neón de los equipables -->
+                <div class="loadout-equipado-preview">
+                    <div class="loadout-preview-item">
+                        <span class="loadout-preview-label"><i class="fas fa-medal"></i> Título equipado</span>
+                        <span class="loadout-preview-val loadout-preview-val--titulo" id="preview-titulo">{{ request.user.titulo_equipado }}</span>
+                    </div>
+                    <div class="loadout-preview-item">
+                        <span class="loadout-preview-label"><i class="fas fa-radio"></i> Estado equipado</span>
+                        <span class="loadout-preview-val loadout-preview-val--estado" id="preview-estado">{{ request.user.estado_equipado }}</span>
+                    </div>
+                </div>
+
+                <div class="loadout-id-chips">
+                    <div class="loadout-chip"><i class="fas fa-trophy"></i> {{ request.user.trofeos_ganados }} trofeos</div>
+                    <div class="loadout-chip"><i class="fas fa-calendar-alt"></i> Miembro desde {{ request.user.date_joined|date:'Y' }}</div>
+                </div>
+            </aside>
+
+            <!-- ============ COLUMNA DERECHA: INVENTARIO Y CONFIGURACIÓN ============ -->
+            <div class="loadout-config">
+
+                <!-- SLOT 01: IDS COMPETITIVOS -->
+                <section class="loadout-slot">
+                    <header class="loadout-slot-head">
+                        <span class="loadout-slot-num">01</span>
+                        <div class="loadout-slot-head-txt">
+                            <h2 class="loadout-slot-title">Identificación Competitiva</h2>
+                            <p class="loadout-slot-desc">Víncula al menos un ID para participar en torneos.</p>
+                        </div>
+                        <span class="loadout-slot-status" id="id-status-chip">PENDIENTE</span>
+                    </header>
+
+                    <div class="loadout-slot-body loadout-slot-body--grid2">
+                        <div class="loadout-campo">
+                            <label for="{{ form.riot_id.id_for_label }}">
+                                <i class="fab fa-riotgames"></i> Riot ID
+                            </label>
+                            {{ form.riot_id }}
+                            <span class="loadout-valido-msg" data-msg-for="riot_id"></span>
+                            {% if form.riot_id.errors %}
+                                <span class="loadout-field-error">{{ form.riot_id.errors.0 }}</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="loadout-campo">
+                            <label for="{{ form.steam_id.id_for_label }}">
+                                <i class="fab fa-steam"></i> Steam ID
+                            </label>
+                            {{ form.steam_id }}
+                            <span class="loadout-valido-msg" data-msg-for="steam_id"></span>
+                            {% if form.steam_id.errors %}
+                                <span class="loadout-field-error">{{ form.steam_id.errors.0 }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SLOT 02: TÍTULO EQUIPADO -->
+                <section class="loadout-slot">
+                    <header class="loadout-slot-head">
+                        <span class="loadout-slot-num">02</span>
+                        <div class="loadout-slot-head-txt">
+                            <h2 class="loadout-slot-title">Título Equipado</h2>
+                            <p class="loadout-slot-desc">Selecciona el título que ilumina tu HUD.</p>
+                        </div>
+                    </header>
+
+                    <div class="loadout-slot-body">
+                        <div class="equip-grid" data-equip="titulo_equipado">
+                            {% for t in titulos_disponibles %}
+                                <button type="button" class="equip-card" data-value="{{ t }}">
+                                    <i class="fas fa-medal"></i>
+                                    <span>{{ t }}</span>
+                                </button>
+                            {% endfor %}
+                        </div>
+                        {{ form.titulo_equipado }}
+                        {% if form.titulo_equipado.errors %}
+                            <span class="loadout-field-error">{{ form.titulo_equipado.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+                </section>
+
+                <!-- SLOT 03: ESTADO EQUIPADO -->
+                <section class="loadout-slot">
+                    <header class="loadout-slot-head">
+                        <span class="loadout-slot-num">03</span>
+                        <div class="loadout-slot-head-txt">
+                            <h2 class="loadout-slot-title">Estado Equipado</h2>
+                            <p class="loadout-slot-desc">La frase que ven los demás agentes bajo tu nombre.</p>
+                        </div>
+                    </header>
+
+                    <div class="loadout-slot-body">
+                        <div class="equip-grid" data-equip="estado_equipado">
+                            {% for e in estados_disponibles %}
+                                <button type="button" class="equip-card equip-card--estado" data-value="{{ e }}">
+                                    <i class="fas fa-radio"></i>
+                                    <span>{{ e }}</span>
+                                </button>
+                            {% endfor %}
+                        </div>
+                        {{ form.estado_equipado }}
+                        {% if form.estado_equipado.errors %}
+                            <span class="loadout-field-error">{{ form.estado_equipado.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+                </section>
+
+                <!-- SLOT 04: ESTADO DE CONEXIÓN -->
+                <section class="loadout-slot">
+                    <header class="loadout-slot-head">
+                        <span class="loadout-slot-num">04</span>
+                        <div class="loadout-slot-head-txt">
+                            <h2 class="loadout-slot-title">Estado de Conexión</h2>
+                            <p class="loadout-slot-desc">Informa a la arena tu disponibilidad en tiempo real.</p>
+                        </div>
+                    </header>
+
+                    <div class="loadout-slot-body">
+                        <div class="conexion-grid" data-equip="estado_conexion">
+                            {% for valor, css in estados_conexion %}
+                                <button type="button" class="conexion-card conexion-card--{{ css }}" data-value="{{ valor }}" data-css="{{ css }}">
+                                    <i class="fas fa-circle"></i>
+                                    <span>{{ valor }}</span>
+                                </button>
+                            {% endfor %}
+                        </div>
+                        {{ form.estado_conexion }}
+                        {% if form.estado_conexion.errors %}
+                            <span class="loadout-field-error">{{ form.estado_conexion.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+                </section>
+
+                <!-- SLOT 05: DATOS DE CUENTA -->
+                <section class="loadout-slot">
+                    <header class="loadout-slot-head">
+                        <span class="loadout-slot-num">05</span>
+                        <div class="loadout-slot-head-txt">
+                            <h2 class="loadout-slot-title">Datos de Cuenta</h2>
+                            <p class="loadout-slot-desc">Credenciales y tag visible de tu agente.</p>
+                        </div>
+                    </header>
+
+                    <div class="loadout-slot-body loadout-slot-body--grid3">
+                        <div class="loadout-campo">
+                            <label for="{{ form.username.id_for_label }}">
+                                <i class="fas fa-user-astronaut"></i> Nombre de usuario
+                            </label>
+                            {{ form.username }}
+                            {% if form.username.errors %}
+                                <span class="loadout-field-error">{{ form.username.errors.0 }}</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="loadout-campo">
+                            <label for="{{ form.tag_jugador.id_for_label }}">
+                                <i class="fas fa-id-badge"></i> Tag de jugador
+                            </label>
+                            {{ form.tag_jugador }}
+                            {% if form.tag_jugador.errors %}
+                                <span class="loadout-field-error">{{ form.tag_jugador.errors.0 }}</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="loadout-campo">
+                            <label for="{{ form.email.id_for_label }}">
+                                <i class="fas fa-envelope"></i> Correo electrónico
+                            </label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                                <span class="loadout-field-error">{{ form.email.errors.0 }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Acciones -->
+                <div class="loadout-actions">
+                    <a href="{% url 'lobby' %}" class="loadout-btn loadout-btn--ghost">
+                        <i class="fas fa-home"></i> Volver al Lobby
+                    </a>
+                    <button type="submit" class="loadout-btn loadout-btn--guardar">
+                        <i class="fas fa-save"></i> Guardar Loadout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+(function () {
+    'use strict';
+
+    var alerta = document.getElementById('id-pendiente-alert');
+    var statusChip = document.getElementById('id-status-chip');
+    var dot = document.getElementById('id-card-dot');
+
+    var riotInput = document.getElementById('{{ form.riot_id.id_for_label }}');
+    var steamInput = document.getElementById('{{ form.steam_id.id_for_label }}');
+    var msgRiot = document.querySelector('[data-msg-for="riot_id"]');
+    var msgSteam = document.querySelector('[data-msg-for="steam_id"]');
+
+    var previewTitulo = document.getElementById('preview-titulo');
+    var previewEstado = document.getElementById('preview-estado');
+    var previewNombre = document.getElementById('preview-nombre');
+    var previewTag = document.getElementById('preview-tag');
+
+    var nombreInput = document.getElementById('{{ form.username.id_for_label }}');
+    var tagInput = document.getElementById('{{ form.tag_jugador.id_for_label }}');
+
+    function validarRiot(v) {
+        return /^[A-Za-z0-9À-ÿ_.\- ]+#[A-Za-z0-9_\-]{2,}$/.test(v.trim());
+    }
+
+    function validarSteam(v) {
+        return /^\d{17}$/.test(v.trim());
+    }
+
+    function pintarCampo(input, msg, valido, textoOk) {
+        input.classList.remove('slot-input--ok', 'slot-input--bad');
+        if (valido) {
+            input.classList.add('slot-input--ok');
+            msg.textContent = '\u2713 ' + textoOk;
+            msg.className = 'loadout-valido-msg is-ok';
+        } else {
+            input.classList.add('slot-input--bad');
+            msg.textContent = '\u2717 Formato inválido';
+            msg.className = 'loadout-valido-msg is-bad';
+        }
+    }
+
+    function limpiarCampo(input, msg) {
+        input.classList.remove('slot-input--ok', 'slot-input--bad');
+        msg.textContent = '';
+        msg.className = 'loadout-valido-msg';
+    }
+
+    function actualizarEstadoIDs() {
+        var riotOk = riotInput.value.trim() !== '' && validarRiot(riotInput.value);
+        var steamOk = steamInput.value.trim() !== '' && validarSteam(steamInput.value);
+        var pendiente = !(riotOk || steamOk);
+
+        alerta.classList.toggle('is-hidden', !pendiente);
+        statusChip.textContent = pendiente ? 'PENDIENTE' : 'VERIFICADO';
+        statusChip.classList.toggle('is-ok', !pendiente);
+    }
+
+    if (riotInput) {
+        riotInput.addEventListener('input', function () {
+            var v = riotInput.value.trim();
+            if (v === '') { limpiarCampo(riotInput, msgRiot); }
+            else { pintarCampo(riotInput, msgRiot, validarRiot(v), 'Riot ID válido'); }
+            actualizarEstadoIDs();
+        });
+    }
+
+    if (steamInput) {
+        steamInput.addEventListener('input', function () {
+            var v = steamInput.value.trim();
+            if (v === '') { limpiarCampo(steamInput, msgSteam); }
+            else { pintarCampo(steamInput, msgSteam, validarSteam(v), 'Steam ID válido'); }
+            actualizarEstadoIDs();
+        });
+    }
+
+    // --- Tarjetas seleccionables (títulos, estados, conexión) ---
+    function seleccionarTarjeta(grid, valor) {
+        var selects = grid.querySelectorAll('.is-selected');
+        for (var i = 0; i < selects.length; i++) { selects[i].classList.remove('is-selected'); }
+        var cards = grid.querySelectorAll('[data-value]');
+        for (var j = 0; j < cards.length; j++) {
+            if (cards[j].getAttribute('data-value') === valor) {
+                cards[j].classList.add('is-selected');
+            }
+        }
+    }
+
+    document.querySelectorAll('[data-equip]').forEach(function (grid) {
+        var select = grid.nextElementSibling;
+        if (!select || select.tagName !== 'SELECT') { return; }
+
+        var nombreCampo = grid.getAttribute('data-equip');
+        var preview = null;
+        if (nombreCampo === 'titulo_equipado') { preview = previewTitulo; }
+        else if (nombreCampo === 'estado_equipado') { preview = previewEstado; }
+
+        seleccionarTarjeta(grid, select.value);
+
+        grid.querySelectorAll('[data-value]').forEach(function (card) {
+            card.addEventListener('click', function () {
+                var valor = card.getAttribute('data-value');
+                select.value = valor;
+                seleccionarTarjeta(grid, valor);
+                if (preview) { preview.textContent = valor; }
+
+                if (nombreCampo === 'estado_conexion') {
+                    var css = card.getAttribute('data-css');
+                    var topbar = document.querySelector('.loadout-conexion');
+                    if (topbar) {
+                        topbar.className = 'loadout-conexion loadout-conexion--' + css;
+                        topbar.innerHTML = '<i class="fas fa-circle"></i> ' + valor;
+                    }
+                    if (dot) {
+                        dot.className = 'loadout-dot loadout-dot--' + css;
+                        dot.setAttribute('title', valor);
+                    }
+                }
+            });
+        });
+    });
+
+    // --- Preview en vivo de nombre y tag ---
+    if (nombreInput && previewNombre) {
+        nombreInput.addEventListener('input', function () {
+            previewNombre.textContent = nombreInput.value || 'AGENTE';
+        });
+    }
+    if (tagInput && previewTag) {
+        tagInput.addEventListener('input', function () {
+            previewTag.innerHTML = '<i class="fas fa-id-badge"></i> ' + (tagInput.value || 'Sin tag');
+        });
+    }
+
+    actualizarEstadoIDs();
+})();
+</script>
+{% endblock %}

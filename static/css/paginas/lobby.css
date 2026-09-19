@@ -1,0 +1,968 @@
+/* =========================================
+   1. HERO BANNER POTENTE (Versión Compacta)
+========================================= */
+.hero-banner-potente {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-tarjetas, 16px);
+    padding: 40px 50px; 
+    margin-top: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-banner-potente::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(37, 99, 235, 0.1) 0%, transparent 50%);
+    z-index: 0;
+}
+
+.hero-content {
+    flex: 1;
+    z-index: 1;
+    max-width: 650px;
+}
+
+.hero-content h1 {
+    font-size: 2.6rem; 
+    margin: 0 0 15px 0;
+    line-height: 1.1;
+    color: var(--text-main);
+    text-transform: uppercase;
+    letter-spacing: -1px;
+}
+
+.hero-content h1 .highlight {
+    color: var(--accent-blue);
+}
+
+.hero-content p {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    margin-bottom: 25px; 
+    line-height: 1.6;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.btn-primary, .btn-secondary {
+    padding: 12px 25px; 
+    border-radius: var(--radius-botones, 8px);
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+/* Micro-interacción: Brillo deslizante */
+.btn-primary {
+    background-color: var(--accent-blue);
+    color: white;
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+    position: relative;
+    overflow: hidden; 
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.6);
+}
+
+.btn-primary::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%; 
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
+    transform: skewX(-25deg); 
+    transition: left 0.5s ease; 
+}
+
+.btn-primary:hover::after {
+    left: 150%;
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: white;
+    border: 2px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+    border-color: var(--text-muted);
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Botón neón "Ir a mi Perfil" (usuario logueado) */
+.hero-image-placeholder {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    z-index: 1;
+}
+
+.hero-image-placeholder i {
+    font-size: 9rem; 
+    color: rgba(255, 255, 255, 0.03); 
+    transform: rotate(15deg);
+}
+
+
+/* =========================================
+   2. BARRA DE TOP JUGADORES PREMIUM 
+========================================= */
+.top-players-section {
+    margin-top: 40px;
+    margin-bottom: 35px;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(12px);
+    border: 1px solid #334155;
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.section-title-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(51, 65, 85, 0.6);
+}
+
+.section-title {
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: #f8fafc;
+    margin: 0;
+    letter-spacing: 0.5px;
+}
+
+.section-subtitle {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    margin: 4px 0 0 0;
+}
+
+.view-all-link {
+    color: #48cae4;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.view-all-link:hover {
+    color: #c77dff;
+    transform: translateX(4px);
+}
+
+.top-players-bar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.player-bar-card {
+    background: rgba(30, 41, 59, 0.5);
+    border: 1px solid #334155;
+    border-radius: 16px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.player-bar-card:hover {
+    transform: translateY(-4px);
+}
+
+/* =========================================
+   REDEFINICIÓN DE COLORES DEL PODIO PREMIUM
+   ========================================= */
+
+/* --- 🥇 RANK #1: ESMERALDA NEÓN (Mantuve clase card-gold por compatibilidad HTML) --- */
+.card-gold {
+    border-color: rgba(46, 204, 113, 0.6);
+    background: linear-gradient(135deg, rgba(46, 204, 113, 0.12) 0%, rgba(15, 23, 42, 0.85) 100%);
+    box-shadow: 0 0 20px rgba(46, 204, 113, 0.2);
+}
+.card-gold:hover {
+    box-shadow: 0 0 30px rgba(46, 204, 113, 0.35);
+    border-color: #2ecc71;
+}
+
+/* --- 🥈 RANK #2: ORO RE-POSICIONADO (Mantuve clase card-silver por compatibilidad HTML) --- */
+.card-silver {
+    border-color: rgba(255, 215, 0, 0.5);
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.08) 0%, rgba(15, 23, 42, 0.8) 100%);
+}
+.card-silver:hover {
+    border-color: #ffd700;
+}
+
+/* --- 🥉 RANK #3: PLATA RE-POSICIONADO (Mantuve clase card-bronze por compatibilidad HTML) --- */
+.card-bronze {
+    border-color: rgba(226, 232, 240, 0.4);
+    background: linear-gradient(135deg, rgba(226, 232, 240, 0.06) 0%, rgba(15, 23, 42, 0.8) 100%);
+}
+
+.rank-tag {
+    position: absolute;
+    top: 10px;
+    right: 14px;
+}
+.rank-tag span {
+    font-size: 0.65rem;
+    font-weight: 900;
+    padding: 2px 8px;
+    border-radius: 6px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+/* Etiquetas de los tags ajustados a los nuevos colores */
+.tag-gold { background: #2ecc71; color: #fff; box-shadow: 0 0 8px rgba(46, 204, 113, 0.5); }
+.tag-silver { background: #ffd700; color: #000; }
+.tag-bronze { background: #e2e8f0; color: #0f172a; }
+
+.player-info-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.player-avatar-box {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    padding: 2px;
+    border: 2px solid #334155;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+/* Bordes de los Avatares ajustados a los nuevos colores */
+.card-gold .player-avatar-box { border-color: #2ecc71; box-shadow: 0 0 10px rgba(46, 204, 113, 0.4); }
+.card-silver .player-avatar-box { border-color: #ffd700; }
+.card-bronze .player-avatar-box { border-color: #e2e8f0; }
+
+.player-avatar-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.player-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.player-gamertag {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #f8fafc;
+    margin: 0 0 2px 0;
+}
+/* Texto ajustado a los nuevos colores */
+.card-gold .player-gamertag { color: #2ecc71; text-shadow: 0 0 5px rgba(46, 204, 113, 0.3); }
+
+.player-game-tag {
+    font-size: 0.75rem;
+    color: #94a3b8;
+}
+
+.player-pts-box {
+    text-align: right;
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(51, 65, 85, 0.8);
+    padding: 6px 12px;
+    border-radius: 10px;
+    margin-top: 15px;
+}
+
+.pts-val {
+    font-size: 1rem;
+    font-weight: 900;
+    color: #48ff00;
+    display: block;
+    line-height: 1;
+}
+/* Puntos ajustados a los nuevos colores */
+.card-gold .pts-val { color: #2ecc71; }
+.card-silver .pts-val { color: #ffd700; } /* Ajuste de oro para el 2do lugar */
+
+.pts-lbl {
+    font-size: 0.6rem;
+    color: #94a3b8;
+    font-weight: 700;
+}
+
+.no-players-msg {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: #94a3b8;
+    padding: 20px;
+}
+
+
+/* =========================================
+   3. RESPONSIVIDAD (Móviles y Tablets)
+========================================= */
+
+@media (max-width: 900px) {
+    /* El top 3 deja de ser horizontal y pasa a ser vertical en móviles */
+    .top-players-bar {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    /* El banner se vuelve una columna en celulares */
+    .hero-banner-potente {
+        flex-direction: column;
+        padding: 30px 20px;
+        text-align: center;
+    }
+
+    .hero-content h1 {
+        font-size: 2rem; 
+    }
+
+    .hero-content p {
+        font-size: 1rem;
+    }
+
+    /* Los botones ocuparán todo el ancho y se pondrán uno sobre otro */
+    .hero-buttons {
+        flex-direction: column; 
+        width: 100%;
+    }
+
+    .btn-primary, .btn-secondary {
+        width: 100%;
+    }
+
+    /* Ocultamos el icono gigante para no desarmar el diseño en celular */
+    .hero-image-placeholder {
+        display: none; 
+    }
+}
+
+/* =========================================
+   4. HERO DELABRUMA (HUD URBANO / CYBERPUNK)
+   Solo visible para usuarios autenticados
+========================================= */
+.hud-comando {
+    position: relative;
+    margin-top: 20px;
+    padding: 42px 48px;
+    border-radius: 22px;
+    background:
+        radial-gradient(circle at 12% 18%, rgba(236, 0, 140, 0.18), transparent 42%),
+        radial-gradient(circle at 88% 82%, rgba(0, 229, 255, 0.16), transparent 45%),
+        linear-gradient(135deg, rgba(12, 12, 16, 0.92), rgba(3, 3, 6, 0.97));
+    border: 1px solid rgba(236, 0, 140, 0.35);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow:
+        0 0 0 1px rgba(0, 229, 255, 0.08),
+        0 0 42px rgba(236, 0, 140, 0.12),
+        0 24px 60px rgba(0, 0, 0, 0.7);
+    overflow: hidden;
+    animation: hud-aparecer 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes hud-aparecer {
+    from { opacity: 0; transform: translateY(24px) scale(0.985); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Líneas de escaneo holográficas sutiles */
+.hud-scanlines {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        repeating-linear-gradient(
+            0deg,
+            rgba(0, 229, 255, 0.05) 0px,
+            rgba(0, 229, 255, 0.05) 1px,
+            transparent 1px,
+            transparent 4px
+        );
+    animation: hud-barrer 9s linear infinite;
+    opacity: 0.5;
+}
+
+@keyframes hud-barrer {
+    from { background-position: 0 0; }
+    to   { background-position: 0 360px; }
+}
+
+/* Esquinas HUD de ángulo recto */
+.hud-corner {
+    position: absolute;
+    width: 34px;
+    height: 34px;
+    border: 2px solid #00e5ff;
+    opacity: 0.85;
+    pointer-events: none;
+    filter: drop-shadow(0 0 6px rgba(0, 229, 255, 0.6));
+}
+
+.hud-corner--tl { top: 12px; left: 12px; border-right: none; border-bottom: none; }
+.hud-corner--br { bottom: 12px; right: 12px; border-left: none; border-top: none; }
+
+/* --- Barra superior: operador + rango --- */
+.hud-topbar {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    padding-bottom: 24px;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+}
+
+.hud-piloto {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.hud-avatar {
+    width: 74px;
+    height: 74px;
+    border-radius: 50%;
+    padding: 3px;
+    background: conic-gradient(from 180deg, #00e5ff, #ec008c, #00e5ff);
+    box-shadow: 0 0 26px rgba(236, 0, 140, 0.45);
+    animation: hud-girar-borde 6s linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes hud-girar-borde {
+    from { filter: hue-rotate(0deg); }
+    to   { filter: hue-rotate(360deg); }
+}
+
+.hud-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    background: #0f172a;
+}
+
+.hud-piloto-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.hud-label {
+    font-size: 0.62rem;
+    font-weight: 900;
+    letter-spacing: 2.5px;
+    color: #7dd3fc;
+    text-transform: uppercase;
+}
+
+/* Título equipado del jugador (Loadout dinámico) */
+.hud-label--titulo {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.68rem;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: rgba(236, 0, 140, 0.12);
+    border: 1px solid rgba(236, 0, 140, 0.45);
+    color: #ff3ea5;
+    letter-spacing: 1.8px;
+    text-shadow: 0 0 12px rgba(236, 0, 140, 0.55);
+}
+
+.hud-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+    color: #4ade80;
+    text-transform: uppercase;
+}
+
+.hud-status i {
+    font-size: 0.55rem;
+    color: #4ade80;
+    animation: hud-status-parpadeo 1.8s ease-in-out infinite;
+}
+
+.hud-conexion-tag {
+    font-style: normal;
+    font-size: 0.6rem;
+    font-weight: 900;
+    letter-spacing: 1.6px;
+    padding: 2px 8px;
+    border-radius: 5px;
+    color: #e2e8f0;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Luz + color del estado de conexión */
+.hud-conexion--online { color: #4ade80; }
+.hud-conexion--online i { color: #4ade80; text-shadow: 0 0 10px #4ade80; }
+.hud-conexion--online .hud-conexion-tag { color: #4ade80; border-color: rgba(74, 222, 128, 0.4); }
+
+.hud-conexion--en_busqueda { color: #facc15; }
+.hud-conexion--en_busqueda i { color: #facc15; text-shadow: 0 0 10px #facc15; }
+.hud-conexion--en_busqueda .hud-conexion-tag { color: #facc15; border-color: rgba(250, 204, 21, 0.4); }
+
+.hud-conexion--en_batalla { color: #f87171; }
+.hud-conexion--en_batalla i { color: #f87171; text-shadow: 0 0 10px #f87171; }
+.hud-conexion--en_batalla .hud-conexion-tag { color: #f87171; border-color: rgba(248, 113, 113, 0.4); }
+
+.hud-conexion--offline { color: #94a3b8; }
+.hud-conexion--offline i { color: #64748b; text-shadow: none; animation: none; opacity: 0.6; }
+.hud-conexion--offline .hud-conexion-tag { color: #94a3b8; border-color: rgba(148, 163, 184, 0.3); }
+
+.hud-nombre {
+    margin: 2px 0 4px;
+    font-size: 1.9rem;
+    font-weight: 900;
+    line-height: 1.1;
+    background: linear-gradient(90deg, #00e5ff, #ec008c, #00e5ff);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: hud-texto-grad 3.5s linear infinite;
+}
+
+@keyframes hud-texto-grad {
+    to { background-position: 200% center; }
+}
+
+.hud-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+    color: #4ade80;
+    text-transform: uppercase;
+}
+
+.hud-status i {
+    font-size: 0.55rem;
+    color: #4ade80;
+    animation: hud-status-parpadeo 1.8s ease-in-out infinite;
+}
+
+@keyframes hud-status-parpadeo {
+    0%, 100% { opacity: 1; text-shadow: 0 0 8px #4ade80; }
+    50%      { opacity: 0.35; }
+}
+
+/* --- Bloque de rango DeLaBruma --- */
+.hud-rango-box {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    background: rgba(10, 10, 14, 0.6);
+    border: 1px solid rgba(0, 229, 255, 0.3);
+    border-radius: 16px;
+    padding: 16px 22px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    min-width: 220px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hud-rango-box .hud-label {
+    color: #00e5ff;
+}
+
+.hud-rango-nombre {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.25rem;
+    font-weight: 900;
+    letter-spacing: 0.6px;
+    color: #f8fafc;
+    text-transform: uppercase;
+}
+
+.hud-rango-nombre i {
+    color: #ec008c;
+    text-shadow: 0 0 12px rgba(236, 0, 140, 0.7);
+}
+
+.hud-rango-bar {
+    width: 100%;
+    height: 7px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    overflow: hidden;
+}
+
+.hud-rango-fill {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #ec008c, #00e5ff);
+    box-shadow: 0 0 14px rgba(0, 229, 255, 0.9);
+    transition: width 1s ease;
+}
+
+/* Colores del rango: brillan más a medida que sube el nivel */
+.hud-comando.rango-nivel-0 .hud-rango-box {
+    border-color: rgba(148, 163, 184, 0.4);
+}
+.hud-comando.rango-nivel-0 .hud-rango-nombre { color: #94a3b8; }
+.hud-comando.rango-nivel-0 .hud-rango-nombre i { color: #94a3b8; text-shadow: none; }
+.hud-comando.rango-nivel-0 .hud-rango-fill { background: linear-gradient(90deg, #64748b, #94a3b8); box-shadow: none; }
+
+.hud-comando.rango-nivel-1 .hud-rango-box {
+    border-color: rgba(74, 222, 128, 0.45);
+    box-shadow: 0 0 22px rgba(74, 222, 128, 0.12);
+}
+.hud-comando.rango-nivel-1 .hud-rango-nombre { color: #4ade80; }
+.hud-comando.rango-nivel-1 .hud-rango-nombre i { color: #4ade80; text-shadow: 0 0 12px rgba(74, 222, 128, 0.7); }
+.hud-comando.rango-nivel-1 .hud-rango-fill { background: linear-gradient(90deg, #16a34a, #4ade80); }
+
+.hud-comando.rango-nivel-2 .hud-rango-box {
+    border-color: rgba(0, 229, 255, 0.5);
+    box-shadow: 0 0 26px rgba(0, 229, 255, 0.15);
+}
+.hud-comando.rango-nivel-2 .hud-rango-nombre { color: #00e5ff; }
+.hud-comando.rango-nivel-2 .hud-rango-nombre i { color: #00e5ff; text-shadow: 0 0 12px rgba(0, 229, 255, 0.8); }
+.hud-comando.rango-nivel-2 .hud-rango-fill { background: linear-gradient(90deg, #0ea5e9, #00e5ff); }
+
+.hud-comando.rango-nivel-3 .hud-rango-box {
+    border-color: rgba(236, 0, 140, 0.6);
+    box-shadow: 0 0 32px rgba(236, 0, 140, 0.2);
+}
+.hud-comando.rango-nivel-3 .hud-rango-nombre { color: #ff3ea5; }
+.hud-comando.rango-nivel-3 .hud-rango-nombre i { color: #ec008c; text-shadow: 0 0 14px rgba(236, 0, 140, 0.9); }
+.hud-comando.rango-nivel-3 .hud-rango-fill { background: linear-gradient(90deg, #c026d3, #ec008c); }
+
+.hud-comando.rango-nivel-4 .hud-rango-box {
+    border-color: rgba(255, 215, 0, 0.7);
+    box-shadow: 0 0 42px rgba(255, 215, 0, 0.28), inset 0 0 18px rgba(255, 215, 0, 0.08);
+}
+.hud-comando.rango-nivel-4 .hud-rango-nombre { color: #ffd700; }
+.hud-comando.rango-nivel-4 .hud-rango-nombre i { color: #ffd700; text-shadow: 0 0 16px rgba(255, 215, 0, 1); }
+.hud-comando.rango-nivel-4 .hud-rango-fill { background: linear-gradient(90deg, #f59e0b, #ffd700); box-shadow: 0 0 18px rgba(255, 215, 0, 0.9); }
+
+.hud-xp-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+
+.hud-xp-pts {
+    color: #facc15;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.hud-xp-next {
+    color: #64748b;
+    text-transform: uppercase;
+}
+
+.hud-xp-max {
+    color: #ffd700;
+    text-transform: uppercase;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+}
+
+/* --- Zona central: botón gigante --- */
+.hud-arena {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 40px 0 28px;
+}
+
+.hud-sub {
+    font-size: 0.7rem;
+    font-weight: 900;
+    letter-spacing: 4px;
+    color: #64748b;
+    text-transform: uppercase;
+    margin-bottom: 22px;
+}
+
+.hud-btn-arena {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 24px 58px;
+    border-radius: 18px;
+    font-size: 1.65rem;
+    font-weight: 900;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #ffffff;
+    border: 2px solid rgba(236, 0, 140, 0.9);
+    background: linear-gradient(135deg, rgba(236, 0, 140, 0.95), rgba(0, 229, 255, 0.92));
+    box-shadow:
+        0 0 0 4px rgba(236, 0, 140, 0.12),
+        0 0 34px rgba(236, 0, 140, 0.5),
+        0 0 70px rgba(0, 229, 255, 0.25);
+    animation: hud-pulso 2s ease-in-out infinite;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.hud-btn-arena i {
+    font-size: 1.5rem;
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
+}
+
+.hud-btn-arena:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow:
+        0 0 0 6px rgba(236, 0, 140, 0.18),
+        0 0 50px rgba(236, 0, 140, 0.75),
+        0 0 110px rgba(0, 229, 255, 0.4);
+}
+
+.hud-btn-arena:active {
+    transform: scale(0.97);
+}
+
+/* Latido / pulso agresivo del botón */
+@keyframes hud-pulso {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow:
+            0 0 0 0 rgba(236, 0, 140, 0.45),
+            0 0 34px rgba(236, 0, 140, 0.5),
+            0 0 70px rgba(0, 229, 255, 0.25);
+    }
+    50% {
+        transform: scale(1.045);
+        box-shadow:
+            0 0 0 22px rgba(236, 0, 140, 0),
+            0 0 50px rgba(236, 0, 140, 0.8),
+            0 0 100px rgba(0, 229, 255, 0.45);
+    }
+}
+
+.hud-arena-desc {
+    margin: 20px 0 0;
+    font-size: 1.02rem;
+    color: #94a3b8;
+    max-width: 520px;
+    line-height: 1.6;
+}
+
+/* --- Vitrina de Trofeos --- */
+.hud-vitrina {
+    position: relative;
+    z-index: 1;
+    margin-top: 6px;
+    padding: 20px 24px;
+    border-radius: 16px;
+    background: rgba(10, 10, 14, 0.5);
+    border: 1px solid rgba(255, 215, 0, 0.18);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+}
+
+.hud-vitrina-titulo {
+    font-size: 0.75rem;
+    font-weight: 900;
+    letter-spacing: 3px;
+    color: #ffd700;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.hud-vitrina-titulo i {
+    font-size: 0.9rem;
+    text-shadow: 0 0 12px rgba(255, 215, 0, 0.8);
+}
+
+.hud-vitrina-trofeos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+}
+
+.trofeo {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.45rem;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.trofeo:hover {
+    transform: translateY(-4px) scale(1.08);
+}
+
+/* Trofeo conquistado: oro neón */
+.trofeo--oro {
+    background: linear-gradient(145deg, rgba(255, 215, 0, 0.16), rgba(255, 200, 0, 0.05));
+    border: 1px solid rgba(255, 215, 0, 0.75);
+    color: #ffd700;
+    box-shadow: 0 0 22px rgba(255, 215, 0, 0.5), inset 0 0 14px rgba(255, 215, 0, 0.12);
+    animation: trofeo-brillo 2.2s ease-in-out infinite;
+}
+
+@keyframes trofeo-brillo {
+    0%, 100% { box-shadow: 0 0 18px rgba(255, 215, 0, 0.35), inset 0 0 12px rgba(255, 215, 0, 0.1); }
+    50%      { box-shadow: 0 0 34px rgba(255, 215, 0, 0.7), inset 0 0 18px rgba(255, 215, 0, 0.2); }
+}
+
+/* Trofeo vacío / bloqueado */
+.trofeo--vacio {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: rgba(148, 163, 184, 0.4);
+}
+
+.hud-vitrina-nota {
+    margin: 0;
+    font-size: 0.82rem;
+    color: #94a3b8;
+    letter-spacing: 0.4px;
+}
+
+/* --- Mini-tarjetas de estadísticas --- */
+.hud-stats {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 18px;
+}
+
+.hud-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 22px 18px;
+    border-radius: 16px;
+    background: rgba(10, 10, 14, 0.6);
+    border: 1px solid rgba(0, 229, 255, 0.25);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.hud-stat:hover {
+    transform: translateY(-4px);
+    border-color: rgba(0, 229, 255, 0.6);
+    box-shadow: 0 0 24px rgba(0, 229, 255, 0.18);
+}
+
+.hud-stat i {
+    font-size: 1.4rem;
+    color: #ec008c;
+    text-shadow: 0 0 12px rgba(236, 0, 140, 0.5);
+}
+
+.hud-stat-num {
+    font-size: 2.1rem;
+    font-weight: 900;
+    line-height: 1;
+    color: #f8fafc;
+    text-shadow: 0 0 18px rgba(0, 229, 255, 0.35);
+}
+
+.hud-stat-lbl {
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 1.4px;
+    color: #94a3b8;
+    text-transform: uppercase;
+}
+
+/* --- Responsividad del HUD --- */
+@media (max-width: 768px) {
+    .hud-comando {
+        padding: 30px 22px;
+    }
+
+    .hud-topbar {
+        justify-content: center;
+        text-align: center;
+    }
+
+    .hud-piloto {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .hud-rango-box {
+        align-items: center;
+        width: 100%;
+    }
+
+    .hud-btn-arena {
+        width: 100%;
+        padding: 20px 30px;
+        font-size: 1.2rem;
+        letter-spacing: 2px;
+    }
+
+    .hud-stats {
+        grid-template-columns: 1fr;
+    }
+}

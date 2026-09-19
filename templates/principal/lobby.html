@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css_extra %}
+<link rel="stylesheet" href="{% static 'css/paginas/lobby.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="lobby-container">
+
+    {% if user.is_authenticated %}
+    <!-- ============ HERO DELABRUMA (HUD URBANO / CYBERPUNK) ============ -->
+    <div class="hud-comando rango-nivel-{{ rango_nivel_jugador }}">
+        <div class="hud-scanlines"></div>
+        <span class="hud-corner hud-corner--tl"></span>
+        <span class="hud-corner hud-corner--br"></span>
+
+        <div class="hud-topbar">
+            <div class="hud-piloto">
+                <div class="hud-avatar">
+                    {% if user.avatar %}
+                        <img src="{{ user.avatar }}" alt="{{ user.username }}">
+                    {% else %}
+                        <img src="{% static 'img/Usuario.jpg' %}" alt="{{ user.username }}">
+                    {% endif %}
+                </div>
+                <div class="hud-piloto-info">
+                    <span class="hud-label hud-label--titulo">{{ titulo_equipado|default:user.titulo_equipado }}</span>
+                    <h2 class="hud-nombre">{{ user.username }}</h2>
+                    <span class="hud-status hud-conexion--{{ estado_conexion_css|default:user.estado_conexion|lower }}">
+                        <i class="fas fa-circle"></i>
+                        {{ estado_equipado|default:user.estado_equipado }}
+                        <em class="hud-conexion-tag">{{ estado_conexion_display|default:user.get_estado_conexion_display }}</em>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Rango en tiempo real -->
+            <div class="hud-rango-box rango-nivel-{{ rango_nivel_jugador }}">
+                <span class="hud-label">RANGO DELABRUMA</span>
+                <span class="hud-rango-nombre">
+                    <i class="fas fa-skull"></i> {{ rango_jugador|default:user.rango }}
+                </span>
+                <div class="hud-rango-bar">
+                    <span class="hud-rango-fill" style="width: {{ progreso_rango|default:user.progreso_rango }}%;"></span>
+                </div>
+                <div class="hud-xp-line">
+                    <span class="hud-xp-pts"><i class="fas fa-bolt"></i> {{ xp_jugador|default:user.puntos_xp }} XP</span>
+                    {% if rango_siguiente %}
+                        <span class="hud-xp-next">próx. {{ rango_siguiente }}</span>
+                    {% else %}
+                        <span class="hud-xp-max">RANGO MÁXIMO</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="hud-arena">
+            <span class="hud-sub">Centro de Mando DeLaBruma</span>
+            <a href="{% url 'torneos' %}" class="hud-btn-arena">
+                <i class="fas fa-trophy"></i> Buscar Torneo
+            </a>
+            <p class="hud-arena-desc">Tu crew te espera, {{ user.username }}. Encuentra tu próxima batalla y sube tu rango.</p>
+        </div>
+
+        <!-- Vitrina de Trofeos -->
+        <div class="hud-vitrina">
+            <div class="hud-vitrina-titulo">
+                <i class="fas fa-award"></i> VITRINA DE TROFEOS
+            </div>
+            <div class="hud-vitrina-trofeos">
+                {% for i in "12345" %}
+                    {% if forloop.counter <= trofeos_ganados %}
+                        <div class="trofeo trofeo--oro" title="Torneo ganado">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                    {% else %}
+                        <div class="trofeo trofeo--vacio" title="Sin trofeo aún">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <p class="hud-vitrina-nota">
+                {{ trofeos_ganados|default:0 }} trofeos conquistados. ¡Gana torneos para encenderlos!
+            </p>
+        </div>
+
+        <div class="hud-stats">
+            <div class="hud-stat">
+                <i class="fas fa-trophy"></i>
+                <span class="hud-stat-num">{{ trofeos_ganados|default:0 }}</span>
+                <span class="hud-stat-lbl">Torneos Ganados</span>
+            </div>
+            <div class="hud-stat">
+                <i class="fas fa-chart-line"></i>
+                <span class="hud-stat-num">0%</span>
+                <span class="hud-stat-lbl">Winrate</span>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="hero-banner-potente">
+        <div class="hero-content">
+            <h1>Demuestra tu Nivel <span class="highlight">Compite y Gana!</span></h1>
+            <p>Únete a la arena definitiva de eSports. Forma tu equipo, sube en el ranking global y compite por premios reales en los mejores torneos.</p>
+            <div class="hero-buttons">
+                <a href="{% url 'registro' %}" class="btn-primary">Crear Cuenta</a>
+                <a href="{% url 'torneos' %}" class="btn-secondary">Explorar Torneos</a>
+            </div>
+        </div>
+        <div class="hero-image-placeholder">
+            <i class="fas fa-gamepad"></i>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="top-players-section">
+        <div class="section-title-box">
+            <div>
+                <h3 class="section-title"><i class="fas fa-crown" style="color: #ffd700;"></i> TOP 3 CLASIFICACIÓN GLOBAL</h3>
+                <p class="section-subtitle">Los líderes del ranking en tiempo real</p>
+            </div>
+            <a href="{% url 'ranking' %}" class="view-all-link">Ver Tabla Completa <i class="fas fa-arrow-right"></i></a>
+        </div>
+
+        <div class="top-players-bar">
+            {% for jugador in top_jugadores %}
+            <div class="player-bar-card {% if forloop.counter == 1 %}card-gold{% elif forloop.counter == 2 %}card-silver{% elif forloop.counter == 3 %}card-bronze{% endif %}">
+                
+                <div class="rank-tag">
+                    {% if forloop.counter == 1 %}
+                        <span class="tag-gold"><i class="fas fa-crown"></i> #1 ORO</span>
+                    {% elif forloop.counter == 2 %}
+                        <span class="tag-silver"><i class="fas fa-medal"></i> #2 PLATA</span>
+                    {% elif forloop.counter == 3 %}
+                        <span class="tag-bronze"><i class="fas fa-award"></i> #3 BRONCE</span>
+                    {% endif %}
+                </div>
+
+                <div class="player-info-wrapper">
+                    <div class="player-avatar-box">
+                        <img src="{% static 'img/Usuario.jpg' %}" alt="{{ jugador.username }}">
+                    </div>
+
+                    <div class="player-details">
+                        <h4 class="player-gamertag">{{ jugador.username }}</h4>
+                        <span class="player-game-tag">
+                            {% if forloop.counter == 1 %}
+                                <i class="fas fa-fire" style="color: #ff8c00;"></i> Imbatible
+                            {% else %}
+                                <i class="fas fa-gamepad" style="color: #48cae4;"></i> Pro Gamer
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="player-pts-box">
+                    <span class="pts-val">{{ jugador.puntos_globales|default:0 }}</span>
+                    <span class="pts-lbl">PTS</span>
+                </div>
+
+            </div>
+            {% empty %}
+            <div class="no-players-msg">
+                <i class="fas fa-info-circle"></i> Aún no hay jugadores clasificados en el ranking.
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    </div>
+{% endblock %}

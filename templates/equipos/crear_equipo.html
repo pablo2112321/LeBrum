@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css_extra %}
+<link rel="stylesheet" href="{% static 'css/equipos/equipos.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="eq-page eq-page--crear">
+
+    <header class="eq-hero">
+        <div class="eq-hero-txt">
+            <span class="eq-kicker">FORJA DE ESCUADRA</span>
+            <h1>Panel de <span>Mando</span></h1>
+            <p>Define la identidad de tu crew y prepárate para el desembarco.</p>
+        </div>
+    </header>
+
+    {% if messages %}
+        <div class="eq-mensajes">
+            {% for message in messages %}
+                <div class="eq-flash eq-flash--{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if perfil_incompleto %}
+        <div class="eq-alerta--bloqueo">
+            <i class="fas fa-user-slash"></i>
+            <h2>Perfil Incompleto</h2>
+            <p>Debes registrar tu Riot ID o Steam ID en tu Perfil antes de unirte a una Crew</p>
+            <a href="{% url 'perfil' %}" class="eq-btn eq-btn--cyan"><i class="fas fa-id-badge"></i> Completar mi Perfil</a>
+        </div>
+    {% else %}
+        <div class="eq-comando">
+            <form method="post" novalidate>
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="eq-flash eq-flash--error">
+                        {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+
+                <div class="eq-grid-campos">
+                    <div class="eq-campo">
+                        <label for="{{ form.nombre.id_for_label }}"><i class="fas fa-skull"></i> {{ form.nombre.label }}</label>
+                        {{ form.nombre }}
+                        {% if form.nombre.errors %}<span class="eq-campo-error">{{ form.nombre.errors.0 }}</span>{% endif %}
+                    </div>
+
+                    <div class="eq-campo">
+                        <label for="{{ form.tag.id_for_label }}"><i class="fas fa-tag"></i> {{ form.tag.label }}</label>
+                        {{ form.tag }}
+                        {% if form.tag.errors %}<span class="eq-campo-error">{{ form.tag.errors.0 }}</span>{% endif %}
+                    </div>
+                </div>
+
+                <div class="eq-grid-campos">
+                    <div class="eq-campo">
+                        <label for="{{ form.torneo.id_for_label }}"><i class="fas fa-trophy"></i> {{ form.torneo.label }}</label>
+                        {{ form.torneo }}
+                        {% if form.torneo.errors %}<span class="eq-campo-error">{{ form.torneo.errors.0 }}</span>{% endif %}
+                    </div>
+
+                    <div class="eq-campo">
+                        <label for="{{ form.modo.id_for_label }}"><i class="fas fa-users"></i> {{ form.modo.label }}</label>
+                        {{ form.modo }}
+                        {% if form.modo.errors %}<span class="eq-campo-error">{{ form.modo.errors.0 }}</span>{% endif %}
+                    </div>
+                </div>
+
+                <div class="eq-grid-campos">
+                    <div class="eq-campo">
+                        <label for="{{ form.logo.id_for_label }}"><i class="fas fa-image"></i> {{ form.logo.label }}</label>
+                        {{ form.logo }}
+                        {% if form.logo.errors %}<span class="eq-campo-error">{{ form.logo.errors.0 }}</span>{% endif %}
+                    </div>
+
+                    <div class="eq-campo">
+                        <label for="{{ form.banner.id_for_label }}"><i class="fas fa-panorama"></i> {{ form.banner.label }}</label>
+                        {{ form.banner }}
+                        {% if form.banner.errors %}<span class="eq-campo-error">{{ form.banner.errors.0 }}</span>{% endif %}
+                    </div>
+                </div>
+
+                <button type="submit" class="eq-btn eq-btn--forjar">
+                    <i class="fas fa-hammer"></i> FORJAR CREW
+                </button>
+            </form>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css_extra %}
+<link rel="stylesheet" href="{% static 'css/paginas/sala_partida.css' %}">
+{% endblock %}
+
+{% block content %}
+{% with a=partida.equipo_a b=partida.equipo_b %}
+<div class="sala">
+
+    <header class="sala-head">
+        <a href="{% url 'detalle_torneo' partida.torneo.id %}" class="sala-back">
+            <i class="fas fa-arrow-left"></i> {{ partida.torneo.nombre }}
+        </a>
+        <span class="sala-ronda"><i class="fas fa-layer-group"></i> {{ partida.ronda|default:partida.id }}</span>
+        <span class="sala-estado sala-estado--{{ partida.estado|lower|cut:' ' }}">
+            <i class="fas fa-circle"></i> {{ partida.estado }}
+        </span>
+    </header>
+
+    {% if messages %}
+        <div class="sala-messages">
+            {% for message in messages %}
+                <div class="sala-flash sala-flash--{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if partida.estado == 'EN REVISION' %}
+        <div class="sala-disputa" role="alert">
+            <i class="fas fa-exclamation-triangle"></i>
+            DISPUTA ACTIVA: LOS JUECES DE LA CREW ESTÁN REVISANDO LAS PRUEBAS.
+        </div>
+    {% endif %}
+
+    <section class="sala-vs">
+        <div class="sala-equipo">
+            <div class="sala-equipo-logo">
+                {% if a.logo %}
+                    <img src="{{ a.logo }}" alt="{{ a.nombre }}">
+                {% else %}
+                    <i class="fas fa-shield-halved"></i>
+                {% endif %}
+            </div>
+            <h2 class="sala-equipo-nombre">{{ a.nombre }}</h2>
+            <span class="sala-equipo-capitan"><i class="fas fa-crown"></i> {{ a.capitan.username }}</span>
+            {% if es_capitan_a %}<span class="sala-tu-chip"><i class="fas fa-user-shield"></i> TU EQUIPO</span>{% endif %}
+            <div class="sala-reporte">
+                {% if partida.reporte_equipo_a %}
+                    <span class="sala-reporte-badge sala-reporte-badge--{{ partida.reporte_equipo_a|lower }}">
+                        <i class="fas fa-{% if partida.reporte_equipo_a == 'GANADOR' %}skull{% else %}flag{% endif %}"></i>
+                        {{ partida.reporte_equipo_a }}
+                    </span>
+                {% else %}
+                    <span class="sala-reporte-badge sala-reporte-badge--none">SIN REPORTE</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="sala-vs-centro">
+            <span class="sala-vs-logo">VS</span>
+            {% if partida.ganador %}
+                <span class="sala-ganador-flag"><i class="fas fa-trophy"></i> GANADOR</span>
+            {% endif %}
+        </div>
+
+        <div class="sala-equipo">
+            <div class="sala-equipo-logo">
+                {% if b.logo %}
+                    <img src="{{ b.logo }}" alt="{{ b.nombre }}">
+                {% else %}
+                    <i class="fas fa-shield-halved"></i>
+                {% endif %}
+            </div>
+            <h2 class="sala-equipo-nombre">{{ b.nombre }}</h2>
+            <span class="sala-equipo-capitan"><i class="fas fa-crown"></i> {{ b.capitan.username }}</span>
+            {% if es_capitan_b %}<span class="sala-tu-chip"><i class="fas fa-user-shield"></i> TU EQUIPO</span>{% endif %}
+            <div class="sala-reporte">
+                {% if partida.reporte_equipo_b %}
+                    <span class="sala-reporte-badge sala-reporte-badge--{{ partida.reporte_equipo_b|lower }}">
+                        <i class="fas fa-{% if partida.reporte_equipo_b == 'GANADOR' %}skull{% else %}flag{% endif %}"></i>
+                        {{ partida.reporte_equipo_b }}
+                    </span>
+                {% else %}
+                    <span class="sala-reporte-badge sala-reporte-badge--none">SIN REPORTE</span>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    {% if partida.estado == 'FINALIZADO' and partida.ganador %}
+        <section class="sala-final">
+            <i class="fas fa-trophy"></i>
+            <h3>{{ partida.ganador.nombre }} gana la partida</h3>
+            <p>{{ partida.torneo.nombre }}</p>
+        </section>
+    {% endif %}
+
+    {% if partida.evidencia_victoria %}
+        <section class="sala-evidencia">
+            <h3><i class="fas fa-camera"></i> Evidencia adjuntada</h3>
+            <a href="{{ partida.evidencia_victoria.url }}" target="_blank" rel="noopener" class="sala-evidencia-link">
+                <i class="fas fa-file-image"></i> Ver captura de la partida
+            </a>
+        </section>
+    {% endif %}
+
+    {% if es_capitan_a or es_capitan_b %}
+        {% if partida.estado != 'FINALIZADO' %}
+            <section class="sala-acciones">
+                <h2 class="sala-acciones-titulo"><i class="fas fa-bullhorn"></i> Reportar Resultado</h2>
+                <p class="sala-acciones-desc">
+                    {% if es_capitan_a %}Capitán de <strong>{{ a.nombre }}</strong>{% else %}Capitán de <strong>{{ b.nombre }}</strong>{% endif %}.
+                    Reclama la victoria adjuntando una captura, o acepta la derrota.
+                </p>
+
+                <div class="sala-botones">
+                    <form method="post" action="{% url 'reportar_resultado' partida.id %}" enctype="multipart/form-data" class="sala-form sala-form--victoria" id="form-victoria">
+                        {% csrf_token %}
+                        <input type="hidden" name="resultado" value="GANADOR">
+                        <label class="sala-dropzone" for="evidencia-victoria">
+                            <i class="fas fa-camera"></i>
+                            <span>Adjuntar captura de victoria (obligatorio)</span>
+                            <input type="file" name="evidencia_victoria" id="evidencia-victoria" accept="image/*" required>
+                        </label>
+                        <button type="submit" class="sala-btn sala-btn--victoria">
+                            <i class="fas fa-skull"></i> RECLAMAR VICTORIA
+                            <small>(Requiere Captura)</small>
+                        </button>
+                    </form>
+
+                    <form method="post" action="{% url 'reportar_resultado' partida.id %}" class="sala-form sala-form--derrota" id="form-derrota">
+                        {% csrf_token %}
+                        <input type="hidden" name="resultado" value="PERDEDOR">
+                        <button type="submit" class="sala-btn sala-btn--derrota"
+                                onclick="return confirm('¿Confirmas la derrota de tu equipo?');">
+                            <i class="fas fa-flag"></i> ACEPTAR DERROTA
+                        </button>
+                    </form>
+                </div>
+            </section>
+        {% endif %}
+    {% elif not request.user.is_authenticated %}
+        <p class="sala-nota"><i class="fas fa-lock"></i> Inicia sesión como capitán para reportar el resultado.</p>
+    {% endif %}
+
+</div>
+{% endwith %}
+{% endblock %}

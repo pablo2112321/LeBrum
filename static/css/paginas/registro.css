@@ -1,0 +1,471 @@
+/* ============================================================
+   REGISTRO.CSS - REFACTORIZACIÓN ARMÓNICA (PREMIUM GLASS)
+   ============================================================ */
+
+:root {
+    /* Variables de Marca - Mantener consistencia */
+    --brand-naranja: #fb8500;
+    --brand-naranja-hover: #ff9f1c;
+    --brand-purple: #c77dff;
+    --brand-cyan: #48cae4;
+    --brand-success: #22c55e;
+    --brand-error: #ef4444;
+    --text-primary: #f8fafc;
+    --text-muted: #94a3b8;
+    
+    /* MODIFICACIÓN CLAVE PARA ARMONÍA: LIGEREZA */
+    /* Fondo de Tarjeta: Mucho más claro/blanco translúcido para "romper" la oscuridad */
+    --bg-dark-glass: rgba(255, 255, 255, 0.03); 
+    /* Borde: Más visible para definir el cristal */
+    --border-glass: rgba(255, 255, 255, 0.15);
+    --border-radius-main: 22px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    min-height: 100%;
+    overflow-x: hidden;
+    background-color: #030208;
+}
+
+/* --- CONTENEDOR VISUAL --- */
+.designer-viewport {
+    position: relative;
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    /* Ligeramente más padding para separar de los bordes del navegador */
+    padding: clamp(32px, 6vw, 60px) clamp(16px, 4vw, 24px) clamp(48px, 8vw, 90px);
+    background-color: #030208;
+    color: var(--text-primary);
+    overflow-x: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* --- ESCENARIO DE LA FOTO --- */
+.photo-stage {
+    position: relative;
+    /* ENGRANDECER: width min(96vw, 1200px); era 900px */
+    width: min(96vw, 1200px);
+}
+
+/* Marco con la imagen */
+.photo-frame {
+    position: relative;
+    z-index: 1;
+    border-radius: clamp(24px, 4vw, 40px);
+    overflow: hidden;
+    /* Padding interno sutil para que la card respire dentro del marco */
+    padding: clamp(28px, 6vw, 56px) clamp(16px, 4vw, 22px);
+    /* Asegúrate de que la ruta sea correcta */
+    background: url('../../img/crear-cuenta.jpg') no-repeat center center / cover;
+    border: 1px solid rgba(199, 125, 255, 0.22);
+    /* Resplandor exterior sutil basado en el color naranja del agujero negro */
+    box-shadow:
+        0 25px 70px rgba(0, 0, 0, 0.6),
+        0 0 0 1px rgba(72, 202, 228, 0.08) inset,
+        0 0 50px rgba(251, 133, 0, 0.15); /* Halo naranja BH */
+}
+
+/* MODIFICACIÓN CLAVE PARA ARMONÍA: ILUMINAR FONDO */
+/* Reducción drástica de la opacidad. La imagen BH debe ser la heroína */
+.photo-frame-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+        /* Viñeta sutil en los bordes para centrar la mirada */
+        radial-gradient(circle at center, rgba(3, 2, 8, 0.2) 0%, rgba(3, 2, 8, 0.6) 80%, rgba(3, 2, 8, 0.8) 100%),
+        /* Preservar el tinte morado muy sutilmente */
+        radial-gradient(ellipse at 30% 40%, rgba(199, 125, 255, 0.08) 0%, transparent 55%);
+    z-index: 0;
+}
+
+/* --- ENVOLTORIO CENTRAL --- */
+.central-wrapper {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    /* ENGRANDECER: Ancho máximo mayor para inputs amplios. min(92vw, 860px); era 700px */
+    max-width: 860px;
+    margin: 0 auto;
+}
+
+/* --- TARJETA ÚNICA (Glassmorphism Optimizado) --- */
+.glass-register-card {
+    background: var(--bg-dark-glass);
+    /* Aumentar la saturación para que el difuminado popee más al mostrar el fondo brillante */
+    backdrop-filter: blur(22px) saturate(180%);
+    -webkit-backdrop-filter: blur(22px) saturate(180%);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--border-radius-main);
+    padding: clamp(24px, 4vw, 44px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(72, 202, 228, 0.08);
+}
+
+/* --- CABECERA (dentro de la tarjeta) --- */
+.form-header {
+    text-align: center;
+    margin-bottom: clamp(20px, 4vw, 30px);
+}
+
+/* Logotipo de LeBrum (reinsertado para identidad visual) */
+.designer-logo {
+    max-width: clamp(120px, 15vw, 160px);
+    height: auto;
+    margin-bottom: 15px;
+    filter: drop-shadow(0 0 15px rgba(251, 133, 0, 0.4)); /* Resplandor naranja sutil */
+    transition: transform 0.3s ease;
+}
+
+.form-header a:hover .designer-logo {
+    transform: scale(1.05);
+}
+
+.form-header h1 {
+    font-size: clamp(1.4rem, 4vw, 2.2rem); /* Ligeramente más grande */
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #ffffff;
+    margin-bottom: 8px;
+    line-height: 1.2;
+}
+
+.form-header p {
+    color: var(--text-muted);
+    font-size: clamp(0.85rem, 2vw, 1.05rem); /* Ligeramente más grande */
+}
+
+/* --- ALERTAS --- */
+.messages-container {
+    margin-bottom: 20px;
+}
+
+.alert-error {
+    background: rgba(239, 68, 68, 0.18);
+    border: 1px solid rgba(239, 68, 68, 0.5);
+    color: #fca5a5;
+    padding: 14px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* --- ESTRUCTURA DEL FORMULARIO --- */
+.form-section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 12px;
+}
+
+.form-section-header:not(:first-of-type) {
+    margin-top: 35px; /* Más espacio entre secciones */
+}
+
+.form-section-header i {
+    font-size: 1.35rem;
+    color: var(--brand-purple);
+}
+
+.form-section-header.game-section i {
+    color: var(--brand-cyan);
+}
+
+.form-section-header h2 {
+    font-size: clamp(1rem, 2.5vw, 1.25rem); /* Ligeramente más grande */
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #ffffff;
+}
+
+/* Grid de Inputs */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 25px; /* Armonía entre filas y columnas */
+}
+
+@media (max-width: 560px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Cajas de Input */
+.input-box {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    min-width: 0;
+}
+
+.input-box label {
+    font-size: 0.8rem; /* Ligeramente más grande */
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #cbd5e1;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.input-box label i {
+    color: var(--brand-purple);
+}
+
+/* Iconos de Estado */
+.input-status-icon {
+    position: absolute;
+    right: 16px;
+    top: 40px;
+    font-size: 0.95rem;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+}
+
+.input-box.valid .input-status-icon.icon-valid,
+.input-box.invalid .input-status-icon.icon-invalid {
+    opacity: 1;
+}
+
+.input-status-icon.icon-valid { color: var(--brand-success); }
+.input-status-icon.icon-invalid { color: var(--brand-error); }
+
+/* Inputs Estilizados */
+.input-box input {
+    width: 100%;
+    padding: 13px 40px 13px 18px; /* Ligeramente más padding horizontal */
+    background: rgba(6, 7, 16, 0.62);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    color: #ffffff;
+    font-size: 0.95rem;
+    outline: none;
+    transition: all 0.25s ease;
+}
+
+.input-box input::placeholder {
+    color: rgba(203, 213, 225, 0.5);
+}
+
+.input-box input:focus {
+    border-color: var(--brand-cyan);
+    background: rgba(5, 5, 15, 0.55);
+    box-shadow: 0 0 15px rgba(72, 202, 228, 0.2);
+}
+
+/* Estados de Validación */
+.input-box.valid input {
+    border-color: var(--brand-success);
+    box-shadow: 0 0 12px rgba(34, 197, 94, 0.2);
+}
+
+.input-box.invalid input {
+    border-color: var(--brand-error);
+    box-shadow: 0 0 12px rgba(239, 68, 68, 0.2);
+}
+
+.field-error-text {
+    color: #fca5a5;
+    font-size: 0.78rem;
+    margin-top: 5px;
+    min-height: 13px;
+    display: none;
+}
+
+.input-box.invalid .field-error-text {
+    display: block;
+}
+
+/* --- VINCULACIÓN DE JUEGOS --- */
+.game-sync-container {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.game-glass-box {
+    flex: 1 1 280px; /* Ancho base ligeramente mayor */
+    min-width: 0;
+    background: rgba(8, 9, 20, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 18px;
+    transition: all 0.3s ease;
+}
+
+.game-glass-box:hover {
+    border-color: rgba(72, 202, 228, 0.3);
+}
+
+.game-glass-box.invalid { border-color: var(--brand-error); }
+.game-glass-box.valid { border-color: var(--brand-success); }
+
+.game-box-header {
+    margin-bottom: 12px;
+}
+
+/* Checkbox Personalizado */
+.designer-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.designer-checkbox input {
+    display: none;
+}
+
+.checkbox-check {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    border: 2px solid var(--brand-cyan);
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.4);
+    display: inline-block;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.designer-checkbox input:checked + .checkbox-check {
+    background: var(--brand-cyan);
+    box-shadow: 0 0 12px rgba(72, 202, 228, 0.7);
+}
+
+.designer-checkbox input:checked + .checkbox-check::after {
+    content: '✓';
+    position: absolute;
+    color: #000000;
+    font-size: 14px;
+    font-weight: bold;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.game-label {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #ffffff;
+    text-transform: uppercase;
+}
+
+.designer-input-game {
+    width: 100%;
+    padding: 11px 14px;
+    background: rgba(4, 5, 12, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: #ffffff;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.designer-input-game::placeholder {
+    color: rgba(203, 213, 225, 0.45);
+}
+
+.designer-input-game:focus {
+    border-color: var(--brand-cyan);
+}
+
+.game-error-text {
+    color: #fca5a5;
+    font-size: 0.76rem;
+    margin-top: 8px;
+    display: none;
+}
+
+.game-glass-box.invalid .game-error-text {
+    display: block;
+}
+
+/* --- BOTÓN PRINCIPAL (NARANJA LEBRUM) --- */
+.btn-primary-designer {
+    width: 100%;
+    padding: 16px;
+    margin-top: 30px;
+    background: linear-gradient(135deg, var(--brand-naranja), #ffae00);
+    border: none;
+    border-radius: 14px;
+    color: #000000;
+    font-size: 1.05rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(251, 133, 0, 0.3);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.btn-primary-designer:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 26px rgba(251, 133, 0, 0.5);
+    background: linear-gradient(135deg, var(--brand-naranja-hover), #ffc107);
+}
+
+.btn-primary-designer:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* --- PIE DEL FORMULARIO --- */
+.form-footer {
+    text-align: center;
+    margin-top: 25px;
+    color: #cbd5e1;
+    font-size: 0.95rem;
+}
+
+.form-footer a {
+    color: var(--brand-cyan);
+    text-decoration: none;
+    font-weight: 700;
+    transition: color 0.2s ease;
+}
+
+.form-footer a:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+/* --- RESPONSIVO --- */
+@media (max-width: 480px) {
+    .glass-register-card {
+        border-radius: 18px;
+    }
+    .photo-frame {
+        border-radius: 20px;
+    }
+    .game-sync-container {
+        gap: 14px;
+    }
+    .btn-primary-designer {
+        font-size: 0.9rem;
+        letter-spacing: 0.8px;
+    }
+}

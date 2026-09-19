@@ -1,0 +1,425 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeBrum - Plataforma eSports</title>
+    
+    <link rel="stylesheet" href="{% static 'css/global.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    {% block css_extra %}
+    {% endblock %}
+
+    <style>
+        /* --- ESTILOS DEL LOGO EN LA BARRA LATERAL --- */
+        .sidebar .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 20px 25px;
+            text-decoration: none;
+        }
+
+        .logo-img {
+            max-height: 42px;
+            width: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 0 8px rgba(199, 125, 255, 0.4));
+        }
+
+        .sidebar .logo-container h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 900;
+            background: linear-gradient(to right, #c77dff, #48cae4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        /* --- ESTILOS DEL PERFIL APILADO (STACKED) EN LA TOPBAR --- */
+        .user-menu-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .user-stacked-trigger {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            padding: 4px 10px;
+            border-radius: 14px;
+            transition: all 0.25s ease;
+            text-decoration: none;
+        }
+
+        .user-stacked-trigger:hover {
+            background: rgba(30, 41, 59, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Marco del Avatar para Usuario Logueado (Borde Neón) */
+        .user-avatar-frame {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #9d4edd, #48cae4);
+            padding: 2.5px; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 12px rgba(72, 202, 228, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .user-stacked-trigger:hover .user-avatar-frame {
+            box-shadow: 0 0 20px rgba(199, 125, 255, 0.6);
+        }
+
+        /* --- EFECTO FANTASMA / OSCURO PARA VISITANTE (SIN NEÓN, NEGRO Y OPACO) --- */
+        .user-avatar-frame.ghost-frame {
+            background: #0f172a;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+        }
+
+        .user-avatar-inner {
+            width: 100%;
+            height: 100%;
+            background-color: #0f172a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* Imagen Fantasma Opaca */
+        .ghost-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            opacity: 0.45; /* Apariencia fantasma/opaca */
+            filter: grayscale(70%) brightness(0.7);
+            transition: all 0.3s ease;
+        }
+
+        .user-stacked-trigger:hover .ghost-img {
+            opacity: 0.85;
+            filter: grayscale(0%) brightness(0.95);
+        }
+
+        /* Imagen Normal para Usuario Logueado */
+        .user-avatar-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        /* Nombre de usuario apilado */
+        .stacked-username {
+            color: #f8fafc;
+            font-weight: 800;
+            font-size: 0.85rem;
+            margin-top: 4px;
+            line-height: 1;
+            letter-spacing: 0.3px;
+        }
+
+        /* Insignias de Rango / Estatus */
+        .badge-boss {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: linear-gradient(45deg, #ffb703, #fb8500);
+            color: #000;
+            font-size: 0.65rem;
+            font-weight: 900;
+            padding: 2px 7px;
+            border-radius: 6px;
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 0 8px rgba(251, 133, 0, 0.4);
+        }
+
+        .badge-player {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(72, 202, 228, 0.15);
+            color: #48cae4;
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 2px 7px;
+            border-radius: 6px;
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: 1px solid rgba(72, 202, 228, 0.3);
+        }
+
+        /* --- MENÚ DESPLEGABLE CRISTALINO (DROPDOWN) --- */
+        .user-dropdown {
+            display: none; 
+            position: absolute;
+            right: 0;
+            top: 105px;
+            background: rgba(11, 17, 32, 0.95);
+            backdrop-filter: blur(12px);
+            min-width: 210px;
+            border: 1px solid #334155;
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.85), 0 0 20px rgba(199, 125, 255, 0.15);
+            overflow: hidden;
+            z-index: 1000;
+            animation: fadeInDown 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .user-dropdown.show { display: block; }
+
+        .user-dropdown a,
+        .user-dropdown button.logout-link {
+            color: #cbd5e1;
+            padding: 13px 18px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            width: 100%;
+            background: none;
+            border: none;
+            cursor: pointer;
+            box-sizing: border-box;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .user-dropdown a:hover,
+        .user-dropdown button.logout-link:hover {
+            background: rgba(199, 125, 255, 0.12);
+            color: #48cae4;
+            padding-left: 24px; 
+            border-left: 4px solid #48cae4;
+        }
+
+        .user-dropdown button.logout-link:hover {
+            background: rgba(239, 68, 68, 0.12);
+            color: #ef4444;
+            border-left-color: #ef4444;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-12px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-layout">
+        
+        <aside class="sidebar">
+            <div class="logo">
+                <a href="{% url 'lobby' %}" class="logo-container">
+                    <img src="{% static 'img/Logo.png' %}" alt="LeBrum Logo" class="logo-img">
+                    <h2>LEBRUM</h2>
+                </a>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="{% url 'lobby' %}" class="{% if request.resolver_match.url_name == 'lobby' %}active{% endif %}">
+                    <i class="fas fa-home"></i> Lobby
+                </a>
+                <a href="{% url 'noticias' %}" class="{% if request.resolver_match.url_name == 'noticias' %}active{% endif %}">
+                    <i class="fas fa-newspaper"></i> Noticias
+                </a>
+                <a href="{% url 'torneos' %}" class="{% if request.resolver_match.url_name == 'torneos' %}active{% endif %}">
+                    <i class="fas fa-trophy"></i> Torneos
+                </a>
+                <a href="{% url 'transmisiones' %}" class="{% if request.resolver_match.url_name == 'transmisiones' %}active{% endif %}">
+                    <i class="fas fa-satellite-dish"></i> Transmisiones
+                </a>
+                <a href="{% url 'equipos' %}" class="{% if request.resolver_match.url_name == 'equipos' %}active{% endif %}">
+                    <i class="fas fa-users"></i> Equipos
+                </a>
+                <a href="{% url 'ranking' %}" class="{% if request.resolver_match.url_name == 'ranking' %}active{% endif %}">
+                    <i class="fas fa-list-ol"></i> Ranking
+                </a>
+                <a href="{% url 'juegos' %}" class="{% if request.resolver_match.url_name == 'juegos' %}active{% endif %}">
+                    <i class="fas fa-gamepad"></i> Juegos
+                </a>
+                <a href="{% url 'chat' %}" class="{% if request.resolver_match.url_name == 'chat' %}active{% endif %}">
+                    <i class="fas fa-comments"></i> Chat Global
+                </a>
+                <a href="{% url 'tienda' %}" class="{% if request.resolver_match.url_name == 'tienda' %}active{% endif %}">
+                    <i class="fas fa-store"></i> Tienda
+                </a>
+
+                <div style="margin: 15px 25px; border-top: 1px solid var(--border-color);"></div>
+                
+                <a href="{% url 'soporte' %}" class="{% if request.resolver_match.url_name == 'soporte' %}active{% endif %}">
+                    <i class="fas fa-headset"></i> Soporte
+                </a>
+            </nav>
+        </aside>
+
+        <main class="main-wrapper">
+            <header class="topbar">
+                
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Buscar torneos, jugadores...">
+                </div>
+                
+                <div class="user-profile" style="display: flex; align-items: center; gap: 20px;">
+                    
+                    <div class="notification-container" style="position: relative;">
+                        <div class="notification" id="notification-btn" style="cursor: pointer; position: relative;">
+                            <i class="fas fa-bell"></i>
+                            {% if notificaciones_no_leidas_count > 0 %}
+                                <span class="notification-badge">{{ notificaciones_no_leidas_count }}</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="notification-dropdown" id="notification-dropdown">
+                            <div class="notification-header">
+                                <h4>Notificaciones</h4>
+                                <span class="mark-read" id="mark-read-btn">Marcar leídas</span>
+                            </div>
+                            <div class="notification-list">
+                                {% if notificaciones %}
+                                    {% for notif in notificaciones %}
+                                        <div class="notification-item {% if not notif.leida %}unread{% endif %}">
+                                            <i class="{{ notif.icono }}" style="color: var(--accent-blue);"></i>
+                                            <div class="notif-text">
+                                                <p>{{ notif.texto }}</p>
+                                                <span class="time">Hace {{ notif.creada_el|timesince }}</span>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 0.9rem;">
+                                        No tienes notificaciones
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="user-menu-container">
+                        
+                        {% if request.user.is_authenticated %}
+                            
+                            <div class="user-stacked-trigger" id="user-btn">
+                                <div class="user-avatar-frame">
+                                    <div class="user-avatar-inner">
+                                        <img src="{% static 'img/Usuario.jpg' %}" alt="{{ request.user.username }}" class="user-avatar-img">
+                                    </div>
+                                </div>
+                                <span class="stacked-username">{{ request.user.username }}</span>
+                                {% if request.user.rol_plataforma == 'Dueño' or request.user.is_superuser %}
+                                    <span class="badge-boss"><i class="fas fa-crown"></i> Jefe / Administrador</span>
+                                {% else %}
+                                    <span class="badge-player"><i class="fas fa-gamepad"></i> Jugador</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="user-dropdown" id="user-dropdown">
+                                <a href="{% url 'perfil' %}"><i class="fas fa-id-badge"></i> Mi Perfil</a>
+                                
+                                {% if request.user.rol_plataforma == 'Dueño' or request.user.is_superuser %}
+                                    <a href="{% url 'panel_control' %}"><i class="fas fa-shield-halved"></i> Panel de Control</a>
+                                {% endif %}
+
+                                <form method="POST" action="{% url 'logout' %}" style="margin: 0;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="logout-link">
+                                        <i class="fas fa-power-off"></i> Cerrar Sesión
+                                    </button>
+                                </form>
+                            </div>
+
+                        {% else %}
+
+                            <a href="{% url 'login' %}" class="user-stacked-trigger" title="Iniciar sesión o Registrarse">
+                                <div class="user-avatar-frame ghost-frame">
+                                    <div class="user-avatar-inner" style="background: transparent;">
+                                        <img src="{% static 'img/Usuario.jpg' %}" alt="Usuario Visitante" class="ghost-img">
+                                    </div>
+                                </div>
+                                <span class="stacked-username" style="color: #64748b;">Ingresar</span>
+                            </a>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+            </header>
+
+            <div class="content-area">
+                {% block content %}
+                {% endblock %}
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const notifBtn = document.getElementById("notification-btn");
+            const notifDropdown = document.getElementById("notification-dropdown");
+            const userBtn = document.getElementById("user-btn");
+            const userDropdown = document.getElementById("user-dropdown");
+
+            // Control de Notificaciones
+            if (notifBtn && notifDropdown) {
+                notifBtn.addEventListener("click", function(event) {
+                    event.stopPropagation();
+                    if(userDropdown && userDropdown.classList.contains("show")) {
+                        userDropdown.classList.remove("show");
+                    }
+                    if (notifDropdown.style.display === "flex") {
+                        notifDropdown.style.display = "none";
+                    } else {
+                        notifDropdown.style.display = "flex";
+                    }
+                });
+            }
+
+            // Control del Menú Desplegable de Usuario
+            if (userBtn && userDropdown) {
+                userBtn.addEventListener("click", function(event) {
+                    event.stopPropagation();
+                    if(notifDropdown && notifDropdown.style.display === "flex") {
+                        notifDropdown.style.display = "none";
+                    }
+                    userDropdown.classList.toggle("show");
+                });
+            }
+
+            // Cierre automático al hacer clic fuera
+            document.addEventListener("click", function(event) {
+                if (notifDropdown && notifBtn) {
+                    if (!notifDropdown.contains(event.target) && !notifBtn.contains(event.target)) {
+                        notifDropdown.style.display = "none";
+                    }
+                }
+                if (userDropdown && userBtn) {
+                    if (!userDropdown.contains(event.target) && !userBtn.contains(event.target)) {
+                        userDropdown.classList.remove("show");
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

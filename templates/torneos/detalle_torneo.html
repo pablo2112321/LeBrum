@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid py-4" style="color: white;">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>{{ torneo.nombre }}</h2>
+            <p>{{ torneo.descripcion }}</p>
+            <p><strong>Modalidad:</strong> {{ torneo.modalidad }}</p>
+            <p><strong>Cuota de inscripción:</strong> {{ torneo.cuota_inscripcion }} fichas</p>
+            <p><strong>Estado:</strong> {{ torneo.estado }}</p>
+            {% if mensaje %}
+                <div class="alert-message">{{ mensaje }}</div>
+            {% endif %}
+
+            {% if request.user.is_authenticated %}
+                <div class="card bg-dark text-white p-4 mt-3" style="border: 1px solid rgba(255,255,255,0.1);">
+                    <h3>Inscribir equipo</h3>
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.non_field_errors }}
+                        <div class="mb-3">
+                            {{ form.equipo.label_tag }}
+                            {{ form.equipo }}
+                            {{ form.equipo.errors }}
+                        </div>
+                        <button type="submit" class="btn-primary">Pagar e inscribir</button>
+                    </form>
+                </div>
+            {% else %}
+                <p>Debes <a href="{% url 'login' %}">iniciar sesión</a> para inscribir un equipo.</p>
+            {% endif %}
+
+            <div class="mt-4">
+                <h3>Equipos inscritos</h3>
+                {% if inscripciones %}
+                    <ul>
+                        {% for inscripcion in inscripciones %}
+                            <li>{{ inscripcion.equipo.nombre }} - Pagado por {{ inscripcion.pagador.username }} - {{ inscripcion.creado_el }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No hay equipos inscritos aún.</p>
+                {% endif %}
+            </div>
+
+            <div class="mt-4">
+                <h3>Partidas</h3>
+                {% if partidas %}
+                    <ul>
+                        {% for partida in partidas %}
+                            <li>
+                                <a href="{% url 'detalle_partida' partida.id %}">
+                                    {{ partida.equipo_a.nombre }} vs {{ partida.equipo_b.nombre }}
+                                </a>
+                                - {{ partida.estado }}
+                                {% if partida.ganador %}
+                                    - Ganador: {{ partida.ganador.nombre }}
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No hay partidas creadas para este torneo.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid py-4" style="color: white;">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Listado de torneos</h2>
+            <hr style="border-color: rgba(255,255,255,0.2);">
+            <div class="mt-4">
+                {% if torneos %}
+                    <ul>
+                        {% for torneo in torneos %}
+                            <li>
+                                <a href="{% url 'detalle_torneo' torneo.id %}">{{ torneo.nombre }}</a>
+                                - Modalidad: {{ torneo.modalidad }}
+                                - Cuota: {{ torneo.cuota_inscripcion }} fichas
+                                - Estado: {{ torneo.estado }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No hay torneos disponibles.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

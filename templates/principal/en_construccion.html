@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="text-align: center; margin-top: 100px; animation: rgb-glow 3s infinite;">
+    <i class="fas fa-hammer" style="font-size: 5rem; margin-bottom: 20px; color: var(--accent-blue);"></i>
+    <h2 style="font-size: 2.5rem; text-transform: uppercase;">Zona en Construcción</h2>
+    <p style="color: var(--text-muted); font-size: 1.2rem;">Estamos forjando esta sección en la herrería. ¡Estará lista para la próxima actualización!</p>
+    
+    <a href="{% url 'lobby' %}" class="btn-primary" style="display: inline-block; margin-top: 30px; padding: 12px 30px; border-radius: 8px; text-decoration: none; background-color: var(--accent-blue); color: white; font-weight: bold;">
+        <i class="fas fa-arrow-left"></i> Volver al Lobby
+    </a>
+</div>
+{% endblock %}

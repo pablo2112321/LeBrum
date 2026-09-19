@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css_extra %}
+<link rel="stylesheet" href="{% static 'css/equipos/equipos.css' %}">
+<link rel="stylesheet" href="{% static 'css/equipos/detalle_equipo.css' %}">
+{% endblock %}
+
+{% block content %}
+{% with eq=equipo %}
+<div class="eqd">
+
+    <section class="eqd-banner {% if not eq.banner %}eqd-banner--default{% endif %}"
+             {% if eq.banner %}style="background-image: url('{{ eq.banner }}');"{% endif %}>
+        <div class="eqd-banner-scrim"></div>
+        <div class="eqd-banner-inner">
+            <a href="{% url 'equipos' %}" class="eqd-back"><i class="fas fa-arrow-left"></i> Sector Crews</a>
+
+            <div class="eqd-logo">
+                {% if eq.logo %}
+                    <img src="{{ eq.logo }}" alt="{{ eq.nombre }}">
+                {% else %}
+                    <i class="fas fa-shield-halved"></i>
+                {% endif %}
+            </div>
+
+            <div class="eqd-identidad">
+                <h1>{{ eq.nombre }}</h1>
+                <div class="eqd-identidad-fila">
+                    <span class="eqd-tag">{{ eq.tag|default:'[SIN TAG]' }}</span>
+                    <span class="eqd-modo">{{ eq.modo }}</span>
+                </div>
+                <span class="eqd-torneo"><i class="fas fa-trophy"></i> {{ eq.torneo.nombre }}</span>
+            </div>
+        </div>
+    </section>
+
+    {% if messages %}
+        <div class="eq-mensajes">
+            {% for message in messages %}
+                <div class="eq-flash eq-flash--{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <section class="eqd-stats">
+        <div class="eqd-stat">
+            <i class="fas fa-trophy"></i>
+            <span class="eqd-stat-num">{{ eq.torneos_ganados }}</span>
+            <span class="eqd-stat-label">Torneos Ganados</span>
+        </div>
+        <div class="eqd-stat">
+            <i class="fas fa-crosshairs"></i>
+            <span class="eqd-stat-num">{{ eq.winrate }}%</span>
+            <span class="eqd-stat-label">Winrate</span>
+        </div>
+        <div class="eqd-stat">
+            <i class="fas fa-bolt"></i>
+            <span class="eqd-stat-num">{{ eq.puntos_crew }}</span>
+            <span class="eqd-stat-label">Puntos XP de la Crew</span>
+        </div>
+        <div class="eqd-stat">
+            <i class="fas fa-users"></i>
+            <span class="eqd-stat-num">{{ eq.miembros_count }}/{{ eq.limite_miembros }}</span>
+            <span class="eqd-stat-label">Roster</span>
+        </div>
+    </section>
+
+    <section class="eqd-acciones">
+        {% if es_capitan %}
+            <button type="button" class="eqd-btn eqd-btn--gestionar" id="eqd-toggle-roster">
+                <i class="fas fa-user-gear"></i> Gestionar Roster / Invitar Jugadores
+            </button>
+        {% elif ya_es_miembro %}
+            <span class="eqd-chip-miembro"><i class="fas fa-check"></i> Ya eres miembro de esta crew</span>
+        {% elif request.user.is_authenticated %}
+            <a href="{% url 'unirse_equipo' eq.id %}" class="eqd-btn eqd-btn--unirse">
+                <i class="fas fa-user-plus"></i> Solicitar Unirse
+            </a>
+        {% else %}
+            <a href="{% url 'login' %}" class="eqd-btn eqd-btn--unirse">
+                <i class="fas fa-right-to-bracket"></i> Inicia sesión para unirte
+            </a>
+        {% endif %}
+    </section>
+
+    {% if es_capitan %}
+        <section class="eqd-roster-admin" id="eqd-roster-admin" hidden>
+            <h3 class="eqd-seccion-titulo eqd-seccion-titulo--admin">
+                <i class="fas fa-user-gear"></i> Gestión del Roster
+            </h3>
+
+            <div class="eqd-invitar">
+                <label for="eqd-invite-link"><i class="fas fa-link"></i> Link de invitación</label>
+                <div class="eqd-invitar-fila">
+                    <input type="text" id="eqd-invite-link" readonly
+                           value="{{ request.build_absolute_uri }}" aria-label="Link de invitación">
+                    <button type="button" class="eqd-btn eqd-btn--copiar" id="eqd-copiar">
+                        <i class="fas fa-copy"></i> Copiar
+                    </button>
+                </div>
+            </div>
+
+            <div class="eqd-admin-list">
+                {% if eq.miembros_count <= 1 %}
+                    <p class="eqd-admin-vacio">Aún no hay miembros más allá del capitán.</p>
+                {% else %}
+                    {% for m in miembros %}
+                        {% if not m.es_capitan %}
+                            <div class="eqd-admin-fila">
+                                <span><i class="fas fa-user"></i> {{ m.usuario.username }}</span>
+                                <form method="post" action="{% url 'expulsar_miembro' eq.id m.usuario.id %}"
+                                      onsubmit="return confirm('¿Expulsar a {{ m.usuario.username }} de la crew?');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="eqd-btn--expulsar">
+                                        <i class="fas fa-user-minus"></i> Expulsar
+                                    </button>
+                                </form>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </section>
+    {% endif %}
+
+    <section class="eqd-roster">
+        <h2 class="eqd-seccion-titulo"><i class="fas fa-users"></i> Roster de Agentes</h2>
+        <div class="eqd-grid">
+            {% for m in miembros %}
+                <article class="eqd-agente {% if m.es_capitan %}eqd-agente--capitan{% endif %}">
+                    {% if m.es_capitan %}
+                        <span class="eqd-corona"><i class="fas fa-crown"></i></span>
+                    {% endif %}
+
+                    <div class="eqd-agente-avatar">
+                        {% if m.usuario.avatar %}
+                            <img src="{{ m.usuario.avatar }}" alt="{{ m.usuario.username }}">
+                        {% else %}
+                            <img src="{% static 'img/Usuario.jpg' %}" alt="{{ m.usuario.username }}">
+                        {% endif %}
+                    </div>
+
+                    <h3 class="eqd-agente-nombre">{{ m.usuario.username }}</h3>
+                    <span class="eqd-agente-tag">{{ m.usuario.tag_jugador|default:'SIN NAMETAG' }}</span>
+
+                    <span class="eqd-agente-rango rango-nivel-{{ m.usuario.rango_nivel }}">
+                        <i class="fas fa-skull"></i> {{ m.usuario.rango }}
+                    </span>
+
+                    <div class="eqd-agente-ids">
+                        {% if m.usuario.riot_id %}
+                            <span class="eqd-id"><i class="fab fa-riotgames"></i> {{ m.usuario.riot_id }}</span>
+                        {% endif %}
+                        {% if m.usuario.steam_id %}
+                            <span class="eqd-id"><i class="fab fa-steam"></i> {{ m.usuario.steam_id }}</span>
+                        {% endif %}
+                        {% if not m.usuario.riot_id and not m.usuario.steam_id %}
+                            <span class="eqd-id eqd-id--none">SIN ID COMPETITIVO</span>
+                        {% endif %}
+                    </div>
+                </article>
+            {% empty %}
+                <div class="eqd-vacio"><i class="fas fa-users-slash"></i> Esta crew aún no tiene agentes.</div>
+            {% endfor %}
+        </div>
+    </section>
+
+</div>
+{% endwith %}
+
+<script>
+(function () {
+    'use strict';
+    var toggle = document.getElementById('eqd-toggle-roster');
+    var panel = document.getElementById('eqd-roster-admin');
+    if (toggle && panel) {
+        toggle.addEventListener('click', function () {
+            var oculto = panel.hasAttribute('hidden');
+            if (oculto) { panel.removeAttribute('hidden'); } else { panel.setAttribute('hidden', ''); }
+        });
+    }
+    var copiar = document.getElementById('eqd-copiar');
+    var link = document.getElementById('eqd-invite-link');
+    if (copiar && link) {
+        copiar.addEventListener('click', function () {
+            link.select();
+            link.setSelectionRange(0, 99999);
+            try {
+                document.execCommand('copy');
+                copiar.innerHTML = '<i class="fas fa-check"></i> Copiado';
+            } catch (e) {
+                copiar.innerHTML = '<i class="fas fa-times"></i> Error';
+            }
+            setTimeout(function () {
+                copiar.innerHTML = '<i class="fas fa-copy"></i> Copiar';
+            }, 1800);
+        });
+    }
+})();
+</script>
+{% endblock %}

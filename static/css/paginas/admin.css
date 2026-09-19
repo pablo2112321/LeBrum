@@ -1,0 +1,451 @@
+/* ============================================================
+   ADMIN.CSS - OJO DE HALCÓN (PANEL ADMIN GALÁCTICO)
+   ============================================================ */
+
+:root {
+    --halcon-purple: #c77dff;
+    --halcon-cyan: #48cae4;
+    --halcon-gold: #ffb703;
+    --halcon-text: #e6eef8;
+    --halcon-muted: #94a3b8;
+}
+
+.halcon-shell {
+    position: relative;
+    min-height: calc(100vh - 100px);
+    margin: 0 -40px;
+    padding: 36px 40px 60px;
+    background:
+        linear-gradient(180deg, rgba(1, 6, 15, 0.55), rgba(3, 7, 15, 0.92)),
+        url('../img/galaxia.jpg') center/cover no-repeat fixed;
+    color: var(--halcon-text);
+    border-radius: 0 0 24px 24px;
+}
+
+.halcon-shell::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        radial-gradient(1px 1px at 30px 40px, rgba(255, 255, 255, 0.9), transparent 100%),
+        radial-gradient(1.2px 1.2px at 130px 90px, rgba(199, 125, 255, 0.85), transparent 100%),
+        radial-gradient(1px 1px at 280px 30px, rgba(72, 202, 228, 0.85), transparent 100%),
+        radial-gradient(1px 1px at 90px 220px, rgba(255, 255, 255, 0.75), transparent 100%),
+        radial-gradient(1.4px 1.4px at 340px 200px, rgba(255, 255, 255, 0.9), transparent 100%),
+        radial-gradient(1px 1px at 200px 320px, rgba(199, 125, 255, 0.8), transparent 100%);
+    background-size: 380px 380px;
+    pointer-events: none;
+    animation: halcon-twinkle 5s ease-in-out infinite;
+}
+
+@keyframes halcon-twinkle {
+    0%, 100% { opacity: 0.35; }
+    50% { opacity: 0.9; }
+}
+
+.halcon-card {
+    position: relative;
+    z-index: 1;
+    background: rgba(15, 12, 29, 0.74);
+    border: 1px solid rgba(138, 43, 226, 0.45);
+    border-radius: 20px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 48px rgba(75, 0, 130, 0.18);
+    padding: 28px;
+}
+
+.halcon-header {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 20px;
+}
+
+.halcon-header i {
+    font-size: 2rem;
+    color: var(--halcon-gold);
+    filter: drop-shadow(0 0 12px rgba(255, 183, 3, 0.5));
+}
+
+.halcon-header h2 {
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.halcon-header p {
+    margin: 4px 0 0;
+    color: var(--halcon-muted);
+}
+
+.halcon-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 18px;
+    margin-top: 24px;
+}
+
+.halcon-stat {
+    text-align: center;
+    padding: 24px 16px;
+    background: rgba(8, 9, 18, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    transition: all 0.25s ease;
+}
+
+.halcon-stat:hover {
+    border-color: rgba(72, 202, 228, 0.5);
+    box-shadow: 0 0 18px rgba(72, 202, 228, 0.15);
+    transform: translateY(-3px);
+}
+
+.halcon-stat i {
+    font-size: 1.5rem;
+    color: var(--halcon-cyan);
+    margin-bottom: 8px;
+}
+
+.halcon-stat .stat-valor {
+    font-size: 1.6rem;
+    font-weight: 900;
+    color: #ffffff;
+}
+
+.halcon-stat .stat-label {
+    color: var(--halcon-muted);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+}
+
+.halcon-acciones {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 28px;
+}
+
+.halcon-boton {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 26px;
+    border-radius: 14px;
+    text-decoration: none;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    transition: all 0.25s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.halcon-boton--neon {
+    background: linear-gradient(135deg, rgba(138, 43, 226, 0.95), rgba(79, 173, 255, 0.9));
+    color: #fff;
+    box-shadow: 0 6px 24px rgba(138, 43, 226, 0.25);
+}
+
+.halcon-boton--neon:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 28px rgba(138, 43, 226, 0.45);
+}
+
+.halcon-boton--gold {
+    background: linear-gradient(135deg, #ffb703, #fb8500);
+    color: #000;
+    box-shadow: 0 6px 24px rgba(251, 133, 0, 0.25);
+}
+
+.halcon-boton--gold:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 28px rgba(255, 183, 3, 0.45);
+}
+
+.halcon-boton--ghost {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #e6eef8;
+}
+
+.halcon-boton--ghost:hover {
+    border-color: rgba(72, 202, 228, 0.6);
+    color: #48cae4;
+}
+
+/* --- BANNER DE BIENVENIDA DEL CREADOR --- */
+.halcon-welcome {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 22px;
+}
+
+.halcon-welcome i {
+    font-size: 2.4rem;
+    color: var(--halcon-gold);
+    filter: drop-shadow(0 0 14px rgba(255, 183, 3, 0.55));
+    animation: halcon-pulso 3s ease-in-out infinite;
+}
+
+@keyframes halcon-pulso {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+}
+
+.halcon-welcome h1 {
+    margin: 0;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background: linear-gradient(90deg, #ffffff, #c77dff, #48cae4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.halcon-welcome p {
+    margin: 4px 0 0;
+    color: var(--halcon-muted);
+}
+
+/* --- BOTÓN GRANDE "+ CREAR NUEVO TORNEO" --- */
+.halcon-crear-accion {
+    display: flex;
+    justify-content: flex-end;
+    margin: 24px 0;
+}
+
+.halcon-boton--crear {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    padding: 20px 40px;
+    border-radius: 18px;
+    font-size: 1.15rem;
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #ffffff;
+    text-decoration: none;
+    border: 1px solid rgba(79, 173, 255, 0.6);
+    background: linear-gradient(135deg, rgba(138, 43, 226, 0.95), rgba(79, 173, 255, 0.9));
+    box-shadow:
+        0 0 24px rgba(138, 43, 226, 0.4),
+        0 0 60px rgba(79, 173, 255, 0.2),
+        inset 0 0 18px rgba(255, 255, 255, 0.08);
+    transition: all 0.25s ease;
+    animation: halcon-brillo-boton 3s ease-in-out infinite;
+}
+
+.halcon-boton--crear i {
+    font-size: 1.4rem;
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
+}
+
+@keyframes halcon-brillo-boton {
+    0%, 100% { box-shadow: 0 0 24px rgba(138, 43, 226, 0.4), 0 0 60px rgba(79, 173, 255, 0.2); }
+    50% { box-shadow: 0 0 40px rgba(138, 43, 226, 0.65), 0 0 90px rgba(79, 173, 255, 0.35); }
+}
+
+.halcon-boton--crear:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow:
+        0 0 45px rgba(138, 43, 226, 0.8),
+        0 0 110px rgba(79, 173, 255, 0.45);
+}
+
+/* --- TARJETA ANCHA DE TORNEOS --- */
+.halcon-tabla-card {
+    margin-top: 24px;
+}
+
+.halcon-tabla-card h3 {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 0 18px;
+    font-size: 1.15rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #ffffff;
+}
+
+.halcon-tabla-card h3 i {
+    color: var(--halcon-cyan);
+    filter: drop-shadow(0 0 8px rgba(72, 202, 228, 0.5));
+}
+
+.halcon-tabla-wrap {
+    overflow-x: auto;
+    border-radius: 16px;
+    border: 1px solid rgba(138, 43, 226, 0.35);
+    box-shadow: 0 0 24px rgba(75, 0, 130, 0.12);
+}
+
+.halcon-tabla {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 640px;
+    background: rgba(8, 9, 18, 0.6);
+}
+
+.halcon-tabla thead th {
+    padding: 16px 18px;
+    text-align: left;
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--halcon-cyan);
+    background: rgba(72, 202, 228, 0.08);
+    border-bottom: 1px solid rgba(72, 202, 228, 0.25);
+}
+
+.halcon-tabla tbody td {
+    padding: 15px 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    color: #e6eef8;
+    font-size: 0.92rem;
+}
+
+.halcon-tabla tbody tr {
+    transition: all 0.2s ease;
+}
+
+.halcon-tabla tbody tr:hover {
+    background: rgba(138, 43, 226, 0.08);
+}
+
+.halcon-tabla tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.halcon-tabla .celda-nombre {
+    font-weight: 800;
+    color: #ffffff;
+}
+
+.halcon-tabla .celda-muted {
+    color: var(--halcon-muted);
+}
+
+/* Insignias de estado del torneo */
+.halcon-estado {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 0.74rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: 1px solid transparent;
+}
+
+.halcon-estado--abierto {
+    background: rgba(34, 197, 94, 0.14);
+    border-color: rgba(34, 197, 94, 0.45);
+    color: #4ade80;
+}
+
+.halcon-estado--lleno {
+    background: rgba(251, 133, 0, 0.14);
+    border-color: rgba(251, 133, 0, 0.45);
+    color: #fb923c;
+}
+
+.halcon-estado--curso {
+    background: rgba(72, 202, 228, 0.14);
+    border-color: rgba(72, 202, 228, 0.45);
+    color: #48cae4;
+}
+
+.halcon-estado--finalizado {
+    background: rgba(148, 163, 184, 0.14);
+    border-color: rgba(148, 163, 184, 0.45);
+    color: #94a3b8;
+}
+
+/* Contador de inscritos (barra de ocupación) */
+.halcon-ocupacion {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.halcon-ocupacion .barra {
+    flex: 1;
+    min-width: 60px;
+    height: 6px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+}
+
+.halcon-ocupacion .barra span {
+    display: block;
+    height: 100%;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #8b5cf6, #48cae4);
+    box-shadow: 0 0 8px rgba(72, 202, 228, 0.5);
+}
+
+.halcon-ocupacion .num {
+    font-size: 0.82rem;
+    color: var(--halcon-muted);
+    white-space: nowrap;
+}
+
+/* Estado vacío: universo en paz */
+.halcon-vacio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    text-align: center;
+    padding: 56px 24px;
+    background: rgba(8, 9, 18, 0.55);
+    border: 1px dashed rgba(138, 43, 226, 0.4);
+    border-radius: 16px;
+}
+
+.halcon-vacio i {
+    font-size: 3.2rem;
+    color: var(--halcon-purple);
+    filter: drop-shadow(0 0 18px rgba(199, 125, 255, 0.45));
+    animation: halcon-pulso 4s ease-in-out infinite;
+}
+
+.halcon-vacio p {
+    margin: 0;
+    color: var(--halcon-muted);
+    font-size: 1rem;
+    letter-spacing: 0.3px;
+}
+
+@media (max-width: 640px) {
+    .halcon-shell {
+        margin: 0 -24px;
+        padding: 24px;
+    }
+
+    .halcon-crear-accion {
+        justify-content: center;
+    }
+
+    .halcon-boton--crear {
+        width: 100%;
+        justify-content: center;
+    }
+}

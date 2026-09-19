@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css_extra %}
+<link rel="stylesheet" href="{% static 'css/equipos/equipos.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="eq-page">
+
+    <header class="eq-hero">
+        <div class="eq-hero-txt">
+            <span class="eq-kicker">SECTOR CREWS</span>
+            <h1>Escuadras de <span>DeLaBruma</span></h1>
+            <p>Forja tu leyenda junto a los mejores agentes del submundo competitivo.</p>
+        </div>
+        <a href="{% url 'crear_equipo' %}" class="eq-btn eq-btn--cyan"><i class="fas fa-plus"></i> Forjar Crew</a>
+    </header>
+
+    {% if messages %}
+        <div class="eq-mensajes">
+            {% for message in messages %}
+                <div class="eq-flash eq-flash--{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="eq-search">
+        <i class="fas fa-search"></i>
+        <input type="text" id="eq-buscar" placeholder="Buscar crew por nombre o tag..." autocomplete="off"
+               aria-label="Buscar crew">
+        <span class="eq-search-count" id="eq-contador">{{ equipos|length }}</span>
+    </div>
+
+    {% if equipos %}
+        <div class="eq-grid" id="eq-grid">
+            {% for equipo in equipos %}
+                <article class="eq-card" data-buscar="{{ equipo.nombre|lower }} {{ equipo.tag|lower }}">
+                    <div class="eq-card-top">
+                        <div class="eq-card-logo">
+                            {% if equipo.logo %}
+                                <img src="{{ equipo.logo }}" alt="{{ equipo.nombre }}">
+                            {% else %}
+                                <i class="fas fa-shield-halved"></i>
+                            {% endif %}
+                        </div>
+                        <div class="eq-card-id">
+                            <h3>{{ equipo.nombre }}</h3>
+                            <span class="eq-tag">{{ equipo.tag|default:'[SIN TAG]' }}</span>
+                        </div>
+                        <span class="eq-card-modo">{{ equipo.modo }}</span>
+                    </div>
+
+                    <div class="eq-card-meta">
+                        <span><i class="fas fa-crown"></i> {{ equipo.capitan.username }}</span>
+                        <span><i class="fas fa-users"></i> {{ equipo.num_miembros }}/{{ equipo.limite_miembros }}</span>
+                    </div>
+
+                    <div class="eq-card-torneo">
+                        <i class="fas fa-trophy"></i> {{ equipo.torneo.nombre }}
+                    </div>
+
+                    <a href="{% url 'detalle_equipo' equipo.id %}" class="eq-btn eq-btn--outline">Ver Escuadra</a>
+                </article>
+            {% endfor %}
+        </div>
+
+        <div class="eq-vacio" id="eq-vacio" hidden>
+            <i class="fas fa-ghost"></i>
+            <h3>Sin resultados</h3>
+            <p>Ninguna crew coincide con tu búsqueda.</p>
+        </div>
+    {% else %}
+        <div class="eq-vacio">
+            <i class="fas fa-ghost"></i>
+            <h3>El sector está vacío</h3>
+            <p>No hay crews registradas. Sé la primera leyenda en forjar una.</p>
+            <a href="{% url 'crear_equipo' %}" class="eq-btn eq-btn--cyan">Forjar mi Crew</a>
+        </div>
+    {% endif %}
+
+</div>
+
+<script>
+(function () {
+    'use strict';
+    var input = document.getElementById('eq-buscar');
+    if (!input) { return; }
+    var grid = document.getElementById('eq-grid');
+    var cards = grid ? Array.prototype.slice.call(grid.querySelectorAll('.eq-card')) : [];
+    var vacio = document.getElementById('eq-vacio');
+    var contador = document.getElementById('eq-contador');
+
+    input.addEventListener('input', function () {
+        var q = input.value.trim().toLowerCase();
+        var visibles = 0;
+        for (var i = 0; i < cards.length; i++) {
+            var coincide = cards[i].getAttribute('data-buscar').indexOf(q) !== -1;
+            cards[i].style.display = coincide ? '' : 'none';
+            if (coincide) { visibles++; }
+        }
+        if (vacio) { vacio.hidden = visibles !== 0; }
+        if (contador) { contador.textContent = visibles; }
+    });
+})();
+</script>
+{% endblock %}
