@@ -38,7 +38,7 @@
         <div class="sala-equipo">
             <div class="sala-equipo-logo">
                 {% if a.logo %}
-                    <img src="{{ a.logo }}" alt="{{ a.nombre }}">
+                    <img src="{{ a.logo.url }}" alt="{{ a.nombre }}">
                 {% else %}
                     <i class="fas fa-shield-halved"></i>
                 {% endif %}
@@ -68,7 +68,7 @@
         <div class="sala-equipo">
             <div class="sala-equipo-logo">
                 {% if b.logo %}
-                    <img src="{{ b.logo }}" alt="{{ b.nombre }}">
+                    <img src="{{ b.logo.url }}" alt="{{ b.nombre }}">
                 {% else %}
                     <i class="fas fa-shield-halved"></i>
                 {% endif %}

@@ -48,6 +48,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'usuarios.context_processors.notificaciones_usuario',
                 'torneos.context_processors.admin_overview',
                 'equipos.context_processors.jugador_equipo',
             ],

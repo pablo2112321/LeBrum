@@ -3,6 +3,8 @@ from django.test import TestCase
 
 from equipos.models import Equipo
 
+from usuarios.models import Notificacion
+
 from .models import Inscripcion, Partida, RecompensaPartida, Torneo, Videojuego
 from .services import generar_bracket, procesar_resultado
 
@@ -73,6 +75,13 @@ class CompetenciaEstabilidadTests(TestCase):
         self.assertEqual(
             RecompensaPartida.objects.filter(partida=partida).count(),
             2,
+        )
+        self.assertEqual(
+            Notificacion.objects.filter(
+                usuario=self.usuario,
+                tipo='resultado',
+            ).count(),
+            1,
         )
 
         with self.assertRaises(ValueError):

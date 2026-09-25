@@ -39,7 +39,7 @@
             {% for inscripcion in inscripciones %}
                 <article class="cyber-team-row">
                     {% if inscripcion.equipo.logo %}
-                        <img src="{{ inscripcion.equipo.logo }}" alt="{{ inscripcion.equipo.nombre }}">
+                        <img src="{{ inscripcion.equipo.logo.url }}" alt="{{ inscripcion.equipo.nombre }}">
                     {% endif %}
                     <div>
                         <h3>{{ inscripcion.equipo.nombre }}</h3>
@@ -111,7 +111,7 @@
                                     <div class="match-team {% if partida.ganador_id == partida.equipo_local_id %}match-team--winner{% endif %}">
                                         {% if partida.equipo_local %}
                                             {% if partida.equipo_local.logo %}
-                                                <img src="{{ partida.equipo_local.logo }}" alt="Escudo de {{ partida.equipo_local.nombre }}">
+                                                <img src="{{ partida.equipo_local.logo.url }}" alt="Escudo de {{ partida.equipo_local.nombre }}">
                                             {% else %}
                                                 <img src="{% static 'img/Logo.png' %}" alt="Escudo predeterminado">
                                             {% endif %}
@@ -124,7 +124,7 @@
                                     <div class="match-team {% if partida.ganador_id == partida.equipo_visitante_id %}match-team--winner{% endif %}">
                                         {% if partida.equipo_visitante %}
                                             {% if partida.equipo_visitante.logo %}
-                                                <img src="{{ partida.equipo_visitante.logo }}" alt="Escudo de {{ partida.equipo_visitante.nombre }}">
+                                                <img src="{{ partida.equipo_visitante.logo.url }}" alt="Escudo de {{ partida.equipo_visitante.nombre }}">
                                             {% else %}
                                                 <img src="{% static 'img/Logo.png' %}" alt="Escudo predeterminado">
                                             {% endif %}

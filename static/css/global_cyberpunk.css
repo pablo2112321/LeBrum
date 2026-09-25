@@ -457,6 +457,46 @@
     color: var(--cyber-cyan);
 }
 
+.notification-badge {
+    background: var(--cyber-yellow);
+    border-color: var(--cyber-bg);
+    color: var(--cyber-bg);
+    box-shadow: 0 0 10px rgba(255, 230, 0, .7);
+}
+
+.notification-dropdown {
+    background: var(--cyber-panel);
+    border: 1px solid var(--cyber-cyan);
+    box-shadow: 0 0 20px rgba(0, 240, 255, .22);
+}
+
+.notification-header {
+    border-color: rgba(0, 240, 255, .25);
+}
+
+.notification-header h4 {
+    color: var(--cyber-text);
+    text-transform: uppercase;
+}
+
+.mark-read {
+    background: transparent;
+    border: 0;
+    color: var(--cyber-yellow);
+    font: inherit;
+    padding: 0;
+}
+
+.notification-item {
+    color: var(--cyber-text);
+    text-decoration: none;
+}
+
+.notification-item.unread {
+    background: rgba(255, 230, 0, .08);
+    border-left: 2px solid var(--cyber-yellow);
+}
+
 .notification-empty {
     color: var(--cyber-muted);
     font-size: .9rem;

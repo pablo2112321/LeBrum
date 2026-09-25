@@ -9,8 +9,13 @@ urlpatterns = [
     
     path('panel/', views.panel_control, name='panel_control'),
     path('perfil/', views.perfil_redirect, name='perfil'),
-    path('perfil/<str:nametag>/', views.PerfilDetalleView.as_view(), name='perfil_detalle'),
     path('perfil/editar/', views.editar_perfil, name='editar_perfil'),
+    path('perfil/<str:nametag>/', views.PerfilDetalleView.as_view(), name='perfil_detalle'),
     path('perfil-buscar/', views.buscar_jugador, name='buscar_jugador'),
+    path(
+        'notificaciones/marcar-leidas/',
+        views.MarcarNotificacionesLeidasView.as_view(),
+        name='marcar_notificaciones_leidas',
+    ),
     path('logout/', views.logout_usuario, name='logout'),
 ]

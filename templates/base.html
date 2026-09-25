@@ -302,21 +302,24 @@
                             {% endif %}
                         </div>
 
-                        <div class="notification-dropdown" id="notification-dropdown">
+                        <div class="notification-dropdown cyber-card" id="notification-dropdown">
                             <div class="notification-header">
                                 <h4>Notificaciones</h4>
-                                <span class="mark-read" id="mark-read-btn">Marcar leídas</span>
+                                <form method="post" action="{% url 'marcar_notificaciones_leidas' %}" id="mark-read-form">
+                                    {% csrf_token %}
+                                    <button type="submit" class="mark-read" id="mark-read-btn">Marcar leídas</button>
+                                </form>
                             </div>
                             <div class="notification-list">
                                 {% if notificaciones %}
                                     {% for notif in notificaciones %}
-                                        <div class="notification-item {% if not notif.leida %}unread{% endif %}">
+                                        <a href="{{ notif.url_destino|default:'#' }}" class="notification-item {% if not notif.leida %}unread{% endif %}">
                                             <i class="{{ notif.icono }} notification-icon"></i>
                                             <div class="notif-text">
-                                                <p>{{ notif.texto }}</p>
+                                                <p>{{ notif.mensaje }}</p>
                                                 <span class="time">Hace {{ notif.creada_el|timesince }}</span>
                                             </div>
-                                        </div>
+                                        </a>
                                     {% endfor %}
                                 {% else %}
                                     <div class="notification-empty">

@@ -281,11 +281,17 @@ class Notificacion(models.Model):
         on_delete=models.CASCADE,
         related_name='notificaciones'
     )
-    texto = models.CharField(max_length=255)
+    mensaje = models.CharField(max_length=255)
+    url_destino = models.CharField(max_length=255, blank=True, default='')
     icono = models.CharField(max_length=50, default='fas fa-bell')
     tipo = models.CharField(max_length=50, default='general')
     leida = models.BooleanField(default=False)
     creada_el = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Notificación para {self.usuario.username}: {self.texto[:30]}"
+        return f"Notificación para {self.usuario.username}: {self.mensaje[:30]}"
+
+    @property
+    def texto(self):
+        """Mantiene compatibilidad con las plantillas heredadas."""
+        return self.mensaje

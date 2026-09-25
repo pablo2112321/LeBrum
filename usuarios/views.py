@@ -1,16 +1,20 @@
+from typing import Any
+from datetime import timedelta
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
-from django.http import JsonResponse
+from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.utils import timezone
 from django.views.decorators.http import require_GET
-from django.views.generic import DetailView, ListView
+from django.views.generic import DetailView, ListView, View
 from torneos.models import RecompensaPartida
 from django.db.models import Q
 from .forms import EditarPerfilForm, LoadoutForm, RegistroUsuarioForm
-from .models import CuentaJuego, Usuario
+from .models import CuentaJuego, Notificacion, Usuario
 from torneos.models import Torneo
 import requests  # Para hacer peticiones a la API oficial
 
@@ -166,6 +170,28 @@ def ojo_de_halcon(request):
 def logout_usuario(request):
     logout(request)
     return redirect('login')
+
+
+class MarcarNotificacionesLeidasView(View):
+    """Marca como leídas las notificaciones del usuario autenticado."""
+
+    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        if not request.user.is_authenticated:
+            return JsonResponse({'status': 'error'}, status=403)
+        Notificacion.objects.filter(
+            usuario=request.user,
+            leida=False,
+        ).update(leida=True)
+        fecha_limite = timezone.now() - timedelta(days=7)
+        Notificacion.objects.filter(
+            usuario=request.user,
+            leida=True,
+            creada_el__lt=fecha_limite,
+        ).delete()
+        return JsonResponse({'status': 'success'})
+
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        return JsonResponse({'status': 'error'}, status=405)
 
 
 @login_required

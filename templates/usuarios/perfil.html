@@ -58,7 +58,7 @@
                 <div class="loadout-avatar-wrap">
                     <div class="loadout-avatar">
                         {% if request.user.avatar %}
-                            <img src="{{ request.user.avatar }}" alt="{{ request.user.username }}">
+                            <img src="{{ request.user.avatar.url }}" alt="{{ request.user.username }}">
                         {% else %}
                             <img src="{% static 'img/Usuario.jpg' %}" alt="{{ request.user.username }}">
                         {% endif %}

@@ -8,7 +8,7 @@ from django.db import transaction
 from django.db.models import F
 
 from equipos.models import Equipo
-from usuarios.models import Usuario
+from usuarios.models import Notificacion, Usuario
 
 from .models import Inscripcion, Partida, RecompensaPartida, Torneo
 
@@ -106,6 +106,15 @@ def _otorgar_recompensas_partida(
             derrotas=F('derrotas') + derrotas,
             puntos_xp=F('puntos_xp') + xp,
         )
+        if victorias:
+            Notificacion.objects.create(
+                usuario_id=usuario_id,
+                mensaje=(
+                    '¡Victoria confirmada! Has avanzado a la siguiente ronda.'
+                ),
+                url_destino=f'/torneos/partida/{partida.pk}/',
+                tipo='resultado',
+            )
 
 
 @transaction.atomic
