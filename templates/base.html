@@ -346,7 +346,7 @@
                             </div>
 
                             <div class="user-dropdown" id="user-dropdown">
-                                <a href="{% url 'perfil' %}"><i class="fas fa-id-badge"></i> Mi Perfil</a>
+                                <a href="{% url 'perfil_detalle' request.user.username %}"><i class="fas fa-id-badge"></i> Mi Perfil</a>
                                 {% if request.user.is_authenticated %}
                                     <a href="{% url 'mis_torneos' %}"><i class="fas fa-trophy"></i> Mis Torneos</a>
                                     {% if mi_equipo %}

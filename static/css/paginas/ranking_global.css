@@ -1,0 +1,130 @@
+.global-ranking {
+    color: var(--cyber-text);
+    margin: 0 auto;
+    max-width: 1180px;
+    padding: 32px;
+}
+
+.global-ranking-card {
+    padding: 28px;
+}
+
+.global-ranking-header {
+    align-items: end;
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.global-ranking-header h1 {
+    font-size: clamp(2rem, 5vw, 4rem);
+    letter-spacing: .08em;
+    margin: 8px 0;
+    text-transform: uppercase;
+}
+
+.global-ranking-header p {
+    color: var(--cyber-muted);
+    margin: 0;
+}
+
+.global-ranking-table-wrap {
+    overflow-x: auto;
+}
+
+.global-ranking-table {
+    border-collapse: collapse;
+    min-width: 720px;
+    width: 100%;
+}
+
+.global-ranking-table th {
+    border-bottom: 1px solid rgba(0, 240, 255, .4);
+    color: var(--cyber-muted);
+    font-size: .72rem;
+    letter-spacing: .1em;
+    padding: 14px;
+    text-align: left;
+}
+
+.global-ranking-row {
+    border-bottom: 1px solid rgba(160, 165, 181, .15);
+}
+
+.global-ranking-row td {
+    color: var(--cyber-muted);
+    padding: 14px;
+}
+
+.global-ranking-position {
+    color: var(--cyber-text) !important;
+    font-weight: 900;
+    width: 100px;
+}
+
+.global-ranking-player {
+    align-items: center;
+    color: var(--cyber-text);
+    display: inline-flex;
+    font-weight: 900;
+    gap: 12px;
+    text-decoration: none;
+}
+
+.global-ranking-player img {
+    background: var(--cyber-bg);
+    border: 1px solid var(--cyber-cyan);
+    height: 42px;
+    object-fit: cover;
+    width: 42px;
+}
+
+.global-ranking-wins,
+.global-ranking-xp {
+    color: var(--cyber-yellow) !important;
+    font-weight: 900;
+}
+
+.global-ranking-row--1 {
+    box-shadow: inset 4px 0 var(--cyber-yellow), 0 0 18px rgba(255, 230, 0, .12);
+}
+
+.global-ranking-row--1 .global-ranking-position,
+.global-ranking-row--1 .global-ranking-player {
+    color: var(--cyber-yellow) !important;
+}
+
+.global-ranking-row--2 {
+    box-shadow: inset 4px 0 var(--cyber-text);
+}
+
+.global-ranking-row--2 .global-ranking-position {
+    color: var(--cyber-text) !important;
+}
+
+.global-ranking-row--3 {
+    box-shadow: inset 4px 0 var(--cyber-magenta);
+}
+
+.global-ranking-row--3 .global-ranking-position,
+.global-ranking-row--3 .global-ranking-player {
+    color: var(--cyber-magenta) !important;
+}
+
+.global-ranking-empty {
+    color: var(--cyber-muted);
+    padding: 32px !important;
+    text-align: center;
+}
+
+@media (max-width: 720px) {
+    .global-ranking {
+        padding: 18px;
+    }
+
+    .global-ranking-header {
+        align-items: start;
+        flex-direction: column;
+    }
+}

@@ -19,7 +19,7 @@
             <div class="hud-piloto">
                 <div class="hud-avatar">
                     {% if user.avatar %}
-                        <img src="{{ user.avatar }}" alt="{{ user.username }}">
+                        <img src="{{ user.avatar.url }}" alt="{{ user.username }}">
                     {% else %}
                         <img src="{% static 'img/Usuario.jpg' %}" alt="{{ user.username }}">
                     {% endif %}

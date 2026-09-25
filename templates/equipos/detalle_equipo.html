@@ -136,7 +136,7 @@
 
                     <div class="eqd-agente-avatar">
                         {% if m.usuario.avatar %}
-                            <img src="{{ m.usuario.avatar }}" alt="{{ m.usuario.username }}">
+                            <img src="{{ m.usuario.avatar.url }}" alt="{{ m.usuario.username }}">
                         {% else %}
                             <img src="{% static 'img/Usuario.jpg' %}" alt="{{ m.usuario.username }}">
                         {% endif %}

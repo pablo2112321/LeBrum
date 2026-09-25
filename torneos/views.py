@@ -166,6 +166,24 @@ class SalaPartidaView(View):
         return self._render(request)
 
     def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        if request.POST.get('action') == 'disputar':
+            detalle = request.POST.get('detalle_disputa', '').strip()
+            if not detalle:
+                messages.error(request, 'Debes explicar brevemente el motivo de la disputa.')
+                return redirect('detalle_partida', partida_id=self.partida.pk)
+            if self.partida.estado == Partida.ESTADO_FINALIZADO:
+                messages.error(request, 'Una partida finalizada no puede abrir una disputa.')
+                return redirect('detalle_partida', partida_id=self.partida.pk)
+            self.partida.en_disputa = True
+            self.partida.detalle_disputa = detalle
+            self.partida.estado = Partida.ESTADO_EN_REVISION
+            self.partida.save(update_fields=['en_disputa', 'detalle_disputa', 'estado'])
+            messages.warning(request, 'Disputa abierta. El Ojo de Halcón revisará la evidencia.')
+            return redirect('detalle_partida', partida_id=self.partida.pk)
+
+        if self.partida.en_disputa:
+            messages.error(request, 'La partida está bloqueada mientras se revisa la disputa.')
+            return redirect('detalle_partida', partida_id=self.partida.pk)
         if self.partida.estado not in (
             Partida.ESTADO_PENDIENTE,
             Partida.ESTADO_JUGANDO,

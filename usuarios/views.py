@@ -6,8 +6,10 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
 from django.http import JsonResponse
 from django.views.decorators.http import require_GET
+from django.views.generic import DetailView, ListView
+from torneos.models import RecompensaPartida
 from django.db.models import Q
-from .forms import LoadoutForm, RegistroUsuarioForm
+from .forms import EditarPerfilForm, LoadoutForm, RegistroUsuarioForm
 from .models import CuentaJuego, Usuario
 from torneos.models import Torneo
 import requests  # Para hacer peticiones a la API oficial
@@ -172,18 +174,76 @@ def perfil_redirect(request):
     return redirect('perfil_detalle', nametag=request.user.username)
 
 
+class PerfilDetalleView(DetailView):
+    """Vista pública de la tarjeta competitiva de un jugador."""
+
+    model = Usuario
+    template_name = 'usuarios/perfil_jugador.html'
+    context_object_name = 'jugador'
+    slug_url_kwarg = 'nametag'
+    slug_field = 'username'
+
+    def get_queryset(self):
+        return Usuario.objects.prefetch_related('equipos_unidos__equipo')
+
+    def get_context_data(self, **kwargs):
+        contexto = super().get_context_data(**kwargs)
+        jugador = self.object
+        total_partidas = jugador.victorias + jugador.derrotas
+        contexto['winrate'] = (
+            round(jugador.victorias * 100 / total_partidas)
+            if total_partidas else 0
+        )
+        contexto['equipos_jugador'] = [
+            miembro.equipo
+            for miembro in jugador.equipos_unidos.select_related('equipo')
+        ]
+        contexto['historial_partidas'] = (
+            RecompensaPartida.objects.filter(usuario=jugador)
+            .select_related('partida__torneo__juego')
+            .order_by('-creada_el')[:10]
+        )
+        contexto['es_propietario'] = (
+            self.request.user.is_authenticated
+            and self.request.user.id == jugador.id
+        )
+        return contexto
+
+
+class RankingView(ListView):
+    """Muestra los cincuenta jugadores con mayor experiencia competitiva."""
+
+    model = Usuario
+    template_name = 'usuarios/ranking.html'
+    context_object_name = 'jugadores'
+
+    def get_queryset(self):
+        return Usuario.objects.order_by('-puntos_xp', '-victorias', 'username')[:50]
+
+
+@login_required
+def editar_perfil(request):
+    """Actualiza la identidad visual y competitiva del jugador autenticado."""
+    if request.method == 'POST':
+        form = EditarPerfilForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Perfil actualizado correctamente.')
+            return redirect('perfil_detalle', nametag=request.user.username)
+    else:
+        form = EditarPerfilForm(instance=request.user)
+    return render(request, 'usuarios/editar_perfil.html', {'form': form})
+
+
 def _fondo_css_slug(slug):
     """Valor CSS de background-image según el slug del fondo."""
-    from django.templatetags.static import static
-    galaxia = static('img/galaxia.jpg')
     fondos = {
-        'galaxia': f"url('{galaxia}')",
-        'carbono': "radial-gradient(circle at 12% 8%, rgba(236,0,140,0.28), transparent 42%), radial-gradient(circle at 88% 92%, rgba(0,229,255,0.22), transparent 48%), linear-gradient(160deg, #0a0a0e, #05050a)",
-        'neon-cyan': "radial-gradient(circle at 80% 8%, rgba(0,229,255,0.38), transparent 46%), radial-gradient(circle at 15% 95%, rgba(0,229,255,0.12), transparent 40%), linear-gradient(160deg, #02090f, #04141c)",
-        'magenta': "radial-gradient(circle at 18% 90%, rgba(236,0,140,0.42), transparent 52%), radial-gradient(circle at 85% 15%, rgba(236,0,140,0.16), transparent 40%), linear-gradient(160deg, #0f020a, #1a0412)",
-        'zona-roja': "radial-gradient(circle at 72% 18%, rgba(239,68,68,0.36), transparent 46%), radial-gradient(circle at 20% 90%, rgba(239,68,68,0.14), transparent 42%), linear-gradient(160deg, #0c0202, #1a0606)",
+        'carbono': "repeating-linear-gradient(135deg, rgba(255,255,255,0.03) 0 2px, transparent 2px 8px), linear-gradient(160deg, #0a0a0f, #12131a)",
+        'asfalto': "repeating-linear-gradient(0deg, rgba(0,240,255,0.04) 0 1px, transparent 1px 5px), #0a0a0f",
+        'rejilla-industrial': "linear-gradient(rgba(0,240,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(0,240,255,0.06) 1px, transparent 1px), #0a0a0f",
+        'scanlines': "repeating-linear-gradient(0deg, rgba(255,230,0,0.04) 0 1px, transparent 1px 4px), #0a0a0f",
     }
-    return fondos.get(slug, fondos['galaxia'])
+    return fondos.get(slug, fondos['carbono'])
 
 
 def _fondo_css(usuario):
@@ -247,16 +307,13 @@ def perfil_usuario(request, nametag):
 
 def _fondo_css_simple(slug):
     """Miniatura CSS para las tarjetas de selección del fondo."""
-    from django.templatetags.static import static
-    galaxia = static('img/galaxia.jpg')
     fondos = {
-        'galaxia': f"url('{galaxia}') center/cover",
-        'carbono': "linear-gradient(160deg, #14141c, #05050a)",
-        'neon-cyan': "linear-gradient(160deg, #02202e, #04141c)",
-        'magenta': "linear-gradient(160deg, #2a0520, #1a0412)",
-        'zona-roja': "linear-gradient(160deg, #2a0707, #1a0606)",
+        'carbono': "repeating-linear-gradient(135deg, rgba(255,255,255,0.03) 0 2px, transparent 2px 8px), #0a0a0f",
+        'asfalto': "repeating-linear-gradient(0deg, rgba(0,240,255,0.04) 0 1px, transparent 1px 5px), #0a0a0f",
+        'rejilla-industrial': "linear-gradient(rgba(0,240,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(0,240,255,0.06) 1px, transparent 1px), #0a0a0f",
+        'scanlines': "repeating-linear-gradient(0deg, rgba(255,230,0,0.04) 0 1px, transparent 1px 4px), #0a0a0f",
     }
-    return fondos.get(slug, fondos['galaxia'])
+    return fondos.get(slug, fondos['carbono'])
 
 
 @login_required

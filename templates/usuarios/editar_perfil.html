@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main class="player-profile">
+    <section class="cyber-card profile-edit-card">
+        <span class="cyber-kicker">CONFIGURACIÓN DE IDENTIDAD</span>
+        <h1>EDITAR PERFIL</h1>
+        <form method="post" enctype="multipart/form-data" class="profile-edit-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="cyber-btn-primary">GUARDAR CAMBIOS</button>
+        </form>
+    </section>
+</main>
+{% endblock %}

@@ -174,6 +174,25 @@
     animation: sala-blink 1.4s ease-in-out infinite;
 }
 
+.sala-disputa--admin-review {
+    border-color: var(--neon-magenta, #ff0055);
+    box-shadow: 0 0 30px rgba(255, 0, 85, .45);
+    font-size: 1.2rem;
+    min-height: 110px;
+}
+
+.sala-disputa--admin-review strong {
+    color: var(--neon-magenta, #ff0055);
+    display: block;
+    letter-spacing: .12em;
+}
+
+.sala-disputa--admin-review p {
+    color: var(--text-muted, #a0a5b5);
+    font-size: .85rem;
+    margin: 10px 0 0;
+}
+
 .sala-disputa i {
     font-size: 1.3rem;
     color: var(--sp-red);
@@ -239,6 +258,30 @@
 
 .sala-report-button {
     justify-self: start;
+}
+
+.sala-dispute-form {
+    border-top: 1px solid rgba(255, 0, 85, .25);
+    display: grid;
+    gap: 10px;
+    margin-top: 18px;
+    padding-top: 18px;
+}
+
+.sala-dispute-form label {
+    color: var(--text-muted, #a0a5b5);
+    font-size: .75rem;
+    font-weight: 900;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+}
+
+.sala-dispute-form textarea {
+    background: var(--cyber-bg, #0a0a0f);
+    border: 1px solid var(--neon-magenta, #ff0055);
+    color: var(--text-main, #fff);
+    padding: 12px;
+    resize: vertical;
 }
 
 .sala-final--champion {

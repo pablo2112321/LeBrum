@@ -5,10 +5,12 @@ import random
 from typing import Final
 
 from django.db import transaction
+from django.db.models import F
 
 from equipos.models import Equipo
+from usuarios.models import Usuario
 
-from .models import Inscripcion, Partida, Torneo
+from .models import Inscripcion, Partida, RecompensaPartida, Torneo
 
 
 _ESTADOS_CIERRE: Final[set[str]] = {
@@ -81,20 +83,72 @@ def generar_bracket(torneo: Torneo) -> list[Partida]:
     )
 
 
+def _otorgar_recompensas_partida(
+    partida: Partida,
+    equipo: Equipo,
+    *,
+    victorias: int = 0,
+    derrotas: int = 0,
+    xp: int = 0,
+) -> None:
+    """Registra y aplica la recompensa de cada jugador una sola vez."""
+    usuarios_ids = equipo.miembros.values_list('usuario_id', flat=True)
+    for usuario_id in usuarios_ids:
+        recompensa, creada = RecompensaPartida.objects.get_or_create(
+            partida=partida,
+            usuario_id=usuario_id,
+            defaults={'xp_otorgada': xp},
+        )
+        if not creada:
+            continue
+        Usuario.objects.filter(pk=usuario_id).update(
+            victorias=F('victorias') + victorias,
+            derrotas=F('derrotas') + derrotas,
+            puntos_xp=F('puntos_xp') + xp,
+        )
+
+
 @transaction.atomic
-def procesar_resultado(partida: Partida, equipo_ganador: Equipo) -> Partida | None:
+def procesar_resultado(
+    partida: Partida,
+    equipo_ganador: Equipo,
+    *,
+    force: bool = False,
+) -> Partida | None:
     """Finaliza una partida y coloca al ganador en la siguiente ronda."""
     partida = Partida.objects.select_for_update().select_related('torneo').get(pk=partida.pk)
     if partida.estado == Partida.ESTADO_FINALIZADO:
         raise ValueError('La partida ya fue finalizada.')
+    if partida.en_disputa and not force:
+        raise ValueError('La partida está en disputa y requiere intervención administrativa.')
     if equipo_ganador not in (partida.equipo_local, partida.equipo_visitante):
         raise ValueError('El equipo ganador debe participar en la partida.')
     if partida.equipo_local is None or partida.equipo_visitante is None:
         raise ValueError('No se puede finalizar una partida con equipos sin asignar.')
 
+    equipo_perdedor = (
+        partida.equipo_visitante
+        if equipo_ganador.pk == partida.equipo_local_id
+        else partida.equipo_local
+    )
     partida.estado = Partida.ESTADO_FINALIZADO
     partida.ganador = equipo_ganador
-    partida.save(update_fields=['estado', 'ganador'])
+    partida.en_disputa = False
+    partida.detalle_disputa = ''
+    partida.save(update_fields=['estado', 'ganador', 'en_disputa', 'detalle_disputa'])
+
+    _otorgar_recompensas_partida(
+        partida,
+        equipo_ganador,
+        victorias=1,
+        xp=100,
+    )
+    _otorgar_recompensas_partida(
+        partida,
+        equipo_perdedor,
+        derrotas=1,
+        xp=10,
+    )
 
     ronda_actual = int(partida.ronda or '1')
     partidas_primera_ronda = partida.torneo.partidas.filter(ronda='1').count()

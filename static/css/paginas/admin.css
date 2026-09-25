@@ -1,13 +1,13 @@
 /* ============================================================
-   ADMIN.CSS - OJO DE HALCÓN (PANEL ADMIN GALÁCTICO)
+   ADMIN.CSS - OJO DE HALCÓN (PANEL ADMIN INDUSTRIAL)
    ============================================================ */
 
 :root {
-    --halcon-purple: #c77dff;
-    --halcon-cyan: #48cae4;
-    --halcon-gold: #ffb703;
-    --halcon-text: #e6eef8;
-    --halcon-muted: #94a3b8;
+    --halcon-purple: #ff0055;
+    --halcon-cyan: #00f0ff;
+    --halcon-gold: #ffe600;
+    --halcon-text: #ffffff;
+    --halcon-muted: #a0a5b5;
 }
 
 .halcon-shell {
@@ -16,8 +16,8 @@
     margin: 0 -40px;
     padding: 36px 40px 60px;
     background:
-        linear-gradient(180deg, rgba(1, 6, 15, 0.55), rgba(3, 7, 15, 0.92)),
-        url('../img/galaxia.jpg') center/cover no-repeat fixed;
+        repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 5px),
+        #0a0a0f;
     color: var(--halcon-text);
     border-radius: 0 0 24px 24px;
 }
@@ -27,12 +27,9 @@
     position: absolute;
     inset: 0;
     background-image:
-        radial-gradient(1px 1px at 30px 40px, rgba(255, 255, 255, 0.9), transparent 100%),
-        radial-gradient(1.2px 1.2px at 130px 90px, rgba(199, 125, 255, 0.85), transparent 100%),
-        radial-gradient(1px 1px at 280px 30px, rgba(72, 202, 228, 0.85), transparent 100%),
-        radial-gradient(1px 1px at 90px 220px, rgba(255, 255, 255, 0.75), transparent 100%),
-        radial-gradient(1.4px 1.4px at 340px 200px, rgba(255, 255, 255, 0.9), transparent 100%),
-        radial-gradient(1px 1px at 200px 320px, rgba(199, 125, 255, 0.8), transparent 100%);
+        linear-gradient(rgba(0, 240, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 230, 0, 0.03) 1px, transparent 1px);
+    background-size: 48px 48px;
     background-size: 380px 380px;
     pointer-events: none;
     animation: halcon-twinkle 5s ease-in-out infinite;
@@ -158,7 +155,7 @@
 }
 
 .halcon-boton--gold {
-    background: linear-gradient(135deg, #ffb703, #fb8500);
+    background: var(--halcon-gold);
     color: #000;
     box-shadow: 0 6px 24px rgba(251, 133, 0, 0.25);
 }
@@ -171,12 +168,12 @@
 .halcon-boton--ghost {
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.15);
-    color: #e6eef8;
+    color: var(--halcon-text);
 }
 
 .halcon-boton--ghost:hover {
     border-color: rgba(72, 202, 228, 0.6);
-    color: #48cae4;
+    color: var(--halcon-cyan);
 }
 
 /* --- BANNER DE BIENVENIDA DEL CREADOR --- */
@@ -373,7 +370,7 @@
 .halcon-estado--finalizado {
     background: rgba(148, 163, 184, 0.14);
     border-color: rgba(148, 163, 184, 0.45);
-    color: #94a3b8;
+    color: var(--halcon-muted);
 }
 
 /* Contador de inscritos (barra de ocupación) */
@@ -396,7 +393,7 @@
     display: block;
     height: 100%;
     border-radius: 6px;
-    background: linear-gradient(90deg, #8b5cf6, #48cae4);
+    background: linear-gradient(90deg, var(--halcon-purple), var(--halcon-cyan));
     box-shadow: 0 0 8px rgba(72, 202, 228, 0.5);
 }
 
@@ -406,7 +403,7 @@
     white-space: nowrap;
 }
 
-/* Estado vacío: universo en paz */
+/* Estado vacío: arena despejada */
 .halcon-vacio {
     display: flex;
     flex-direction: column;

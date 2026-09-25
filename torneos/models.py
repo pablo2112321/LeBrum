@@ -333,6 +333,16 @@ class Partida(models.Model):
         verbose_name='Evidencia de victoria'
     )
 
+    en_disputa = models.BooleanField(
+        default=False,
+        verbose_name='En disputa'
+    )
+
+    detalle_disputa = models.TextField(
+        blank=True,
+        verbose_name='Detalle de la disputa'
+    )
+
     reporte_creado_el = models.DateTimeField(
         null=True,
         blank=True,
@@ -450,3 +460,41 @@ class Partida(models.Model):
                 name='torneo_ronda_numero_partida_unico',
             ),
         ]
+
+
+class RecompensaPartida(models.Model):
+    partida = models.ForeignKey(
+        Partida,
+        on_delete=models.CASCADE,
+        related_name='recompensas',
+        verbose_name='Partida',
+    )
+
+    usuario = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='recompensas_partida',
+        verbose_name='Jugador',
+    )
+
+    xp_otorgada = models.IntegerField(
+        verbose_name='XP otorgada',
+    )
+
+    creada_el = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Fecha de creación',
+    )
+
+    class Meta:
+        verbose_name = 'recompensa de partida'
+        verbose_name_plural = 'recompensas de partida'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['partida', 'usuario'],
+                name='recompensa_partida_usuario_unica',
+            ),
+        ]
+
+    def __str__(self):
+        return f'{self.usuario} - {self.partida} ({self.xp_otorgada} XP)'

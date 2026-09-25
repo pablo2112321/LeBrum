@@ -118,15 +118,26 @@ class PartidaAdmin(admin.ModelAdmin):
         'estado',
         'ganador',
     )
-    list_filter = ('torneo', 'estado', 'ronda')
+    list_filter = ('torneo', 'estado', 'ronda', 'en_disputa')
     search_fields = (
         'torneo__nombre',
         'equipo_local__nombre',
         'equipo_visitante__nombre',
     )
-    actions = ('declarar_ganador_local', 'declarar_ganador_visitante')
+    actions = (
+        'declarar_ganador_local',
+        'declarar_ganador_visitante',
+        'resolver_disputa_local',
+        'resolver_disputa_visitante',
+    )
 
-    def _declarar_ganador(self, request, queryset, equipo_field: str) -> None:
+    def _declarar_ganador(
+        self,
+        request,
+        queryset,
+        equipo_field: str,
+        force: bool = False,
+    ) -> None:
         procesadas = 0
         for partida in queryset.select_related(
             'equipo_local',
@@ -141,7 +152,7 @@ class PartidaAdmin(admin.ModelAdmin):
                 )
                 continue
             try:
-                services.procesar_resultado(partida, equipo_ganador)
+                services.procesar_resultado(partida, equipo_ganador, force=force)
                 procesadas += 1
             except ValueError as exc:
                 self.message_user(
@@ -163,6 +174,14 @@ class PartidaAdmin(admin.ModelAdmin):
     @admin.action(description='Declarar ganador al Visitante')
     def declarar_ganador_visitante(self, request, queryset):
         self._declarar_ganador(request, queryset, 'equipo_visitante')
+
+    @admin.action(description='Resolver Disputa: Forzar Ganador Local')
+    def resolver_disputa_local(self, request, queryset):
+        self._declarar_ganador(request, queryset, 'equipo_local', force=True)
+
+    @admin.action(description='Resolver Disputa: Forzar Ganador Visitante')
+    def resolver_disputa_visitante(self, request, queryset):
+        self._declarar_ganador(request, queryset, 'equipo_visitante', force=True)
 
 
 @admin.register(Inscripcion)

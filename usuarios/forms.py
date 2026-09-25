@@ -138,9 +138,30 @@ class LoadoutForm(forms.ModelForm):
                 'maxlength': max_len,
                 'autocomplete': 'off',
             })
-
-        # El estado de conexión es parte del HUD del agente
         self.fields['estado_conexion'].widget.attrs.update({'class': 'neo-input'})
+
+
+class EditarPerfilForm(forms.ModelForm):
+    """Permite editar la identidad pública básica del jugador."""
+
+    class Meta:
+        model = Usuario
+        fields = ('avatar', 'titulo_equipado', 'tag_jugador', 'riot_id', 'steam_id')
+        widgets = {
+            'avatar': forms.ClearableFileInput(attrs={
+                'class': 'neo-input',
+                'accept': 'image/*',
+            }),
+            'titulo_equipado': forms.TextInput(attrs={'class': 'neo-input'}),
+            'tag_jugador': forms.TextInput(attrs={'class': 'neo-input'}),
+            'riot_id': forms.TextInput(attrs={'class': 'neo-input'}),
+            'steam_id': forms.TextInput(attrs={'class': 'neo-input'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.help_text = ''
 
     def clean_riot_id(self):
         riot = (self.cleaned_data.get('riot_id') or '').strip()

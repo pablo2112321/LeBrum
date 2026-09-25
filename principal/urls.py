@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views # El punto significa "importa las vistas de esta misma carpeta"
+from usuarios import views as usuarios_views
 
 urlpatterns = [
     # Tu lobby actual
@@ -15,7 +16,7 @@ urlpatterns = [
     path('chat/', views.en_construccion, name='chat'),
     path('tienda/', views.en_construccion, name='tienda'),
     path('soporte/', views.en_construccion, name='soporte'),
-    path('ranking/', views.vista_ranking, name='ranking'),
+    path('ranking/', usuarios_views.RankingView.as_view(), name='ranking'),
     
     # Rutas de botones especiales (Hero Banner y Perfil)
     path('marcar-leidas/', views.marcar_notificaciones_leidas, name='marcar_leidas'),

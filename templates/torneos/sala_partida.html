@@ -98,7 +98,15 @@
         </section>
     {% endif %}
 
-    {% if partida.estado == 'FINALIZADO' and partida.ganador %}
+    {% if partida.en_disputa %}
+        <section class="sala-disputa sala-disputa--admin-review" role="alert">
+            <i class="fas fa-triangle-exclamation"></i>
+            <div>
+                <strong>PARTIDA EN REVISIÓN ADMINISTRATIVA</strong>
+                <p>{{ partida.detalle_disputa }}</p>
+            </div>
+        </section>
+    {% elif partida.estado == 'FINALIZADO' and partida.ganador %}
         <section class="sala-final sala-final--champion">
             <span class="sala-final-kicker">RESULTADO CONFIRMADO</span>
             <i class="fas fa-trophy"></i>
@@ -131,6 +139,16 @@
                     </label>
                     <button type="submit" class="cyber-btn-primary sala-report-button">
                         <i class="fas fa-skull"></i> REPORTAR VICTORIA
+                    </button>
+                </form>
+                <form method="post" action="{% url 'reportar_resultado' partida.id %}" class="sala-dispute-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="disputar">
+                    <label for="detalle-disputa">Motivo de la disputa</label>
+                    <textarea id="detalle-disputa" name="detalle_disputa" rows="3" required
+                              placeholder="Describe el incidente para el equipo arbitral"></textarea>
+                    <button type="submit" class="cyber-btn-danger">
+                        <i class="fas fa-triangle-exclamation"></i> ABRIR DISPUTA / LLAMAR ADMIN
                     </button>
                 </form>
             </section>

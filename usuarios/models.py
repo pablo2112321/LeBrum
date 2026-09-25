@@ -6,11 +6,10 @@ import re
 
 # Fondos de perfil seleccionables desde la Tienda (Slot "Fondo de Perfil")
 FONDOS_DISPONIBLES = [
-    ('galaxia', 'Galaxia DeLaBruma'),
     ('carbono', 'Carbono Neón'),
-    ('neon-cyan', 'Distrito Cian'),
-    ('magenta', 'Sector Magenta'),
-    ('zona-roja', 'Zona Roja'),
+    ('asfalto', 'Asfalto Industrial'),
+    ('rejilla-industrial', 'Rejilla Industrial'),
+    ('scanlines', 'Scanlines'),
 ]
 
 
@@ -96,11 +95,12 @@ class Usuario(AbstractUser):
     # ============================================================
     # URL del avatar del jugador. Si está vacío se usa la imagen
     # gamer genérica por defecto (img/Usuario.jpg).
-    avatar = models.URLField(
+    avatar = models.ImageField(
+        upload_to='avatares/',
         blank=True,
-        default='',
-        verbose_name='Avatar (URL)',
-        help_text='URL de la imagen de perfil. Déjala vacía para usar la imagen por defecto.'
+        null=True,
+        verbose_name='Avatar',
+        help_text='Imagen de perfil del jugador.'
     )
 
     # Título equipado por el jugador (Loadout DeLaBruma)
@@ -109,6 +109,16 @@ class Usuario(AbstractUser):
         blank=True,
         default='NOVATO DE LA BRUMA',
         verbose_name='Título Equipado'
+    )
+
+    victorias = models.PositiveIntegerField(
+        default=0,
+        verbose_name='Victorias'
+    )
+
+    derrotas = models.PositiveIntegerField(
+        default=0,
+        verbose_name='Derrotas'
     )
 
     # Estado equipado (frase visible bajo el nombre en el perfil)
@@ -137,7 +147,7 @@ class Usuario(AbstractUser):
     fondo_perfil = models.CharField(
         max_length=30,
         choices=FONDOS_DISPONIBLES,
-        default='galaxia',
+        default='carbono',
         verbose_name='Fondo de Perfil'
     )
 

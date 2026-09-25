@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css_extra %}
+<link rel="stylesheet" href="{% static 'css/paginas/ranking_global.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="global-ranking">
+    <section class="cyber-card global-ranking-card">
+        <header class="global-ranking-header">
+            <div>
+                <span class="cyber-kicker">CLASIFICACIÓN GLOBAL // TOP 50</span>
+                <h1>LEADERBOARD DE LA ARENA</h1>
+                <p>Los agentes con mayor experiencia y victorias de LeBrum.</p>
+            </div>
+            <span class="cyber-badge-cyan">{{ jugadores|length }} JUGADORES</span>
+        </header>
+
+        <div class="global-ranking-table-wrap">
+            <table class="global-ranking-table">
+                <thead>
+                    <tr>
+                        <th>POSICIÓN</th>
+                        <th>JUGADOR</th>
+                        <th>RANGO</th>
+                        <th>VICTORIAS</th>
+                        <th>XP</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for jugador in jugadores %}
+                        <tr class="global-ranking-row global-ranking-row--{{ forloop.counter }}">
+                            <td class="global-ranking-position">#{{ forloop.counter }}</td>
+                            <td>
+                                <a href="{% url 'perfil_detalle' jugador.username %}" class="global-ranking-player">
+                                    {% if jugador.avatar %}
+                                        <img src="{{ jugador.avatar.url }}" alt="Avatar de {{ jugador.username }}">
+                                    {% else %}
+                                        <img src="{% static 'img/Usuario.jpg' %}" alt="Avatar de {{ jugador.username }}">
+                                    {% endif %}
+                                    <span>{{ jugador.username }}</span>
+                                </a>
+                            </td>
+                            <td><span class="cyber-badge-cyan">{{ jugador.rango }}</span></td>
+                            <td class="global-ranking-wins">{{ jugador.victorias }}</td>
+                            <td class="global-ranking-xp">{{ jugador.puntos_xp }} XP</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="5" class="global-ranking-empty">No hay jugadores registrados en la clasificación.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+{% endblock %}

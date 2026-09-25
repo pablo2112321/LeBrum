@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css_extra %}
+<link rel="stylesheet" href="{% static 'css/paginas/perfil_jugador.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="player-profile">
+    <section class="player-card cyber-card">
+        <div class="player-card-identity">
+            <div class="player-avatar">
+                {% if jugador.avatar %}
+                    <img src="{{ jugador.avatar.url }}" alt="Avatar de {{ jugador.username }}">
+                {% else %}
+                    <img src="{% static 'img/Usuario.jpg' %}" alt="Avatar de {{ jugador.username }}">
+                {% endif %}
+            </div>
+            <div>
+                <span class="cyber-kicker">IDENTIDAD COMPETITIVA</span>
+                <h1>{{ jugador.username }}</h1>
+                <p class="player-title">{{ jugador.titulo_equipado }}</p>
+                <span class="cyber-badge-cyan">{{ jugador.rango }}</span>
+            </div>
+            {% if es_propietario %}
+                <a href="{% url 'editar_perfil' %}" class="cyber-btn-primary">EDITAR PERFIL</a>
+            {% endif %}
+        </div>
+
+        <div class="player-xp">
+            <div class="player-xp-heading">
+                <span>XP DE COMBATE</span>
+                <strong>{{ jugador.puntos_xp }} XP</strong>
+            </div>
+            <div class="player-xp-track">
+                <div class="player-xp-fill
+                    {% if jugador.progreso_rango >= 90 %}player-xp-fill--90
+                    {% elif jugador.progreso_rango >= 80 %}player-xp-fill--80
+                    {% elif jugador.progreso_rango >= 70 %}player-xp-fill--70
+                    {% elif jugador.progreso_rango >= 60 %}player-xp-fill--60
+                    {% elif jugador.progreso_rango >= 50 %}player-xp-fill--50
+                    {% elif jugador.progreso_rango >= 40 %}player-xp-fill--40
+                    {% elif jugador.progreso_rango >= 30 %}player-xp-fill--30
+                    {% elif jugador.progreso_rango >= 20 %}player-xp-fill--20
+                    {% elif jugador.progreso_rango >= 10 %}player-xp-fill--10
+                    {% else %}player-xp-fill--0{% endif %}"></div>
+            </div>
+            <span class="player-xp-next">
+                {% if jugador.rango_siguiente %}Siguiente rango: {{ jugador.rango_siguiente }}{% else %}RANGO MÁXIMO{% endif %}
+            </span>
+        </div>
+    </section>
+
+    <section class="player-stat-grid">
+        <article class="cyber-card player-stat">
+            <span>VICTORIAS</span>
+            <strong>{{ jugador.victorias }}</strong>
+        </article>
+        <article class="cyber-card player-stat">
+            <span>DERROTAS</span>
+            <strong>{{ jugador.derrotas }}</strong>
+        </article>
+        <article class="cyber-card player-stat">
+            <span>WINRATE</span>
+            <strong>{{ winrate }}%</strong>
+        </article>
+    </section>
+
+    <section class="cyber-card player-teams">
+        <div class="cyber-section-heading">
+            <div>
+                <span class="cyber-kicker">AFILIACIONES</span>
+                <h2>EQUIPOS DEL JUGADOR</h2>
+            </div>
+        </div>
+        <div class="player-team-grid">
+            {% for equipo in equipos_jugador %}
+                <a href="{% url 'detalle_equipo' equipo.id %}" class="player-team">
+                    {% if equipo.logo %}
+                        <img src="{{ equipo.logo.url }}" alt="Escudo de {{ equipo.nombre }}">
+                    {% else %}
+                        <img src="{% static 'img/Logo.png' %}" alt="Escudo predeterminado">
+                    {% endif %}
+                    <span>{{ equipo.nombre }}</span>
+                </a>
+            {% empty %}
+                <p class="cyber-empty">Este jugador todavía no pertenece a un escuadrón.</p>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="cyber-card player-history">
+        <div class="cyber-section-heading">
+            <div>
+                <span class="cyber-kicker">TRAZABILIDAD COMPETITIVA</span>
+                <h2>REGISTRO DE OPERACIONES</h2>
+            </div>
+            <span class="cyber-badge-cyan">ÚLTIMAS 10</span>
+        </div>
+        <div class="player-history-list">
+            {% for recompensa in historial_partidas %}
+                <article class="player-history-row">
+                    <div class="player-history-event">
+                        <strong>{{ recompensa.partida.torneo.nombre }}</strong>
+                        <span>{{ recompensa.partida.torneo.juego.nombre }}</span>
+                    </div>
+                    <div class="player-history-result
+                        {% if recompensa.xp_otorgada > 10 %}player-history-result--win{% else %}player-history-result--loss{% endif %}">
+                        {% if recompensa.xp_otorgada > 10 %}VICTORIA{% else %}DERROTA{% endif %}
+                    </div>
+                    <strong class="player-history-xp">+{{ recompensa.xp_otorgada }} XP</strong>
+                    <time datetime="{{ recompensa.creada_el|date:'c' }}">
+                        {{ recompensa.creada_el|date:'d/m/Y H:i' }}
+                    </time>
+                </article>
+            {% empty %}
+                <p class="cyber-empty">Todavía no hay operaciones competitivas registradas.</p>
+            {% endfor %}
+        </div>
+    </section>
+</main>
+{% endblock %}

@@ -1,14 +1,14 @@
 :root {
-    --bg-base: #07060c;
-    --bg-overlay: rgba(2, 6, 18, 0.88);
-    --glass-bg: rgba(15, 12, 29, 0.75);
-    --glass-border: rgba(138, 43, 226, 0.5);
-    --neon-purple: #8b5cf6;
-    --neon-cyan: #4fd7ff;
-    --neon-blue: #60a5fa;
-    --text-main: #e6eef8;
-    --text-muted: #99a3b0;
-    --shadow-glow: 0 0 48px rgba(75, 0, 130, 0.18);
+    --bg-base: #0a0a0f;
+    --bg-overlay: rgba(10, 10, 15, 0.92);
+    --glass-bg: #12131a;
+    --glass-border: rgba(0, 240, 255, 0.45);
+    --neon-yellow: #ffe600;
+    --neon-magenta: #ff0055;
+    --neon-cyan: #00f0ff;
+    --text-main: #ffffff;
+    --text-muted: #a0a5b5;
+    --shadow-glow: 0 0 15px rgba(0, 240, 255, 0.4);
 }
 
 * {
@@ -19,8 +19,7 @@
 
 html, body {
     min-height: 100%;
-    background: linear-gradient(180deg, rgba(1,6,15,0.85), rgba(3,7,15,0.9)),
-                url('../img/galaxia.jpg') center/cover no-repeat fixed;
+    background: #0a0a0f;
     color: var(--text-main);
     font-family: 'Inter', 'Segoe UI', sans-serif;
 }
@@ -277,7 +276,7 @@ input.neo-input {
 }
 
 .auth-footer a {
-    color: #8b5cf6;
+    color: var(--neon-cyan);
     text-decoration: none;
     font-weight: 700;
 }
@@ -314,7 +313,7 @@ input.neo-input {
 }
 
 .auth-footer a {
-    color: #8b5cf6;
+    color: var(--neon-cyan);
     text-decoration: none;
     font-weight: 700;
 }
@@ -355,111 +354,19 @@ input.neo-input {
 }
 
 /* ============================================================
-   ESTRELLAS ANIMADAS - ESPACIO PROFUNDO
+   TEXTURA INDUSTRIAL DE SCANLINES
    ============================================================ */
-.starfield {
+.industrial-grid {
     position: fixed;
     inset: 0;
     z-index: 0;
     overflow: hidden;
     pointer-events: none;
-}
-
-/* Capa de estrellas pequeñas */
-.starfield::before,
-.starfield::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-repeat: repeat;
-    animation: twinkle 5s ease-in-out infinite;
-}
-
-.starfield::before {
     background-image:
-        radial-gradient(1.2px 1.2px at 25px 45px, rgba(255, 255, 255, 0.95), transparent 100%),
-        radial-gradient(1px 1px at 110px 20px, rgba(255, 255, 255, 0.75), transparent 100%),
-        radial-gradient(1.5px 1.5px at 190px 130px, rgba(199, 125, 255, 0.9), transparent 100%),
-        radial-gradient(1px 1px at 280px 80px, rgba(255, 255, 255, 0.85), transparent 100%),
-        radial-gradient(1.2px 1.2px at 350px 200px, rgba(72, 202, 228, 0.9), transparent 100%),
-        radial-gradient(1px 1px at 60px 220px, rgba(255, 255, 255, 0.7), transparent 100%),
-        radial-gradient(1.4px 1.4px at 150px 300px, rgba(255, 255, 255, 0.9), transparent 100%),
-        radial-gradient(1px 1px at 320px 330px, rgba(255, 255, 255, 0.8), transparent 100%);
-    background-size: 400px 400px;
-    animation-delay: 0s;
-}
-
-.starfield::after {
-    background-image:
-        radial-gradient(1.6px 1.6px at 90px 60px, rgba(255, 255, 255, 0.95), transparent 100%),
-        radial-gradient(1.1px 1.1px at 220px 160px, rgba(255, 255, 255, 0.8), transparent 100%),
-        radial-gradient(1.8px 1.8px at 330px 40px, rgba(255, 255, 255, 0.9), transparent 100%),
-        radial-gradient(1.2px 1.2px at 40px 140px, rgba(199, 125, 255, 0.85), transparent 100%),
-        radial-gradient(1.1px 1.1px at 300px 260px, rgba(255, 255, 255, 0.75), transparent 100%),
-        radial-gradient(1.5px 1.5px at 160px 380px, rgba(72, 202, 228, 0.85), transparent 100%),
-        radial-gradient(1px 1px at 260px 120px, rgba(255, 255, 255, 0.7), transparent 100%),
-        radial-gradient(1.2px 1.2px at 120px 250px, rgba(255, 255, 255, 0.9), transparent 100%);
-    background-size: 400px 400px;
-    animation-delay: 2.5s;
-}
-
-@keyframes twinkle {
-    0%, 100% { opacity: 0.45; }
-    50% { opacity: 1; }
-}
-
-/* Nebulosa de color ambiental */
-.nebula-glow {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    background:
-        radial-gradient(circle at 15% 25%, rgba(157, 78, 237, 0.14), transparent 30%),
-        radial-gradient(circle at 85% 20%, rgba(72, 202, 228, 0.12), transparent 28%),
-        radial-gradient(circle at 60% 85%, rgba(255, 0, 150, 0.07), transparent 32%);
-    animation: nebulosa-flotar 12s ease-in-out infinite alternate;
-}
-
-@keyframes nebulosa-flotar {
-    from { transform: scale(1) translateY(0); opacity: 0.85; }
-    to { transform: scale(1.06) translateY(-14px); opacity: 1; }
-}
-
-/* Estrella fugaz periódica */
-.meteor {
-    position: fixed;
-    z-index: 0;
-    pointer-events: none;
-    width: 2px;
-    height: 2px;
-    border-radius: 50%;
-    background: #ffffff;
-    box-shadow: 0 0 6px 1px rgba(199, 125, 255, 0.7);
-    opacity: 0;
-    animation: estrella-fugaz 9s linear infinite;
-}
-
-.meteor::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 0;
-    width: 90px;
-    height: 1px;
-    transform: translateY(-50%);
-    background: linear-gradient(90deg, rgba(255, 255, 255, 0.9), transparent);
-}
-
-.meteor:nth-child(2) { animation-delay: 3s; top: 12%; left: 80%; }
-.meteor:nth-child(3) { animation-delay: 6s; top: 55%; left: 30%; }
-.meteor:nth-child(1) { top: 25%; left: 65%; }
-
-@keyframes estrella-fugaz {
-    0% { transform: translate(0, 0) rotate(-35deg); opacity: 0; }
-    3% { opacity: 1; }
-    12% { transform: translate(-260px, 180px) rotate(-35deg); opacity: 0; }
-    100% { transform: translate(-260px, 180px) rotate(-35deg); opacity: 0; }
+        linear-gradient(rgba(0, 240, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 230, 0, 0.03) 1px, transparent 1px),
+        repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 5px);
+    background-size: 48px 48px, 48px 48px, 100% 5px;
 }
 
 /* ============================================================
@@ -537,7 +444,7 @@ input.neo-input {
     font-weight: 800;
     letter-spacing: 0.6px;
     text-decoration: none;
-    color: #e6eef8;
+    color: var(--text-main);
     background: rgba(15, 12, 29, 0.6);
     border: 1px solid rgba(79, 173, 255, 0.45);
     backdrop-filter: blur(10px);
