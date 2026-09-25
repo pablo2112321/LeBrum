@@ -33,7 +33,7 @@
         </div>
     {% else %}
         <div class="eq-comando">
-            <form method="post" novalidate>
+            <form method="post" enctype="multipart/form-data" novalidate class="cyber-card">
                 {% csrf_token %}
 
                 {% if form.non_field_errors %}
@@ -58,9 +58,6 @@
 
                 <div class="eq-grid-campos">
                     <div class="eq-campo">
-                        <label for="{{ form.torneo.id_for_label }}"><i class="fas fa-trophy"></i> {{ form.torneo.label }}</label>
-                        {{ form.torneo }}
-                        {% if form.torneo.errors %}<span class="eq-campo-error">{{ form.torneo.errors.0 }}</span>{% endif %}
                     </div>
 
                     <div class="eq-campo">
@@ -84,8 +81,8 @@
                     </div>
                 </div>
 
-                <button type="submit" class="eq-btn eq-btn--forjar">
-                    <i class="fas fa-hammer"></i> FORJAR CREW
+                <button type="submit" class="cyber-btn-primary">
+                    <i class="fas fa-hammer"></i> FORMAR ESCUADRÓN
                 </button>
             </form>
         </div>

@@ -42,7 +42,17 @@
                     <i class="fas fa-skull"></i> {{ rango_jugador|default:user.rango }}
                 </span>
                 <div class="hud-rango-bar">
-                    <span class="hud-rango-fill" style="width: {{ progreso_rango|default:user.progreso_rango }}%;"></span>
+                    <span class="hud-rango-fill
+                        {% if progreso_rango >= 90 %}hud-rango-fill--90
+                        {% elif progreso_rango >= 80 %}hud-rango-fill--80
+                        {% elif progreso_rango >= 70 %}hud-rango-fill--70
+                        {% elif progreso_rango >= 60 %}hud-rango-fill--60
+                        {% elif progreso_rango >= 50 %}hud-rango-fill--50
+                        {% elif progreso_rango >= 40 %}hud-rango-fill--40
+                        {% elif progreso_rango >= 30 %}hud-rango-fill--30
+                        {% elif progreso_rango >= 20 %}hud-rango-fill--20
+                        {% elif progreso_rango >= 10 %}hud-rango-fill--10
+                        {% else %}hud-rango-fill--0{% endif %}"></span>
                 </div>
                 <div class="hud-xp-line">
                     <span class="hud-xp-pts"><i class="fas fa-bolt"></i> {{ xp_jugador|default:user.puntos_xp }} XP</span>
@@ -115,10 +125,45 @@
     </div>
     {% endif %}
 
+    <section class="cyber-tournaments" aria-labelledby="torneos-title">
+        <div class="cyber-section-heading">
+            <div>
+                <span class="cyber-kicker">ARENA ONLINE</span>
+                <h2 id="torneos-title">TORNEOS DISPONIBLES</h2>
+            </div>
+            <span class="cyber-counter">{{ torneos|length }} activos</span>
+        </div>
+        <div class="cyber-tournament-grid">
+            {% for torneo in torneos %}
+                <article class="cyber-card cyber-tournament-card">
+                    <div class="cyber-game-cover">
+                        {% if torneo.juego.imagen_portada %}
+                            <img src="{{ torneo.juego.imagen_portada.url }}" alt="{{ torneo.juego.nombre }}">
+                        {% else %}
+                            <span>{{ torneo.juego.nombre }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="cyber-tournament-body">
+                        <span class="cyber-badge-cyan cyber-status cyber-status--{{ torneo.estado|lower|cut:' ' }}">{{ torneo.get_estado_display }}</span>
+                        <h3>{{ torneo.nombre }}</h3>
+                        <p>{{ torneo.juego.nombre }} · {{ torneo.modalidad }}</p>
+                        <div class="cyber-tournament-meta">
+                            <span>CUOTA</span>
+                            <strong>{{ torneo.cuota }} fichas</strong>
+                        </div>
+                        <a href="{% url 'detalle_torneo' torneo.id %}" class="cyber-btn-primary cyber-card-action">VER TORNEO</a>
+                    </div>
+                </article>
+            {% empty %}
+                <p class="cyber-empty">No hay torneos activos en este momento.</p>
+            {% endfor %}
+        </div>
+    </section>
+
     <div class="top-players-section">
         <div class="section-title-box">
             <div>
-                <h3 class="section-title"><i class="fas fa-crown" style="color: #ffd700;"></i> TOP 3 CLASIFICACIÓN GLOBAL</h3>
+                <h3 class="section-title"><i class="fas fa-crown section-icon-gold"></i> TOP 3 CLASIFICACIÓN GLOBAL</h3>
                 <p class="section-subtitle">Los líderes del ranking en tiempo real</p>
             </div>
             <a href="{% url 'ranking' %}" class="view-all-link">Ver Tabla Completa <i class="fas fa-arrow-right"></i></a>
@@ -147,9 +192,9 @@
                         <h4 class="player-gamertag">{{ jugador.username }}</h4>
                         <span class="player-game-tag">
                             {% if forloop.counter == 1 %}
-                                <i class="fas fa-fire" style="color: #ff8c00;"></i> Imbatible
+                                <i class="fas fa-fire section-icon-orange"></i> Imbatible
                             {% else %}
-                                <i class="fas fa-gamepad" style="color: #48cae4;"></i> Pro Gamer
+                                <i class="fas fa-gamepad section-icon-cyan"></i> Pro Gamer
                             {% endif %}
                         </span>
                     </div>

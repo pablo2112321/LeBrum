@@ -16,7 +16,8 @@ class Videojuego(models.Model):
         verbose_name='Género'
     )
 
-    imagen_portada = models.URLField(
+    imagen_portada = models.ImageField(
+        upload_to='videojuegos/',
         blank=True,
         null=True,
         verbose_name='Imagen de portada'
@@ -25,18 +26,26 @@ class Videojuego(models.Model):
     def __str__(self):
         return self.nombre
 
+    class Meta:
+        verbose_name = 'videojuego'
+        verbose_name_plural = 'videojuegos'
+
 
 class Torneo(models.Model):
     ESTADO_ABIERTO = 'Abierto'
     ESTADO_LLENO = 'Lleno'
+    ESTADO_CERRADO = 'Cerrado'
     ESTADO_EN_CURSO = 'En Curso'
     ESTADO_FINALIZADO = 'Finalizado'
+    ESTADO_CANCELADO = 'Cancelado'
 
     ESTADOS = [
         (ESTADO_ABIERTO, 'Abierto para inscripciones'),
         (ESTADO_LLENO, 'Lleno / En espera'),
+        (ESTADO_CERRADO, 'Cerrado'),
         (ESTADO_EN_CURSO, 'En curso'),
         (ESTADO_FINALIZADO, 'Finalizado'),
+        (ESTADO_CANCELADO, 'Cancelado'),
     ]
 
     MODOS = [
@@ -63,11 +72,11 @@ class Torneo(models.Model):
         verbose_name='Descripción del torneo'
     )
 
-    cuota_inscripcion = models.DecimalField(
+    cuota = models.DecimalField(
         max_digits=10,
         decimal_places=2,
         default=0.00,
-        verbose_name='Cuota de inscripción en fichas'
+        verbose_name='Cuota del torneo'
     )
 
     modalidad = models.CharField(
@@ -105,7 +114,7 @@ class Torneo(models.Model):
 
     @property
     def inscripciones_completadas(self):
-        return self.inscripciones.filter(estado_pago='Completado')
+        return self.inscripciones.filter(estado_pago=Inscripcion.ESTADO_PAGADO)
 
     @property
     def plazas_ocupadas(self):
@@ -134,18 +143,26 @@ class Torneo(models.Model):
             return False
         if self.plazas_ocupadas >= self.cupo_maximo:
             return False
-        if equipo.torneo != self:
-            return False
         if equipo.modo != self.modalidad:
+            return False
+        if self.inscripciones.filter(equipo=equipo).exists():
             return False
         return True
 
+    class Meta:
+        verbose_name = 'torneo'
+        verbose_name_plural = 'torneos'
+
 
 class Inscripcion(models.Model):
+    ESTADO_PENDIENTE = 'Pendiente'
+    ESTADO_PAGADO = 'Pagado'
+    ESTADO_RECHAZADO = 'Rechazado'
+
     ESTADOS_PAGO = [
-        ('Pendiente', 'Pendiente'),
-        ('Completado', 'Completado'),
-        ('Fallido', 'Fallido'),
+        (ESTADO_PENDIENTE, 'Pendiente'),
+        (ESTADO_PAGADO, 'Pagado'),
+        (ESTADO_RECHAZADO, 'Rechazado'),
     ]
 
     torneo = models.ForeignKey(
@@ -189,18 +206,18 @@ class Inscripcion(models.Model):
     )
 
     def pagar_inscripcion(self, usuario):
-        if self.estado_pago == 'Completado':
+        if self.estado_pago == self.ESTADO_PAGADO:
             return
 
-        if usuario.saldo_fichas < self.torneo.cuota_inscripcion:
+        if usuario.saldo_fichas < self.torneo.cuota:
             raise ValueError('Saldo insuficiente en fichas LeBrum para completar la inscripción.')
 
         if not self.torneo.puede_inscribir_equipo(self.equipo):
             raise ValueError('El equipo no puede inscribirse en este torneo.')
 
-        self.fichas_usadas = int(self.torneo.cuota_inscripcion)
+        self.fichas_usadas = int(self.torneo.cuota)
         self.pagador = usuario
-        self.estado_pago = 'Completado'
+        self.estado_pago = self.ESTADO_PAGADO
 
         usuario.saldo_fichas -= self.fichas_usadas
         if usuario.saldo_fichas < 0:
@@ -212,11 +229,10 @@ class Inscripcion(models.Model):
 
     class Meta:
         unique_together = ('torneo', 'equipo')
+        verbose_name = 'inscripción'
+        verbose_name_plural = 'inscripciones'
 
     def save(self, *args, **kwargs):
-        if self.equipo.torneo != self.torneo:
-            raise ValueError('El equipo inscrito debe pertenecer al mismo torneo.')
-
         super().save(*args, **kwargs)
         self.torneo.actualizar_estado_capacidad()
 
@@ -234,11 +250,12 @@ class Partida(models.Model):
     ESTADO_JUGANDO = 'JUGANDO'
     ESTADO_EN_REVISION = 'EN REVISION'
     ESTADO_FINALIZADO = 'FINALIZADO'
+    ESTADO_DISPUTA = ESTADO_EN_REVISION
 
     ESTADOS_PARTIDA = [
         (ESTADO_PENDIENTE, 'Pendiente'),
-        (ESTADO_JUGANDO, 'Jugando'),
-        (ESTADO_EN_REVISION, 'En Revisión'),
+        (ESTADO_JUGANDO, 'En Curso'),
+        (ESTADO_EN_REVISION, 'Disputa'),
         (ESTADO_FINALIZADO, 'Finalizada'),
     ]
 
@@ -259,18 +276,22 @@ class Partida(models.Model):
         verbose_name='Torneo'
     )
 
-    equipo_a = models.ForeignKey(
+    equipo_local = models.ForeignKey(
         'equipos.Equipo',
         on_delete=models.RESTRICT,
-        related_name='partidas_como_a',
-        verbose_name='Equipo A'
+        related_name='partidas_como_local',
+        blank=True,
+        null=True,
+        verbose_name='Equipo local'
     )
 
-    equipo_b = models.ForeignKey(
+    equipo_visitante = models.ForeignKey(
         'equipos.Equipo',
         on_delete=models.RESTRICT,
-        related_name='partidas_como_b',
-        verbose_name='Equipo B'
+        related_name='partidas_como_visitante',
+        blank=True,
+        null=True,
+        verbose_name='Equipo visitante'
     )
 
     estado = models.CharField(
@@ -289,20 +310,20 @@ class Partida(models.Model):
         verbose_name='Equipo ganador'
     )
 
-    reporte_equipo_a = models.CharField(
+    reporte_equipo_local = models.CharField(
         max_length=10,
         choices=REPORTES,
         null=True,
         blank=True,
-        verbose_name='Reporte del equipo A'
+        verbose_name='Reporte del equipo local'
     )
 
-    reporte_equipo_b = models.CharField(
+    reporte_equipo_visitante = models.CharField(
         max_length=10,
         choices=REPORTES,
         null=True,
         blank=True,
-        verbose_name='Reporte del equipo B'
+        verbose_name='Reporte del equipo visitante'
     )
 
     evidencia_victoria = models.ImageField(
@@ -325,6 +346,12 @@ class Partida(models.Model):
         verbose_name='Ronda'
     )
 
+    numero_partida = models.PositiveIntegerField(
+        default=1,
+        verbose_name='Número de partida',
+        help_text='Posición de la partida dentro de su ronda.',
+    )
+
     fecha_hora_programada = models.DateTimeField(
         blank=True,
         null=True,
@@ -339,7 +366,9 @@ class Partida(models.Model):
 
     @property
     def enfrentamiento(self):
-        return f"{self.equipo_a.nombre} vs {self.equipo_b.nombre}"
+        local = self.equipo_local.nombre if self.equipo_local else 'Por definir'
+        visitante = self.equipo_visitante.nombre if self.equipo_visitante else 'Por definir'
+        return f"{local} vs {visitante}"
 
     def aplicar_reporte(self, equipo, resultado, evidencia=None):
         if self.estado == self.ESTADO_FINALIZADO:
@@ -348,10 +377,10 @@ class Partida(models.Model):
         if resultado not in dict(self.REPORTES):
             raise ValueError('Resultado de reporte inválido.')
 
-        if equipo == self.equipo_a:
-            self.reporte_equipo_a = resultado
-        elif equipo == self.equipo_b:
-            self.reporte_equipo_b = resultado
+        if equipo == self.equipo_local:
+            self.reporte_equipo_local = resultado
+        elif equipo == self.equipo_visitante:
+            self.reporte_equipo_visitante = resultado
         else:
             raise ValueError('El equipo no participa en esta partida.')
 
@@ -365,14 +394,14 @@ class Partida(models.Model):
         self._resolver_automaticamente()
 
     def _resolver_automaticamente(self):
-        reporte_a = self.reporte_equipo_a
-        reporte_b = self.reporte_equipo_b
+        reporte_a = self.reporte_equipo_local
+        reporte_b = self.reporte_equipo_visitante
 
         if reporte_a == self.REPORTE_GANADOR and reporte_b == self.REPORTE_PERDEDOR:
-            self.ganador = self.equipo_a
+            self.ganador = self.equipo_local
             self.estado = self.ESTADO_FINALIZADO
         elif reporte_a == self.REPORTE_PERDEDOR and reporte_b == self.REPORTE_GANADOR:
-            self.ganador = self.equipo_b
+            self.ganador = self.equipo_visitante
             self.estado = self.ESTADO_FINALIZADO
         elif reporte_a == self.REPORTE_GANADOR and reporte_b == self.REPORTE_GANADOR:
             self.ganador = None
@@ -393,8 +422,8 @@ class Partida(models.Model):
         if self.estado in (self.ESTADO_FINALIZADO, self.ESTADO_EN_REVISION):
             return False
 
-        reporte_a = self.reporte_equipo_a
-        reporte_b = self.reporte_equipo_b
+        reporte_a = self.reporte_equipo_local
+        reporte_b = self.reporte_equipo_visitante
         reclamo_sin_confirmar = (
             (reporte_a == self.REPORTE_GANADOR and reporte_b is None) or
             (reporte_b == self.REPORTE_GANADOR and reporte_a is None)
@@ -410,4 +439,14 @@ class Partida(models.Model):
         return False
 
     def __str__(self):
-        return f"{self.equipo_a.nombre} vs {self.equipo_b.nombre} - {self.ronda or 'Sin ronda definida'}"
+        return f"{self.enfrentamiento} - {self.ronda or 'Sin ronda definida'}"
+
+    class Meta:
+        verbose_name = 'partida'
+        verbose_name_plural = 'partidas'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['torneo', 'ronda', 'numero_partida'],
+                name='torneo_ronda_numero_partida_unico',
+            ),
+        ]

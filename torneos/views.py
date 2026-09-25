@@ -1,8 +1,249 @@
+from collections import OrderedDict
+from typing import Any
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db.models import Prefetch
+from django.core.exceptions import PermissionDenied
+from django.http import HttpRequest, HttpResponse
+from django.views.generic import DetailView, ListView, View
 from .models import Torneo, Inscripcion, Partida
-from .forms import InscripcionForm
+from .forms import InscripcionForm, ResultadoPartidaForm
+from .services import procesar_inscripcion, procesar_resultado
+
+
+class TorneoDetailView(DetailView):
+    """Presenta la ficha pública de un torneo y sus participantes."""
+
+    model = Torneo
+    template_name = 'torneos/detalle_torneo.html'
+    context_object_name = 'torneo'
+    pk_url_kwarg = 'torneo_id'
+
+    def get_queryset(self):
+        return Torneo.objects.select_related('juego').prefetch_related(
+            'inscripciones__equipo',
+            'partidas__equipo_local',
+            'partidas__equipo_visitante',
+            'partidas__ganador',
+        )
+
+    def get_context_data(self, **kwargs):
+        contexto = super().get_context_data(**kwargs)
+        contexto['inscripciones'] = self.object.inscripciones_completadas.select_related(
+            'equipo',
+            'pagador',
+        )
+        contexto['partidas'] = self.object.partidas.select_related(
+            'equipo_local',
+            'equipo_visitante',
+            'ganador',
+        ).order_by('ronda', 'numero_partida')
+        contexto['bracket_rondas'] = self._obtener_bracket()
+        contexto['form_inscripcion'] = InscripcionForm(
+            user=self.request.user if self.request.user.is_authenticated else None,
+            torneo=self.object,
+        )
+        contexto['equipos_disponibles'] = (
+            contexto['form_inscripcion'].fields['equipo'].queryset.exists()
+        )
+        return contexto
+
+    def _obtener_bracket(self) -> list[dict[str, Any]]:
+        """Agrupa las partidas del torneo en columnas ordenadas del bracket."""
+        if self.object.estado not in (
+            Torneo.ESTADO_EN_CURSO,
+            Torneo.ESTADO_FINALIZADO,
+        ):
+            return []
+
+        partidas = list(
+            self.object.partidas.select_related(
+                'equipo_local',
+                'equipo_visitante',
+                'ganador',
+            ).order_by('numero_partida')
+        )
+        if not partidas:
+            return []
+
+        rondas = OrderedDict()
+        partidas_ordenadas = sorted(
+            partidas,
+            key=lambda partida: (
+                int(partida.ronda) if (partida.ronda or '').isdigit() else 0,
+                partida.numero_partida,
+            ),
+        )
+        for partida in partidas_ordenadas:
+            clave_ronda = partida.ronda or '1'
+            rondas.setdefault(clave_ronda, []).append(partida)
+
+        total_rondas = len(rondas)
+        nombres_ronda = {
+            total_rondas: 'FINAL',
+            total_rondas - 1: 'SEMIFINALES',
+            total_rondas - 2: 'CUARTOS DE FINAL',
+        }
+
+        bracket = []
+        for posicion, (clave_ronda, partidas_ronda) in enumerate(rondas.items(), start=1):
+            bracket.append({
+                'clave': clave_ronda,
+                'nombre': nombres_ronda.get(posicion, f'RONDA {clave_ronda}'),
+                'partidas': partidas_ronda,
+            })
+        return bracket
+
+
+class MisTorneosView(ListView):
+    """Muestra las inscripciones y la próxima partida del jugador."""
+
+    template_name = 'torneos/mis_torneos.html'
+    context_object_name = 'inscripciones'
+
+    def get_queryset(self) -> Any:
+        partidas = Partida.objects.filter(
+            estado__in=(
+                Partida.ESTADO_PENDIENTE,
+                Partida.ESTADO_JUGANDO,
+                Partida.ESTADO_EN_REVISION,
+            ),
+        ).select_related(
+            'torneo',
+            'equipo_local',
+            'equipo_visitante',
+        ).order_by('fecha_hora_programada', 'id')
+        return Inscripcion.objects.filter(
+            equipo__capitan=self.request.user,
+        ).select_related(
+            'torneo',
+            'equipo',
+        ).prefetch_related(
+            Prefetch('equipo__partidas_como_local', queryset=partidas, to_attr='partidas_pendientes'),
+            Prefetch('equipo__partidas_como_visitante', queryset=partidas, to_attr='partidas_pendientes_visitante'),
+        ).order_by('-creado_el')
+
+    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> Any:
+        if not request.user.is_authenticated:
+            return redirect('login')
+        return super().dispatch(request, *args, **kwargs)
+
+
+class SalaPartidaView(View):
+    """Expone la sala únicamente a los capitanes de los equipos enfrentados."""
+
+    template_name = 'torneos/sala_partida.html'
+
+    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        if not request.user.is_authenticated:
+            return redirect('login')
+
+        self.partida = get_object_or_404(
+            Partida.objects.select_related(
+                'torneo',
+                'equipo_local__capitan',
+                'equipo_visitante__capitan',
+                'ganador',
+            ).filter(
+                equipo_local__isnull=False,
+                equipo_visitante__isnull=False,
+            ),
+            pk=kwargs['partida_id'],
+        )
+        if not self._es_capitan(request):
+            raise PermissionDenied('Solo los capitanes de esta partida pueden acceder a la sala.')
+        return super().dispatch(request, *args, **kwargs)
+
+    def _es_capitan(self, request: HttpRequest) -> bool:
+        return request.user.id in {
+            self.partida.equipo_local.capitan_id,
+            self.partida.equipo_visitante.capitan_id,
+        }
+
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        return self._render(request)
+
+    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        if self.partida.estado not in (
+            Partida.ESTADO_PENDIENTE,
+            Partida.ESTADO_JUGANDO,
+        ):
+            messages.error(request, 'Esta partida no admite nuevos reportes.')
+            return redirect('detalle_partida', partida_id=self.partida.pk)
+
+        form = ResultadoPartidaForm(
+            request.POST,
+            request.FILES,
+            partida=self.partida,
+        )
+        if not form.is_valid():
+            return self._render(request, form)
+
+        equipo_ganador = (
+            self.partida.equipo_local
+            if int(form.cleaned_data['ganador']) == self.partida.equipo_local_id
+            else self.partida.equipo_visitante
+        )
+        self.partida.evidencia_victoria = form.cleaned_data['captura_evidencia']
+        self.partida.save(update_fields=['evidencia_victoria'])
+        try:
+            siguiente = procesar_resultado(self.partida, equipo_ganador)
+        except ValueError as exc:
+            messages.error(request, str(exc))
+            return redirect('detalle_partida', partida_id=self.partida.pk)
+
+        if siguiente is None:
+            messages.success(request, f'Victoria registrada. {equipo_ganador.nombre} ganó el torneo.')
+        else:
+            messages.success(request, f'Victoria registrada. {equipo_ganador.nombre} avanza a la siguiente ronda.')
+        return redirect('detalle_partida', partida_id=self.partida.pk)
+
+    def _render(
+        self,
+        request: HttpRequest,
+        form: ResultadoPartidaForm | None = None,
+    ) -> HttpResponse:
+        self.partida.refresh_from_db()
+        contexto = {
+            'partida': self.partida,
+            'form_resultado': form or ResultadoPartidaForm(partida=self.partida),
+            'es_capitan_a': request.user.id == self.partida.equipo_local.capitan_id,
+            'es_capitan_b': request.user.id == self.partida.equipo_visitante.capitan_id,
+        }
+        return render(request, self.template_name, contexto)
+
+
+@login_required
+def inscribir_equipo(request: HttpRequest, torneo_id: int) -> HttpResponse:
+    """Procesa la inscripción de un equipo mediante el servicio de dominio."""
+    if request.method != 'POST':
+        return redirect('detalle_torneo', torneo_id=torneo_id)
+
+    torneo = get_object_or_404(Torneo, pk=torneo_id)
+    form = InscripcionForm(request.POST, user=request.user, torneo=torneo)
+    if not form.is_valid():
+        for error in form.non_field_errors():
+            messages.error(request, error)
+        for errors in form.errors.values():
+            for error in errors:
+                messages.error(request, error)
+        return redirect('detalle_torneo', torneo_id=torneo.pk)
+
+    try:
+        inscripcion = procesar_inscripcion(torneo, form.cleaned_data['equipo'])
+    except ValueError as exc:
+        messages.error(request, str(exc))
+    else:
+        if inscripcion.estado_pago == Inscripcion.ESTADO_PAGADO:
+            messages.success(request, 'Equipo inscrito correctamente. El pago fue confirmado.')
+        else:
+            messages.warning(
+                request,
+                'Inscripción creada. Queda pendiente de aprobación manual del pago.',
+            )
+    return redirect('detalle_torneo', torneo_id=torneo.pk)
 
 
 def listar_torneos(request):
@@ -33,7 +274,7 @@ def detalle_torneo(request, torneo_id):
         form = InscripcionForm(user=request.user if request.user.is_authenticated else None, torneo=torneo)
 
     inscripciones = torneo.inscripciones_completadas.select_related('equipo', 'pagador')
-    partidas = torneo.partidas.select_related('equipo_a', 'equipo_b', 'ganador').order_by('id')
+    partidas = torneo.partidas.select_related('equipo_local', 'equipo_visitante', 'ganador').order_by('id')
     return render(request, 'torneos/detalle_torneo.html', {
         'torneo': torneo,
         'form': form,
@@ -44,67 +285,11 @@ def detalle_torneo(request, torneo_id):
 
 
 def detalle_partida(request, partida_id):
-    partida = get_object_or_404(
-        Partida.objects.select_related('torneo', 'equipo_a', 'equipo_b', 'ganador'),
-        pk=partida_id,
-    )
-    partida.revisar_vencimientos()
-    partida.refresh_from_db()
-
-    return render(request, 'torneos/sala_partida.html', {
-        'partida': partida,
-        'es_capitan_a': partida.equipo_a.capitan_id == request.user.id,
-        'es_capitan_b': partida.equipo_b.capitan_id == request.user.id,
-    })
+    """Compatibilidad con el nombre histórico de la ruta de la sala."""
+    return SalaPartidaView.as_view()(request, partida_id=partida_id)
 
 
 @login_required
 def reportar_resultado(request, partida_id):
-    partida = get_object_or_404(Partida, pk=partida_id)
-
-    if request.method != 'POST':
-        return redirect('detalle_partida', partida_id=partida.pk)
-
-    resultado = request.POST.get('resultado', '')
-    if resultado not in dict(partida.REPORTES):
-        messages.error(request, 'Resultado de reporte inválido.')
-        return redirect('detalle_partida', partida_id=partida.pk)
-
-    if partida.estado == partida.ESTADO_FINALIZADO:
-        messages.error(request, 'Esta partida ya fue finalizada.')
-        return redirect('detalle_partida', partida_id=partida.pk)
-
-    if partida.equipo_a.capitan_id == request.user.id:
-        equipo = partida.equipo_a
-    elif partida.equipo_b.capitan_id == request.user.id:
-        equipo = partida.equipo_b
-    else:
-        messages.error(request, 'Solo el capitán de un equipo participante puede reportar el resultado.')
-        return redirect('detalle_partida', partida_id=partida.pk)
-
-    evidencia = request.FILES.get('evidencia_victoria')
-    if resultado == partida.REPORTE_GANADOR and evidencia is None:
-        messages.error(
-            request,
-            'Para reclamar la victoria es obligatorio adjuntar una captura como evidencia.'
-        )
-        return redirect('detalle_partida', partida_id=partida.pk)
-
-    try:
-        partida.aplicar_reporte(equipo, resultado, evidencia=evidencia)
-    except ValueError as exc:
-        messages.error(request, str(exc))
-        return redirect('detalle_partida', partida_id=partida.pk)
-
-    partida.refresh_from_db()
-    if partida.estado == partida.ESTADO_FINALIZADO:
-        messages.success(request, f'Reporte registrado. ¡{partida.ganador.nombre} gana la partida!')
-    elif partida.estado == partida.ESTADO_EN_REVISION:
-        messages.warning(
-            request,
-            'Reporte registrado. Disputa activa: los jueces de la crew revisarán la evidencia.'
-        )
-    else:
-        messages.success(request, 'Reporte registrado. Esperando la confirmación del equipo rival...')
-
-    return redirect('detalle_partida', partida_id=partida.pk)
+    """Redirige el endpoint histórico al flujo seguro de la sala."""
+    return SalaPartidaView.as_view()(request, partida_id=partida_id)

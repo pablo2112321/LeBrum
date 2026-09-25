@@ -1,0 +1,242 @@
+:root {
+    --cyber-bg: #0a0a0f;
+    --cyber-card: #12131a;
+    --cyber-card-alt: #191b25;
+    --cyber-white: #ffffff;
+    --cyber-muted: #a0a5b5;
+    --cyber-yellow: #ffe600;
+    --cyber-magenta: #ff0055;
+    --cyber-cyan: #00f0ff;
+    --cyber-line: #303341;
+    --cyber-cut: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%);
+}
+
+html,
+body {
+    background: var(--cyber-bg);
+    color: var(--cyber-white);
+}
+
+body,
+body.login {
+    background-color: var(--cyber-bg);
+    background-image: repeating-linear-gradient(
+        0deg,
+        rgba(255, 255, 255, 0.025) 0,
+        rgba(255, 255, 255, 0.025) 1px,
+        transparent 1px,
+        transparent 4px
+    );
+    color: var(--cyber-white);
+}
+
+#header {
+    background: var(--cyber-card);
+    border-bottom: 2px solid var(--cyber-yellow);
+    box-shadow: 0 0 24px rgba(255, 230, 0, 0.28);
+}
+
+#branding h1,
+#branding h1 a,
+#header a:link,
+#header a:visited {
+    color: var(--cyber-white);
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+#branding h1 a:hover {
+    color: var(--cyber-yellow);
+}
+
+#content,
+#content-main,
+#content-related {
+    background: transparent;
+}
+
+#content {
+    padding: 24px;
+}
+
+.module,
+.inline-group,
+.dashboard .module,
+.cyber-card {
+    background: var(--cyber-card);
+    border: 1px solid var(--cyber-line);
+    clip-path: var(--cyber-cut);
+    box-shadow: 8px 8px 0 rgba(255, 0, 85, 0.2), 0 0 22px rgba(0, 240, 255, 0.12);
+    overflow: hidden;
+}
+
+.cyber-admin-dashboard {
+    display: grid;
+    gap: 24px;
+}
+
+.cyber-admin-dashboard h2 {
+    color: var(--cyber-yellow);
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.cyber-stat-grid {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.cyber-stat {
+    padding: 22px;
+}
+
+.cyber-stat-label {
+    color: var(--cyber-muted);
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.cyber-stat strong {
+    color: var(--cyber-cyan);
+    display: block;
+    font-size: 2.5rem;
+    line-height: 1;
+    margin-top: 12px;
+    text-shadow: 0 0 14px rgba(0, 240, 255, 0.5);
+}
+
+.cyber-bracket-monitor {
+    background: var(--cyber-card);
+    clip-path: var(--cyber-cut);
+    padding: 20px;
+}
+
+.cyber-bracket-monitor table {
+    width: 100%;
+}
+
+@media (max-width: 800px) {
+    .cyber-stat-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.module h2,
+.module caption,
+.inline-group h2 {
+    background: var(--cyber-card-alt);
+    border-bottom: 2px solid var(--cyber-magenta);
+    color: var(--cyber-yellow);
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+table {
+    background: var(--cyber-card);
+    color: var(--cyber-white);
+    border-color: var(--cyber-line);
+}
+
+thead th,
+thead th a {
+    background: var(--cyber-card-alt);
+    color: var(--cyber-cyan);
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+tr:nth-child(even),
+tr.row2 {
+    background: rgba(255, 255, 255, 0.025);
+}
+
+tr:hover,
+tr.selected {
+    background: rgba(0, 240, 255, 0.1);
+}
+
+td,
+th {
+    border-color: var(--cyber-line);
+}
+
+a:link,
+a:visited {
+    color: var(--cyber-cyan);
+    transition: color 120ms ease, text-shadow 120ms ease, transform 120ms ease;
+}
+
+a:hover {
+    color: var(--cyber-yellow);
+    text-shadow: 2px 0 var(--cyber-magenta), -2px 0 var(--cyber-cyan);
+}
+
+input,
+textarea,
+select,
+.selector select {
+    background: #0d0e14;
+    border: 1px solid var(--cyber-line);
+    border-radius: 0;
+    color: var(--cyber-white);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: var(--cyber-cyan);
+    box-shadow: 0 0 10px rgba(0, 240, 255, 0.35);
+    outline: none;
+}
+
+.button,
+input[type="submit"],
+input[type="button"],
+button,
+a.button,
+.cyber-button {
+    background: var(--cyber-yellow);
+    border: 1px solid var(--cyber-yellow);
+    border-radius: 0;
+    clip-path: var(--cyber-cut);
+    color: #0a0a0f;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: background 120ms ease, box-shadow 120ms ease, color 120ms ease;
+}
+
+.button:hover,
+input[type="submit"]:hover,
+input[type="button"]:hover,
+button:hover,
+a.button:hover,
+.cyber-button:hover {
+    background: var(--cyber-cyan);
+    box-shadow: 7px 0 0 var(--cyber-magenta), -7px 0 0 var(--cyber-yellow);
+    color: #0a0a0f;
+}
+
+.deletelink,
+.messagelist .error,
+.errornote {
+    border-color: var(--cyber-magenta);
+    color: var(--cyber-magenta);
+}
+
+.messagelist .success {
+    background: rgba(0, 240, 255, 0.12);
+    color: var(--cyber-cyan);
+}
+
+.messagelist .error,
+.errornote {
+    background: rgba(255, 0, 85, 0.14);
+}

@@ -10,15 +10,15 @@
 {% with eq=equipo %}
 <div class="eqd">
 
-    <section class="eqd-banner {% if not eq.banner %}eqd-banner--default{% endif %}"
-             {% if eq.banner %}style="background-image: url('{{ eq.banner }}');"{% endif %}>
+    <section class="eqd-banner {% if not eq.banner %}eqd-banner--default{% else %}eqd-banner--has-banner{% endif %}">
+        {% if eq.banner %}<img class="eqd-banner-image" src="{{ eq.banner }}" alt="Banner de {{ eq.nombre }}">{% endif %}
         <div class="eqd-banner-scrim"></div>
         <div class="eqd-banner-inner">
             <a href="{% url 'equipos' %}" class="eqd-back"><i class="fas fa-arrow-left"></i> Sector Crews</a>
 
             <div class="eqd-logo">
                 {% if eq.logo %}
-                    <img src="{{ eq.logo }}" alt="{{ eq.nombre }}">
+                    <img src="{{ eq.logo.url }}" alt="{{ eq.nombre }}">
                 {% else %}
                     <i class="fas fa-shield-halved"></i>
                 {% endif %}
@@ -30,7 +30,7 @@
                     <span class="eqd-tag">{{ eq.tag|default:'[SIN TAG]' }}</span>
                     <span class="eqd-modo">{{ eq.modo }}</span>
                 </div>
-                <span class="eqd-torneo"><i class="fas fa-trophy"></i> {{ eq.torneo.nombre }}</span>
+                <span class="eqd-torneo"><i class="fas fa-gamepad"></i> {{ eq.get_modo_display }}</span>
             </div>
         </div>
     </section>
@@ -91,13 +91,14 @@
             </h3>
 
             <div class="eqd-invitar">
-                <label for="eqd-invite-link"><i class="fas fa-link"></i> Link de invitación</label>
+                <label for="eqd-recruit-username"><i class="fas fa-user-plus"></i> Reclutar Jugador</label>
                 <div class="eqd-invitar-fila">
-                    <input type="text" id="eqd-invite-link" readonly
-                           value="{{ request.build_absolute_uri }}" aria-label="Link de invitación">
-                    <button type="button" class="eqd-btn eqd-btn--copiar" id="eqd-copiar">
-                        <i class="fas fa-copy"></i> Copiar
-                    </button>
+                    <form method="post" action="{% url 'agregar_jugador' eq.id %}">
+                        {% csrf_token %}
+                        <input type="text" id="eqd-recruit-username" name="username"
+                               placeholder="username del jugador" required>
+                        <button type="submit" class="cyber-btn-primary">RECLUTAR</button>
+                    </form>
                 </div>
             </div>
 

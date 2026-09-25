@@ -148,7 +148,7 @@ def login_view(request):
 @login_required
 def redireccionar_segun_rol(request):
     if request.user.is_staff or request.user.is_superuser:
-        return redirect('ojo_de_halcon')
+        return redirect('admin:index')
     return redirect('perfil_detalle', nametag=request.user.username)
 
 

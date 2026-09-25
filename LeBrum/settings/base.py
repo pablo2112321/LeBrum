@@ -1,9 +1,13 @@
+import os
 from pathlib import Path
 
-# Corregimos el BASE_DIR agregando un .parent extra porque ahora estamos dentro de la carpeta 'settings'
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
+from dotenv import load_dotenv
 
-SECRET_KEY = 'django-insecure-e-&2us*dyg_5s2$fpb9qk#$^$oo=981zsp%#2)^(h)rrn4x3%0'
+# Carga las variables locales sin sobrescribir variables definidas por el entorno.
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+load_dotenv(BASE_DIR / '.env')
+
+SECRET_KEY = os.getenv('SECRET_KEY', '')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -13,7 +17,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    #Apps
+    # Apps
     'usuarios',
     'equipos',
     'torneos',
@@ -44,20 +48,37 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'torneos.context_processors.admin_overview',
+                'equipos.context_processors.jugador_equipo',
             ],
         },
     },
 ]
 
 WSGI_APPLICATION = 'LeBrum.wsgi.application'
+ASGI_APPLICATION = 'LeBrum.asgi.application'
 
-AUTH_PASSWORD_VALIDATORS = []
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
 
 LANGUAGE_CODE = 'es-es' # Cambiado a español
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
@@ -71,3 +92,7 @@ AUTH_USER_MODEL = 'usuarios.Usuario'
 LOGIN_REDIRECT_URL = 'redireccionar_segun_rol'
 LOGOUT_REDIRECT_URL = 'login'
 LOGIN_URL = 'login'
+
+RIOT_API_KEY = os.getenv('RIOT_API_KEY', '')
+STEAM_API_KEY = os.getenv('STEAM_API_KEY', '')
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', '')

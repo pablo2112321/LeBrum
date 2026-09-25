@@ -1,0 +1,489 @@
+:root {
+    --cyber-bg: #0a0a0f;
+    --cyber-panel: #12131a;
+    --cyber-panel-alt: #191b25;
+    --cyber-yellow: #ffe600;
+    --cyber-cyan: #00f0ff;
+    --cyber-magenta: #ff0055;
+    --cyber-text: #ffffff;
+    --cyber-muted: #a0a5b5;
+    --bg-card: var(--cyber-panel);
+    --text-muted: var(--cyber-muted);
+    --cyber-cut: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%);
+}
+
+.cyber-tournaments,
+.cyber-tournament-detail {
+    background: var(--cyber-bg);
+    color: var(--cyber-text);
+    padding: 32px;
+}
+
+.cyber-section-heading {
+    align-items: end;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.cyber-kicker {
+    color: var(--cyber-cyan);
+    font-size: .75rem;
+    font-weight: 900;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+}
+
+.cyber-section-heading h2,
+.cyber-detail-copy h1,
+.cyber-detail-panel h2 {
+    font-weight: 900;
+    letter-spacing: .06em;
+    margin: 6px 0 0;
+    text-transform: uppercase;
+}
+
+.cyber-counter {
+    color: var(--cyber-yellow);
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.cyber-tournament-grid {
+    display: grid;
+    gap: 22px;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.cyber-tournament-card,
+.cyber-card,
+.cyber-detail-hero,
+.cyber-detail-panel {
+    background: var(--cyber-panel);
+    border: 1px solid rgba(0, 240, 255, .3);
+    clip-path: var(--cyber-cut);
+    box-shadow: 8px 8px 0 rgba(255, 0, 85, .2), 0 0 24px rgba(0, 240, 255, .1);
+}
+
+.cyber-game-cover {
+    align-items: center;
+    background: var(--cyber-panel-alt);
+    color: var(--cyber-muted);
+    display: flex;
+    height: 150px;
+    justify-content: center;
+    overflow: hidden;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.cyber-game-cover img,
+.cyber-detail-game img {
+    height: 100%;
+    object-fit: cover;
+    width: 100%;
+}
+
+.cyber-tournament-body {
+    padding: 20px;
+}
+
+.cyber-status {
+    color: var(--cyber-magenta);
+    font-size: .75rem;
+    font-weight: 900;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+}
+
+.cyber-status--abierto,
+.cyber-status--encurso {
+    color: var(--cyber-cyan);
+}
+
+.cyber-tournament-body h3 {
+    margin: 10px 0 4px;
+}
+
+.cyber-tournament-body p,
+.cyber-detail-copy p,
+.cyber-team-row span,
+.cyber-empty {
+    color: var(--cyber-muted);
+}
+
+.cyber-tournament-meta,
+.cyber-detail-stats {
+    display: flex;
+    gap: 16px;
+    justify-content: space-between;
+    margin: 18px 0;
+}
+
+.cyber-tournament-meta span,
+.cyber-detail-stats span {
+    color: var(--cyber-muted);
+    font-size: .72rem;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.cyber-tournament-meta strong,
+.cyber-detail-stats strong {
+    color: var(--cyber-yellow);
+    display: block;
+    margin-top: 5px;
+}
+
+.cyber-card-action,
+.cyber-primary-button,
+.cyber-btn-primary {
+    background: var(--cyber-yellow);
+    border: 0;
+    clip-path: var(--cyber-cut);
+    color: var(--cyber-bg);
+    display: inline-block;
+    font-weight: 900;
+    letter-spacing: .08em;
+    padding: 12px 16px;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.cyber-card-action:hover,
+.cyber-primary-button:hover,
+.cyber-btn-primary:hover {
+    background: var(--cyber-cyan);
+    color: var(--cyber-bg);
+}
+
+.cyber-detail-hero {
+    display: grid;
+    gap: 28px;
+    grid-template-columns: minmax(180px, 280px) 1fr;
+    margin-bottom: 28px;
+    padding: 28px;
+}
+
+.cyber-detail-game {
+    align-items: center;
+    background: var(--cyber-panel-alt);
+    display: flex;
+    min-height: 220px;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.cyber-detail-copy h1 {
+    font-size: clamp(2rem, 5vw, 4.5rem);
+}
+
+.cyber-detail-panel {
+    margin-top: 28px;
+    padding: 28px;
+}
+
+.cyber-team-list,
+.cyber-match-list {
+    display: grid;
+    gap: 10px;
+}
+
+.cyber-team-row,
+.cyber-match-row {
+    align-items: center;
+    background: var(--cyber-panel-alt);
+    border-left: 3px solid var(--cyber-cyan);
+    display: flex;
+    gap: 16px;
+    justify-content: space-between;
+    padding: 14px 16px;
+}
+
+.cyber-team-row img {
+    height: 42px;
+    object-fit: contain;
+    width: 42px;
+}
+
+.cyber-team-row h3 {
+    margin: 0;
+}
+
+.cyber-team-row strong,
+.cyber-match-row em {
+    color: var(--cyber-yellow);
+    font-style: normal;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.cyber-primary-button {
+    cursor: pointer;
+    font-size: 1rem;
+    margin-top: 22px;
+}
+
+.cyber-registration-form {
+    display: grid;
+    gap: 10px;
+    margin-top: 22px;
+    max-width: 420px;
+}
+
+.cyber-registration-form label {
+    color: var(--cyber-muted);
+    font-size: .75rem;
+    font-weight: 900;
+    letter-spacing: .1em;
+}
+
+.cyber-registration-form select {
+    background: var(--cyber-bg);
+    border: 1px solid var(--cyber-cyan);
+    color: var(--cyber-text);
+    padding: 12px;
+}
+
+.cyber-registration-list {
+    display: grid;
+    gap: 16px;
+}
+
+.cyber-registration-card {
+    align-items: center;
+    display: grid;
+    gap: 18px;
+    grid-template-columns: minmax(0, 1fr) minmax(180px, .7fr) auto;
+    padding: 20px;
+}
+
+.cyber-registration-card h2 {
+    margin: 6px 0;
+}
+
+.cyber-registration-card p,
+.cyber-registration-status span {
+    color: var(--cyber-muted);
+}
+
+.cyber-registration-status {
+    display: grid;
+    gap: 6px;
+}
+
+.cyber-registration-status strong {
+    color: var(--cyber-yellow);
+    text-transform: uppercase;
+}
+
+.cyber-link {
+    color: var(--cyber-cyan);
+    font-size: .75rem;
+    font-weight: 900;
+    letter-spacing: .08em;
+    text-decoration: none;
+}
+
+.cyber-bracket-panel {
+    overflow: hidden;
+}
+
+.bracket-container {
+    align-items: stretch;
+    display: flex;
+    gap: 28px;
+    overflow-x: auto;
+    padding: 10px 4px 24px;
+}
+
+.bracket-round {
+    display: flex;
+    flex: 1 0 230px;
+    flex-direction: column;
+    min-width: 230px;
+}
+
+.bracket-round-title {
+    border-bottom: 2px solid var(--cyber-magenta);
+    color: var(--cyber-yellow);
+    font-size: .85rem;
+    letter-spacing: .12em;
+    margin: 0 0 18px;
+    padding: 0 0 10px;
+    text-transform: uppercase;
+}
+
+.bracket-round-matches {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 22px;
+    justify-content: space-around;
+}
+
+.bracket-match {
+    background: var(--bg-card);
+    border: 1px solid rgba(0, 240, 255, .45);
+    box-shadow: 5px 5px 0 rgba(255, 0, 85, .22);
+    clip-path: var(--cyber-cut);
+    padding: 10px;
+    position: relative;
+}
+
+.bracket-match::after {
+    background: var(--cyber-cyan);
+    content: "";
+    height: 1px;
+    left: 100%;
+    opacity: .5;
+    position: absolute;
+    top: 50%;
+    width: 28px;
+}
+
+.bracket-round:last-child .bracket-match::after {
+    display: none;
+}
+
+.bracket-match-meta {
+    color: var(--cyber-muted);
+    display: flex;
+    font-size: .62rem;
+    font-weight: 900;
+    justify-content: space-between;
+    letter-spacing: .08em;
+    margin-bottom: 7px;
+    text-transform: uppercase;
+}
+
+.bracket-match-status {
+    color: var(--cyber-magenta);
+}
+
+.match-team {
+    align-items: center;
+    border-top: 1px solid rgba(160, 165, 181, .2);
+    display: flex;
+    gap: 8px;
+    min-height: 38px;
+    padding: 5px 2px;
+}
+
+.match-team img {
+    background: var(--cyber-bg);
+    height: 28px;
+    object-fit: contain;
+    width: 28px;
+}
+
+.match-team span {
+    color: var(--cyber-text);
+    font-size: .8rem;
+    font-weight: 800;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.match-team--winner {
+    background: rgba(255, 230, 0, .08);
+}
+
+.match-team--winner span {
+    color: var(--cyber-yellow);
+}
+
+.match-team .match-team--tbd {
+    color: var(--text-muted);
+    font-style: italic;
+    opacity: .65;
+}
+
+.cyber-badge-cyan {
+    background: rgba(0, 240, 255, .12);
+    border: 1px solid var(--cyber-cyan);
+    clip-path: var(--cyber-cut);
+    color: var(--cyber-cyan);
+    display: inline-block;
+    font-size: .75rem;
+    font-weight: 900;
+    letter-spacing: .08em;
+    padding: 6px 10px;
+    text-transform: uppercase;
+}
+
+.sidebar-divider {
+    border-top: 1px solid var(--cyber-muted);
+    margin: 15px 25px;
+    opacity: .35;
+}
+
+.user-profile {
+    align-items: center;
+    display: flex;
+    gap: 20px;
+}
+
+.notification-container,
+.notification {
+    position: relative;
+}
+
+.notification {
+    cursor: pointer;
+}
+
+.notification-icon {
+    color: var(--cyber-cyan);
+}
+
+.notification-empty {
+    color: var(--cyber-muted);
+    font-size: .9rem;
+    padding: 20px;
+    text-align: center;
+}
+
+.logout-form {
+    margin: 0;
+}
+
+.ghost-avatar-inner {
+    background: transparent;
+}
+
+.guest-username {
+    color: var(--cyber-muted);
+}
+
+.section-icon-gold {
+    color: var(--cyber-yellow);
+}
+
+.section-icon-orange {
+    color: var(--cyber-magenta);
+}
+
+.section-icon-cyan {
+    color: var(--cyber-cyan);
+}
+
+@media (max-width: 720px) {
+    .cyber-tournaments,
+    .cyber-tournament-detail {
+        padding: 18px;
+    }
+
+    .cyber-detail-hero {
+        grid-template-columns: 1fr;
+    }
+
+    .cyber-detail-stats {
+        flex-wrap: wrap;
+    }
+
+    .cyber-registration-card {
+        grid-template-columns: 1fr;
+    }
+}

@@ -2,6 +2,45 @@ from django.shortcuts import render
 from usuarios.models import Usuario, Notificacion
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
+from django.views.generic import TemplateView
+from torneos.models import Torneo
+
+
+class LobbyView(TemplateView):
+    """Muestra el lobby competitivo con los torneos disponibles."""
+
+    template_name = 'principal/lobby.html'
+
+    def get_context_data(self, **kwargs):
+        contexto = super().get_context_data(**kwargs)
+        contexto['torneos'] = Torneo.objects.filter(
+            estado__in=(Torneo.ESTADO_ABIERTO, Torneo.ESTADO_EN_CURSO),
+        ).select_related('juego').order_by('-creado_el')
+        contexto['top_jugadores'] = Usuario.objects.order_by('-puntos_globales')[:3]
+        contexto['notificaciones'] = []
+        contexto['notificaciones_no_leidas_count'] = 0
+
+        if self.request.user.is_authenticated:
+            contexto['notificaciones'] = Notificacion.objects.filter(
+                usuario=self.request.user,
+            ).order_by('-creada_el')[:10]
+            contexto['notificaciones_no_leidas_count'] = Notificacion.objects.filter(
+                usuario=self.request.user,
+                leida=False,
+            ).count()
+            contexto.update({
+                'rango_jugador': self.request.user.rango,
+                'rango_nivel_jugador': self.request.user.rango_nivel,
+                'xp_jugador': self.request.user.puntos_xp,
+                'progreso_rango': self.request.user.progreso_rango,
+                'rango_siguiente': self.request.user.rango_siguiente,
+                'trofeos_ganados': self.request.user.trofeos_ganados,
+                'titulo_equipado': self.request.user.titulo_equipado,
+                'estado_equipado': self.request.user.estado_equipado,
+                'estado_conexion_css': self.request.user.estado_conexion.lower().replace(' ', '_'),
+                'estado_conexion_display': self.request.user.get_estado_conexion_display(),
+            })
+        return contexto
 
 def lobby_principal(request):
     # 1. Buscamos a los 3 mejores jugadores ordenados por puntos (asumiendo que usas 'puntos_globales')

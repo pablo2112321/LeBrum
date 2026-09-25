@@ -644,6 +644,17 @@
     transition: width 1s ease;
 }
 
+.hud-rango-fill--0 { width: 0%; }
+.hud-rango-fill--10 { width: 10%; }
+.hud-rango-fill--20 { width: 20%; }
+.hud-rango-fill--30 { width: 30%; }
+.hud-rango-fill--40 { width: 40%; }
+.hud-rango-fill--50 { width: 50%; }
+.hud-rango-fill--60 { width: 60%; }
+.hud-rango-fill--70 { width: 70%; }
+.hud-rango-fill--80 { width: 80%; }
+.hud-rango-fill--90 { width: 90%; }
+
 /* Colores del rango: brillan más a medida que sube el nivel */
 .hud-comando.rango-nivel-0 .hud-rango-box {
     border-color: rgba(148, 163, 184, 0.4);

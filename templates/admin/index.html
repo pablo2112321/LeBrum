@@ -1,0 +1,66 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block content %}
+<div class="cyber-admin-dashboard">
+    <a class="cyber-button" href="/">&#8592; VOLVER AL LOBBY</a>
+
+    <section class="cyber-overview" aria-labelledby="system-overview-title">
+        <h2 id="system-overview-title">SYSTEM OVERVIEW</h2>
+        <div class="cyber-stat-grid">
+            <article class="cyber-card cyber-stat">
+                <span class="cyber-stat-label">Torneos activos</span>
+                <strong>{{ admin_torneos_activos|default:"0" }}</strong>
+            </article>
+            <article class="cyber-card cyber-stat">
+                <span class="cyber-stat-label">Partidas pendientes</span>
+                <strong>{{ admin_partidas_pendientes|default:"0" }}</strong>
+            </article>
+            <article class="cyber-card cyber-stat">
+                <span class="cyber-stat-label">Equipos totales</span>
+                <strong>{{ admin_equipos_totales|default:"0" }}</strong>
+            </article>
+        </div>
+    </section>
+
+    <section class="cyber-bracket-monitor" aria-labelledby="bracket-monitor-title">
+        <h2 id="bracket-monitor-title">MONITOREO DE BRACKETS EN TIEMPO REAL</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Torneo</th>
+                    <th>Ronda</th>
+                    <th>Partida</th>
+                    <th>Enfrentamiento</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for torneo in admin_torneos_en_curso %}
+                    {% for partida in torneo.partidas.all %}
+                    <tr>
+                        <td>{{ torneo.nombre }}</td>
+                        <td>{{ partida.ronda|default:"-" }}</td>
+                        <td>{{ partida.numero_partida }}</td>
+                        <td>{{ partida.enfrentamiento }}</td>
+                        <td>{{ partida.get_estado_display }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5">Sin partidas registradas.</td></tr>
+                    {% endfor %}
+                {% empty %}
+                    <tr><td colspan="5">No hay torneos en curso.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    {% if app_list %}
+        <div id="content-main">
+            {% include "admin/app_list.html" with app_list=app_list show_changelinks=True %}
+        </div>
+    {% else %}
+        <p>{% translate "You don't have permission to view or edit anything." %}</p>
+    {% endif %}
+</div>
+{% endblock %}

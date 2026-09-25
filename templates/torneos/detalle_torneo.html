@@ -1,71 +1,146 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block css_extra %}
+<link rel="stylesheet" href="{% static 'css/global_cyberpunk.css' %}">
+{% endblock %}
+
 {% block content %}
-<div class="container-fluid py-4" style="color: white;">
-    <div class="row">
-        <div class="col-md-12">
-            <h2>{{ torneo.nombre }}</h2>
-            <p>{{ torneo.descripcion }}</p>
-            <p><strong>Modalidad:</strong> {{ torneo.modalidad }}</p>
-            <p><strong>Cuota de inscripción:</strong> {{ torneo.cuota_inscripcion }} fichas</p>
-            <p><strong>Estado:</strong> {{ torneo.estado }}</p>
-            {% if mensaje %}
-                <div class="alert-message">{{ mensaje }}</div>
-            {% endif %}
-
-            {% if request.user.is_authenticated %}
-                <div class="card bg-dark text-white p-4 mt-3" style="border: 1px solid rgba(255,255,255,0.1);">
-                    <h3>Inscribir equipo</h3>
-                    <form method="post">
-                        {% csrf_token %}
-                        {{ form.non_field_errors }}
-                        <div class="mb-3">
-                            {{ form.equipo.label_tag }}
-                            {{ form.equipo }}
-                            {{ form.equipo.errors }}
-                        </div>
-                        <button type="submit" class="btn-primary">Pagar e inscribir</button>
-                    </form>
-                </div>
+<main class="cyber-tournament-detail">
+    <header class="cyber-detail-hero">
+        <div class="cyber-detail-game">
+            {% if torneo.juego.imagen_portada %}
+                <img src="{{ torneo.juego.imagen_portada.url }}" alt="{{ torneo.juego.nombre }}">
             {% else %}
-                <p>Debes <a href="{% url 'login' %}">iniciar sesión</a> para inscribir un equipo.</p>
+                <span>{{ torneo.juego.nombre }}</span>
             {% endif %}
-
-            <div class="mt-4">
-                <h3>Equipos inscritos</h3>
-                {% if inscripciones %}
-                    <ul>
-                        {% for inscripcion in inscripciones %}
-                            <li>{{ inscripcion.equipo.nombre }} - Pagado por {{ inscripcion.pagador.username }} - {{ inscripcion.creado_el }}</li>
-                        {% endfor %}
-                    </ul>
-                {% else %}
-                    <p>No hay equipos inscritos aún.</p>
-                {% endif %}
-            </div>
-
-            <div class="mt-4">
-                <h3>Partidas</h3>
-                {% if partidas %}
-                    <ul>
-                        {% for partida in partidas %}
-                            <li>
-                                <a href="{% url 'detalle_partida' partida.id %}">
-                                    {{ partida.equipo_a.nombre }} vs {{ partida.equipo_b.nombre }}
-                                </a>
-                                - {{ partida.estado }}
-                                {% if partida.ganador %}
-                                    - Ganador: {{ partida.ganador.nombre }}
-                                {% endif %}
-                            </li>
-                        {% endfor %}
-                    </ul>
-                {% else %}
-                    <p>No hay partidas creadas para este torneo.</p>
-                {% endif %}
+        </div>
+        <div class="cyber-detail-copy">
+            <span class="cyber-kicker">{{ torneo.juego.nombre }} // {{ torneo.modalidad }}</span>
+            <h1>{{ torneo.nombre }}</h1>
+            <p>{{ torneo.descripcion|default:"La arena está lista. Reúne a tu crew y entra en combate." }}</p>
+            <div class="cyber-detail-stats">
+                <span>ESTADO <strong>{{ torneo.get_estado_display }}</strong></span>
+                <span>CUOTA <strong>{{ torneo.cuota }} fichas</strong></span>
+                <span>PLAZAS <strong>{{ torneo.plazas_ocupadas }}/{{ torneo.cupo_maximo }}</strong></span>
             </div>
         </div>
-    </div>
-</div>
+    </header>
+
+    <section class="cyber-detail-panel">
+        <div class="cyber-section-heading">
+            <div>
+                <span class="cyber-kicker">ROSTER CONFIRMADO</span>
+                <h2>EQUIPOS PARTICIPANTES</h2>
+            </div>
+            <span class="cyber-counter">{{ inscripciones|length }} crews</span>
+        </div>
+        <div class="cyber-team-list">
+            {% for inscripcion in inscripciones %}
+                <article class="cyber-team-row">
+                    {% if inscripcion.equipo.logo %}
+                        <img src="{{ inscripcion.equipo.logo }}" alt="{{ inscripcion.equipo.nombre }}">
+                    {% endif %}
+                    <div>
+                        <h3>{{ inscripcion.equipo.nombre }}</h3>
+                        <span>{{ inscripcion.equipo.tag|default:"SIN TAG" }} · {{ inscripcion.equipo.get_modo_display }}</span>
+                    </div>
+                    <strong>{{ inscripcion.estado_pago }}</strong>
+                </article>
+            {% empty %}
+                <p class="cyber-empty">Todavía no hay crews confirmadas.</p>
+            {% endfor %}
+        </div>
+        {% if user.is_authenticated %}
+            {% if equipos_disponibles %}
+                <form method="post" action="{% url 'inscribir_equipo' torneo.id %}" class="cyber-registration-form">
+                    {% csrf_token %}
+                    <label for="{{ form_inscripcion.equipo.id_for_label }}">SELECCIONA TU CREW</label>
+                    {{ form_inscripcion.equipo }}
+                    <button type="submit" class="cyber-btn-primary">INSCRIBIR A MI EQUIPO</button>
+                </form>
+            {% else %}
+                <p class="cyber-empty">No tienes equipos disponibles para esta modalidad o ya están inscritos.</p>
+            {% endif %}
+        {% else %}
+            <a href="{% url 'login' %}?next={{ request.path }}" class="cyber-btn-primary">INGRESA PARA INSCRIBIRTE</a>
+        {% endif %}
+    </section>
+
+    <section class="cyber-detail-panel">
+        <div class="cyber-section-heading">
+            <div>
+                <span class="cyber-kicker">COMBATES PROGRAMADOS</span>
+                <h2>PARTIDAS</h2>
+            </div>
+        </div>
+        <div class="cyber-match-list">
+            {% for partida in partidas %}
+                <div class="cyber-match-row">
+                    <span>R{{ partida.ronda|default:"-" }} · #{{ partida.numero_partida }}</span>
+                    <strong>{{ partida.enfrentamiento }}</strong>
+                    <em>{{ partida.get_estado_display }}</em>
+                </div>
+            {% empty %}
+                <p class="cyber-empty">El bracket todavía no ha sido generado.</p>
+            {% endfor %}
+        </div>
+    </section>
+
+    {% if bracket_rondas %}
+        <section class="cyber-detail-panel cyber-bracket-panel">
+            <div class="cyber-section-heading">
+                <div>
+                    <span class="cyber-kicker">LLAVES COMPETITIVAS // EN VIVO</span>
+                    <h2>ÁRBOL DE BATALLA</h2>
+                </div>
+                <span class="cyber-counter">{{ bracket_rondas|length }} rondas</span>
+            </div>
+
+            <div class="bracket-container" aria-label="Árbol de batalla del torneo">
+                {% for ronda in bracket_rondas %}
+                    <section class="bracket-round">
+                        <h3 class="bracket-round-title">{{ ronda.nombre }}</h3>
+                        <div class="bracket-round-matches">
+                            {% for partida in ronda.partidas %}
+                                <article class="bracket-match">
+                                    <div class="bracket-match-meta">
+                                        <span>PARTIDA {{ partida.numero_partida }}</span>
+                                        <span class="bracket-match-status">{{ partida.get_estado_display }}</span>
+                                    </div>
+                                    <div class="match-team {% if partida.ganador_id == partida.equipo_local_id %}match-team--winner{% endif %}">
+                                        {% if partida.equipo_local %}
+                                            {% if partida.equipo_local.logo %}
+                                                <img src="{{ partida.equipo_local.logo }}" alt="Escudo de {{ partida.equipo_local.nombre }}">
+                                            {% else %}
+                                                <img src="{% static 'img/Logo.png' %}" alt="Escudo predeterminado">
+                                            {% endif %}
+                                            <span>{{ partida.equipo_local.nombre }}</span>
+                                        {% else %}
+                                            <img src="{% static 'img/Logo.png' %}" alt="Equipo por definir">
+                                            <span class="match-team--tbd">TBD</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="match-team {% if partida.ganador_id == partida.equipo_visitante_id %}match-team--winner{% endif %}">
+                                        {% if partida.equipo_visitante %}
+                                            {% if partida.equipo_visitante.logo %}
+                                                <img src="{{ partida.equipo_visitante.logo }}" alt="Escudo de {{ partida.equipo_visitante.nombre }}">
+                                            {% else %}
+                                                <img src="{% static 'img/Logo.png' %}" alt="Escudo predeterminado">
+                                            {% endif %}
+                                            <span>{{ partida.equipo_visitante.nombre }}</span>
+                                        {% else %}
+                                            <img src="{% static 'img/Logo.png' %}" alt="Equipo por definir">
+                                            <span class="match-team--tbd">TBD</span>
+                                        {% endif %}
+                                    </div>
+                                </article>
+                            {% endfor %}
+                        </div>
+                    </section>
+                {% endfor %}
+            </div>
+        </section>
+    {% endif %}
+</main>
 {% endblock %}

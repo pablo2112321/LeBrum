@@ -39,7 +39,7 @@
                     <div class="eq-card-top">
                         <div class="eq-card-logo">
                             {% if equipo.logo %}
-                                <img src="{{ equipo.logo }}" alt="{{ equipo.nombre }}">
+                                <img src="{{ equipo.logo.url }}" alt="{{ equipo.nombre }}">
                             {% else %}
                                 <i class="fas fa-shield-halved"></i>
                             {% endif %}
@@ -57,7 +57,7 @@
                     </div>
 
                     <div class="eq-card-torneo">
-                        <i class="fas fa-trophy"></i> {{ equipo.torneo.nombre }}
+                        <i class="fas fa-gamepad"></i> {{ equipo.get_modo_display }}
                     </div>
 
                     <a href="{% url 'detalle_equipo' equipo.id %}" class="eq-btn eq-btn--outline">Ver Escuadra</a>

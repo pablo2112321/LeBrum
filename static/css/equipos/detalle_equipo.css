@@ -35,6 +35,14 @@
     margin-bottom: 26px;
 }
 
+.eqd-banner-image {
+    height: 100%;
+    inset: 0;
+    object-fit: cover;
+    position: absolute;
+    width: 100%;
+}
+
 .eqd-banner--default {
     background:
         radial-gradient(circle at 20% 30%, rgba(0, 229, 255, 0.22), transparent 45%),

@@ -16,15 +16,6 @@ class Equipo(models.Model):
         verbose_name='Capitán'
     )
 
-    torneo = models.ForeignKey(
-        'torneos.Torneo',
-        on_delete=models.CASCADE,
-        related_name='equipos',
-        verbose_name='Torneo',
-        blank=True,
-        null=True,
-    )
-
     nombre = models.CharField(
         max_length=100,
         unique=True,
@@ -47,7 +38,8 @@ class Equipo(models.Model):
         verbose_name='Modo'
     )
 
-    logo = models.URLField(
+    logo = models.ImageField(
+        upload_to='equipos/logos/',
         blank=True,
         null=True,
         verbose_name='Logo'
@@ -60,20 +52,10 @@ class Equipo(models.Model):
     )
 
     def __str__(self):
-        return f"{self.nombre} ({self.torneo.nombre})"
+        return f"{self.nombre} [{self.tag}]" if self.tag else self.nombre
 
     def save(self, *args, **kwargs):
         es_nuevo = self.pk is None
-
-        if es_nuevo:
-            if self.torneo is None:
-                raise ValueError('El equipo debe pertenecer a un torneo activo.')
-            if self.torneo.estado != self.torneo.ESTADO_ABIERTO:
-                raise ValueError('Solo se puede crear un equipo dentro de un torneo abierto para inscripciones.')
-            if self.modo != self.torneo.modalidad:
-                raise ValueError('La modalidad del equipo debe coincidir con la del torneo.')
-            if self.torneo.equipos.count() >= self.torneo.cupo_maximo:
-                raise ValueError('El torneo ya alcanzó su cupo máximo de equipos.')
 
         with transaction.atomic():
             super().save(*args, **kwargs)
@@ -116,7 +98,7 @@ class Equipo(models.Model):
 
     @property
     def partidas_totales(self):
-        return self.partidas_como_a.count() + self.partidas_como_b.count()
+        return self.partidas_como_local.count() + self.partidas_como_visitante.count()
 
     @property
     def victorias(self):
@@ -134,6 +116,10 @@ class Equipo(models.Model):
     def puntos_crew(self):
         """Suma de XP DeLaBruma de todos los agentes del roster."""
         return sum((m.usuario.puntos_xp for m in self.miembros.all()), 0)
+
+    class Meta:
+        verbose_name = 'equipo'
+        verbose_name_plural = 'equipos'
 
 
 class MiembroEquipo(models.Model):
@@ -156,8 +142,10 @@ class MiembroEquipo(models.Model):
         verbose_name='Es capitán'
     )
 
-    class Meta:
-        unique_together = ('equipo', 'usuario')
-
     def __str__(self):
         return f"{self.usuario.username} - {self.equipo.nombre}"
+
+    class Meta:
+        unique_together = ('equipo', 'usuario')
+        verbose_name = 'miembro de equipo'
+        verbose_name_plural = 'miembros de equipo'

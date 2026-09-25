@@ -3,8 +3,8 @@ from . import views # El punto significa "importa las vistas de esta misma carpe
 
 urlpatterns = [
     # Tu lobby actual
-    path('', views.lobby_principal, name='lobby'),
-    path('lobby/', views.lobby_principal, name='lobby'),
+    path('', views.LobbyView.as_view(), name='lobby'),
+    path('lobby/', views.LobbyView.as_view(), name='lobby_alias'),
     
     # Las rutas de la Barra Lateral (Todas apuntan a construcción por ahora)
     path('noticias/', views.en_construccion, name='noticias'),

@@ -1,13 +1,14 @@
-@'
 # Entornos virtuales
 env/
 venv/
+
+# Variables de entorno y secretos
 .env
 
-# Configuración de editor
+# Configuracion de editor
 .vscode/
 
-# Herramientas de IA y reglas locales
+# Herramientas locales
 .claude/
 .clinerules
 
@@ -15,13 +16,15 @@ venv/
 *.pyc
 __pycache__/
 
-# Base de datos local
+# Bases de datos locales
 *.sqlite3
 
-# Archivos multimedia de prueba
+# Archivos multimedia locales
 media/
+
+# Archivos generados por collectstatic
+staticfiles/
 
 # Sistema operativo
 Thumbs.db
 .DS_Store
-'@ | Out-File -FilePath .gitignore -Encoding utf8

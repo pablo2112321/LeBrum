@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main class="cyber-tournament-detail">
+    <section class="cyber-detail-panel">
+        <div class="cyber-section-heading">
+            <div>
+                <span class="cyber-kicker">CENTRO DEL COMPETIDOR</span>
+                <h1>MIS TORNEOS</h1>
+            </div>
+            <span class="cyber-counter">{{ inscripciones|length }} inscripciones</span>
+        </div>
+
+        <div class="cyber-registration-list">
+            {% for inscripcion in inscripciones %}
+                <article class="cyber-card cyber-registration-card">
+                    <div>
+                        <span class="cyber-kicker">{{ inscripcion.equipo.nombre }}</span>
+                        <h2>{{ inscripcion.torneo.nombre }}</h2>
+                        <p>{{ inscripcion.torneo.juego.nombre }} · Ronda: {{ inscripcion.torneo.estado }}</p>
+                    </div>
+                    <div class="cyber-registration-status">
+                        <strong>{{ inscripcion.estado_pago }}</strong>
+                        {% with local=inscripcion.equipo.partidas_pendientes|first visitante=inscripcion.equipo.partidas_pendientes_visitante|first %}
+                            {% with partida=local|default:visitante %}
+                                {% if partida %}
+                                    <span>Próxima partida: R{{ partida.ronda|default:"-" }} · #{{ partida.numero_partida }}</span>
+                                    <a href="{% url 'detalle_partida' partida.id %}" class="cyber-link">ENTRAR A LA SALA</a>
+                                {% else %}
+                                    <span>Sin partida programada</span>
+                                {% endif %}
+                            {% endwith %}
+                        {% endwith %}
+                    </div>
+                    <a href="{% url 'detalle_torneo' inscripcion.torneo.id %}" class="cyber-card-action">VER TORNEO</a>
+                </article>
+            {% empty %}
+                <p class="cyber-empty">Todavía no tienes inscripciones competitivas.</p>
+            {% endfor %}
+        </div>
+    </section>
+</main>
+{% endblock %}

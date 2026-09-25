@@ -7,6 +7,7 @@
     <title>LeBrum - Plataforma eSports</title>
     
     <link rel="stylesheet" href="{% static 'css/global.css' %}">
+    <link rel="stylesheet" href="{% static 'css/global_cyberpunk.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     {% block css_extra %}
@@ -251,6 +252,17 @@
                 <a href="{% url 'equipos' %}" class="{% if request.resolver_match.url_name == 'equipos' %}active{% endif %}">
                     <i class="fas fa-users"></i> Equipos
                 </a>
+                {% if request.user.is_authenticated %}
+                    {% if mi_equipo %}
+                        <a href="{% url 'detalle_equipo' mi_equipo.id %}" class="{% if request.resolver_match.url_name == 'detalle_equipo' %}active{% endif %}">
+                            <i class="fas fa-shield-halved"></i> Mi Escuadrón
+                        </a>
+                    {% else %}
+                        <a href="{% url 'crear_equipo' %}" class="{% if request.resolver_match.url_name == 'crear_equipo' %}active{% endif %}">
+                            <i class="fas fa-hammer"></i> Crear Equipo
+                        </a>
+                    {% endif %}
+                {% endif %}
                 <a href="{% url 'ranking' %}" class="{% if request.resolver_match.url_name == 'ranking' %}active{% endif %}">
                     <i class="fas fa-list-ol"></i> Ranking
                 </a>
@@ -264,7 +276,7 @@
                     <i class="fas fa-store"></i> Tienda
                 </a>
 
-                <div style="margin: 15px 25px; border-top: 1px solid var(--border-color);"></div>
+                <div class="sidebar-divider"></div>
                 
                 <a href="{% url 'soporte' %}" class="{% if request.resolver_match.url_name == 'soporte' %}active{% endif %}">
                     <i class="fas fa-headset"></i> Soporte
@@ -280,10 +292,10 @@
                     <input type="text" placeholder="Buscar torneos, jugadores...">
                 </div>
                 
-                <div class="user-profile" style="display: flex; align-items: center; gap: 20px;">
+                <div class="user-profile">
                     
-                    <div class="notification-container" style="position: relative;">
-                        <div class="notification" id="notification-btn" style="cursor: pointer; position: relative;">
+                    <div class="notification-container">
+                        <div class="notification" id="notification-btn">
                             <i class="fas fa-bell"></i>
                             {% if notificaciones_no_leidas_count > 0 %}
                                 <span class="notification-badge">{{ notificaciones_no_leidas_count }}</span>
@@ -299,7 +311,7 @@
                                 {% if notificaciones %}
                                     {% for notif in notificaciones %}
                                         <div class="notification-item {% if not notif.leida %}unread{% endif %}">
-                                            <i class="{{ notif.icono }}" style="color: var(--accent-blue);"></i>
+                                            <i class="{{ notif.icono }} notification-icon"></i>
                                             <div class="notif-text">
                                                 <p>{{ notif.texto }}</p>
                                                 <span class="time">Hace {{ notif.creada_el|timesince }}</span>
@@ -307,7 +319,7 @@
                                         </div>
                                     {% endfor %}
                                 {% else %}
-                                    <div style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 0.9rem;">
+                                    <div class="notification-empty">
                                         No tienes notificaciones
                                     </div>
                                 {% endif %}
@@ -335,12 +347,20 @@
 
                             <div class="user-dropdown" id="user-dropdown">
                                 <a href="{% url 'perfil' %}"><i class="fas fa-id-badge"></i> Mi Perfil</a>
+                                {% if request.user.is_authenticated %}
+                                    <a href="{% url 'mis_torneos' %}"><i class="fas fa-trophy"></i> Mis Torneos</a>
+                                    {% if mi_equipo %}
+                                        <a href="{% url 'detalle_equipo' mi_equipo.id %}"><i class="fas fa-shield-halved"></i> Mi Escuadrón</a>
+                                    {% else %}
+                                        <a href="{% url 'crear_equipo' %}"><i class="fas fa-hammer"></i> Crear Equipo</a>
+                                    {% endif %}
+                                {% endif %}
                                 
-                                {% if request.user.rol_plataforma == 'Dueño' or request.user.is_superuser %}
-                                    <a href="{% url 'panel_control' %}"><i class="fas fa-shield-halved"></i> Panel de Control</a>
+                                {% if request.user.is_staff %}
+                                    <a href="{% url 'admin:index' %}"><i class="fas fa-shield-halved"></i> Panel de Control</a>
                                 {% endif %}
 
-                                <form method="POST" action="{% url 'logout' %}" style="margin: 0;">
+                                <form method="POST" action="{% url 'logout' %}" class="logout-form">
                                     {% csrf_token %}
                                     <button type="submit" class="logout-link">
                                         <i class="fas fa-power-off"></i> Cerrar Sesión
@@ -352,11 +372,11 @@
 
                             <a href="{% url 'login' %}" class="user-stacked-trigger" title="Iniciar sesión o Registrarse">
                                 <div class="user-avatar-frame ghost-frame">
-                                    <div class="user-avatar-inner" style="background: transparent;">
+                                    <div class="user-avatar-inner ghost-avatar-inner">
                                         <img src="{% static 'img/Usuario.jpg' %}" alt="Usuario Visitante" class="ghost-img">
                                     </div>
                                 </div>
-                                <span class="stacked-username" style="color: #64748b;">Ingresar</span>
+                                <span class="stacked-username guest-username">Ingresar</span>
                             </a>
 
                         {% endif %}

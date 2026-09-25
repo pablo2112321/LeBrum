@@ -22,6 +22,22 @@
     color: var(--sp-text);
 }
 
+.sala-vs-centro .sala-vs-logo {
+    color: var(--neon-magenta, #ff0055);
+    position: relative;
+    text-shadow: 4px 0 var(--neon-cyan, #00f0ff), -4px 0 var(--neon-magenta, #ff0055);
+}
+
+.sala-vs-centro .sala-vs-logo::after {
+    color: var(--neon-cyan, #00f0ff);
+    content: 'VS';
+    left: 3px;
+    opacity: .35;
+    position: absolute;
+    top: 0;
+    transform: skew(-12deg);
+}
+
 /* ---------------- HEADER ---------------- */
 .sala-head {
     display: flex;
@@ -171,6 +187,76 @@
     align-items: stretch;
     gap: 18px;
     margin-bottom: 26px;
+}
+
+.sala-acciones {
+    background: var(--bg-card, #12131a);
+    border: 1px solid var(--neon-cyan, #00f0ff);
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%);
+    padding: 26px;
+}
+
+.sala-form--resultado {
+    display: grid;
+    gap: 18px;
+}
+
+.sala-ganador-options {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.sala-ganador-option {
+    align-items: center;
+    background: rgba(0, 240, 255, .08);
+    border: 1px solid rgba(0, 240, 255, .35);
+    color: var(--text-main, #fff);
+    display: flex;
+    gap: 10px;
+    padding: 14px;
+}
+
+.sala-ganador-option:has(input:checked) {
+    border-color: var(--neon-yellow, #ffe600);
+    box-shadow: 0 0 15px rgba(255, 230, 0, .25);
+}
+
+.sala-dropzone {
+    align-items: center;
+    border: 1px dashed var(--neon-magenta, #ff0055);
+    color: var(--text-muted, #a0a5b5);
+    display: flex;
+    gap: 12px;
+    padding: 18px;
+}
+
+.sala-dropzone input[type='file'] {
+    color: var(--text-main, #fff);
+    margin-left: auto;
+    max-width: 55%;
+}
+
+.sala-report-button {
+    justify-self: start;
+}
+
+.sala-final--champion {
+    background: var(--bg-card, #12131a);
+    border: 1px solid var(--neon-cyan, #00f0ff);
+    box-shadow: 0 0 25px rgba(0, 240, 255, .3);
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%);
+}
+
+.sala-final--champion h3,
+.sala-final--champion i {
+    color: var(--neon-cyan, #00f0ff);
+}
+
+.sala-final-kicker {
+    color: var(--neon-yellow, #ffe600);
+    font-weight: 900;
+    letter-spacing: .16em;
 }
 
 .sala-equipo {
