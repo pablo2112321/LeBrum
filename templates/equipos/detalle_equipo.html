@@ -74,9 +74,12 @@
         {% elif ya_es_miembro %}
             <span class="eqd-chip-miembro"><i class="fas fa-check"></i> Ya eres miembro de esta crew</span>
         {% elif request.user.is_authenticated %}
-            <a href="{% url 'unirse_equipo' eq.id %}" class="eqd-btn eqd-btn--unirse">
-                <i class="fas fa-user-plus"></i> Solicitar Unirse
-            </a>
+            <form method="post" action="{% url 'unirse_equipo' eq.id %}">
+                {% csrf_token %}
+                <button type="submit" class="eqd-btn eqd-btn--unirse">
+                    <i class="fas fa-user-plus"></i> Solicitar Unirse
+                </button>
+            </form>
         {% else %}
             <a href="{% url 'login' %}" class="eqd-btn eqd-btn--unirse">
                 <i class="fas fa-right-to-bracket"></i> Inicia sesión para unirte

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load static %}
+{% block css_extra %}<link rel="stylesheet" href="{% static 'css/paginas/soporte.css' %}">{% endblock %}
+{% block content %}
+<main class="support-shell support-shell--narrow">
+<header class="support-header"><div><span class="cyber-kicker">INCIDENCIA #{{ ticket.pk }}</span><h1>{{ ticket.get_categoria_display }}</h1><p>Estado: <b class="ticket-status ticket-status--{{ ticket.estado|slugify }}">{{ ticket.get_estado_display }}</b>{% if ticket.partida %} · Partida #{{ ticket.partida.pk }} / {{ ticket.partida.torneo.nombre }}{% endif %}</p></div><a class="cyber-btn-danger" href="{% url 'soporte:ticket_list' %}">Volver</a></header>
+<section class="message-thread">
+{% for message in ticket.mensajes.all %}<article class="message-card {% if message.remitente.is_staff %}message-card--staff{% endif %}"><div class="message-meta"><strong>{{ message.remitente.username }}</strong><time>{{ message.fecha_envio|date:"d/m/Y H:i" }}</time></div><p>{{ message.contenido_mensaje|linebreaksbr }}</p>{% if message.url_adjunto %}<a href="{{ message.url_adjunto }}" target="_blank" rel="noopener">Ver evidencia adjunta ↗</a>{% endif %}</article>{% endfor %}
+</section>
+{% if ticket.estado != 'Resuelto' and ticket.estado != 'Cerrado' %}<form method="post" class="support-form reply-form">{% csrf_token %}<label>{{ message_form.contenido_mensaje.label }}{{ message_form.contenido_mensaje }}{% for error in message_form.contenido_mensaje.errors %}<span class="form-error">{{ error }}</span>{% endfor %}</label><label>{{ message_form.url_adjunto.label }}{{ message_form.url_adjunto }}</label><button class="cyber-primary-button" type="submit">Responder</button></form>{% endif %}
+{% if user.is_staff %}<form method="post" class="support-form status-form">{% csrf_token %}<input type="hidden" name="action" value="status"><label>Actualizar estado{{ status_form.estado }}</label><button class="cyber-btn-danger" type="submit">Guardar estado</button></form>{% endif %}
+</main>
+{% endblock %}

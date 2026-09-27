@@ -1,14 +1,44 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block css_extra %}
+<link rel="stylesheet" href="{% static 'css/paginas/perfil_jugador.css' %}">
+{% endblock %}
 
 {% block content %}
 <main class="player-profile">
     <section class="cyber-card profile-edit-card">
-        <span class="cyber-kicker">CONFIGURACIÓN DE IDENTIDAD</span>
-        <h1>EDITAR PERFIL</h1>
+        <header class="profile-edit-header">
+            <div>
+                <span class="cyber-kicker">CONFIGURACIÓN DE IDENTIDAD // LOADOUT</span>
+                <h1>EDITAR PERFIL</h1>
+                <p class="profile-edit-intro">
+                    Actualiza tu identificación de combate y mantén tu presencia lista para la arena.
+                </p>
+            </div>
+            <div class="profile-edit-signal" aria-hidden="true">
+                <span></span>
+                <strong>ONLINE</strong>
+            </div>
+        </header>
+
+        {% if form.non_field_errors %}
+            <div class="profile-edit-errors">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
         <form method="post" enctype="multipart/form-data" class="profile-edit-form">
             {% csrf_token %}
             {{ form.as_p }}
-            <button type="submit" class="cyber-btn-primary">GUARDAR CAMBIOS</button>
+            <div class="profile-edit-actions">
+                <a href="{% url 'perfil_detalle' request.user.username %}" class="cyber-btn-secondary">
+                    CANCELAR
+                </a>
+                <button type="submit" class="cyber-btn-primary">
+                    <i class="fas fa-floppy-disk"></i> GUARDAR CAMBIOS
+                </button>
+            </div>
         </form>
     </section>
 </main>

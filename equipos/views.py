@@ -6,6 +6,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.views.generic import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db import IntegrityError, transaction
+from django.views.decorators.http import require_POST
 from .forms import EquipoForm
 from .models import Equipo, MiembroEquipo
 
@@ -20,29 +22,6 @@ def listar_equipos(request):
         .all()
     )
     return render(request, 'equipos/listar_equipos.html', {'equipos': equipos})
-
-
-@login_required
-def crear_equipo(request):
-    if not request.user.tiene_id_competitivo:
-        messages.error(request, MSG_PERFIL_INCOMPLETO)
-        return render(request, 'equipos/crear_equipo.html', {
-            'form': None,
-            'perfil_incompleto': True,
-        })
-
-    if request.method == 'POST':
-        form = EquipoForm(request.POST, request.FILES)
-        if form.is_valid():
-            equipo = form.save(commit=False)
-            equipo.capitan = request.user
-            equipo.save()
-            messages.success(request, f'¡Crew {equipo.nombre} forjada! El capitán eres tú, agente.')
-            return redirect('detalle_equipo', equipo_id=equipo.id)
-    else:
-        form = EquipoForm()
-
-    return render(request, 'equipos/crear_equipo.html', {'form': form})
 
 
 class CrearEquipoView(LoginRequiredMixin, View):
@@ -131,21 +110,33 @@ class AgregarJugadorView(LoginRequiredMixin, View):
         jugador = get_user_model().objects.filter(username__iexact=username).first()
         if not jugador:
             messages.error(request, 'No encontramos un jugador con ese username.')
+        elif not jugador.tiene_id_competitivo:
+            messages.error(request, MSG_PERFIL_INCOMPLETO)
         elif equipo.miembros.filter(usuario=jugador).exists():
             messages.error(request, 'Ese jugador ya pertenece al roster.')
-        elif equipo.roster_lleno:
-            messages.error(request, 'El roster de esta crew está completo.')
         else:
-            MiembroEquipo.objects.create(
-                equipo=equipo,
-                usuario=jugador,
-                es_capitan=False,
-            )
-            messages.success(request, f'{jugador.username} fue reclutado para {equipo.nombre}.')
+            try:
+                with transaction.atomic():
+                    equipo = Equipo.objects.select_for_update().get(pk=equipo.pk)
+                    if equipo.roster_lleno:
+                        messages.error(request, 'El roster de esta crew está completo.')
+                    else:
+                        MiembroEquipo.objects.create(
+                            equipo=equipo,
+                            usuario=jugador,
+                            es_capitan=False,
+                        )
+                        messages.success(
+                            request,
+                            f'{jugador.username} fue reclutado para {equipo.nombre}.',
+                        )
+            except IntegrityError:
+                messages.error(request, 'Ese jugador ya pertenece al roster.')
         return redirect('detalle_equipo', equipo_id=equipo.pk)
 
 
 @login_required
+@require_POST
 def unirse_equipo(request, equipo_id):
     equipo = get_object_or_404(Equipo, pk=equipo_id)
 
@@ -157,11 +148,20 @@ def unirse_equipo(request, equipo_id):
         messages.error(request, 'Ya formas parte de esta crew, agente.')
         return redirect('detalle_equipo', equipo_id=equipo.pk)
 
-    if equipo.roster_lleno:
-        messages.error(request, 'El roster de esta crew está completo.')
+    try:
+        with transaction.atomic():
+            equipo = Equipo.objects.select_for_update().get(pk=equipo.pk)
+            if equipo.roster_lleno:
+                messages.error(request, 'El roster de esta crew está completo.')
+                return redirect('detalle_equipo', equipo_id=equipo.pk)
+            MiembroEquipo.objects.create(
+                equipo=equipo,
+                usuario=request.user,
+                es_capitan=False,
+            )
+    except IntegrityError:
+        messages.error(request, 'Ya formas parte de esta crew, agente.')
         return redirect('detalle_equipo', equipo_id=equipo.pk)
-
-    MiembroEquipo.objects.create(equipo=equipo, usuario=request.user, es_capitan=False)
     messages.success(request, f'¡Bienvenido a {equipo.nombre}! Tu solicitud de ingreso fue aceptada.')
     return redirect('detalle_equipo', equipo_id=equipo.pk)
 

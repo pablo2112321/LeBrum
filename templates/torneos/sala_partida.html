@@ -7,7 +7,7 @@
 
 {% block content %}
 {% with a=partida.equipo_local b=partida.equipo_visitante %}
-<div class="sala">
+<div class="sala" data-live-state-url="{% url 'estado_partida' partida.id %}">
 
     <header class="sala-head">
         <a href="{% url 'detalle_torneo' partida.torneo.id %}" class="sala-back">
@@ -92,7 +92,7 @@
     {% if partida.evidencia_victoria %}
         <section class="sala-evidencia">
             <h3><i class="fas fa-camera"></i> Evidencia adjuntada</h3>
-            <a href="{{ partida.evidencia_victoria.url }}" target="_blank" rel="noopener" class="sala-evidencia-link">
+            <a href="{% url 'descargar_evidencia' partida.id %}" class="sala-evidencia-link">
                 <i class="fas fa-file-image"></i> Ver captura de la partida
             </a>
         </section>
@@ -159,4 +159,23 @@
 
 </div>
 {% endwith %}
+<script>
+    (() => {
+        const sala = document.querySelector('[data-live-state-url]');
+        if (!sala) return;
+        const url = sala.dataset.liveStateUrl;
+        const estadoInicial = '{{ partida.estado|escapejs }}';
+        const actualizarEstado = async () => {
+            try {
+                const response = await fetch(url, {headers: {'Accept': 'application/json'}});
+                if (!response.ok) return;
+                const estado = await response.json();
+                if (estado.estado !== estadoInicial) window.location.reload();
+            } catch (error) {
+                // El sondeo es opcional; la sala sigue funcionando sin él.
+            }
+        };
+        window.setInterval(actualizarEstado, 10000);
+    })();
+</script>
 {% endblock %}

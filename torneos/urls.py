@@ -7,5 +7,7 @@ urlpatterns = [
     path('<int:torneo_id>/inscribirse/', views.inscribir_equipo, name='inscribir_equipo'),
     path('mis-torneos/', views.MisTorneosView.as_view(), name='mis_torneos'),
     path('partida/<int:partida_id>/', views.SalaPartidaView.as_view(), name='detalle_partida'),
+    path('partida/<int:partida_id>/estado/', views.EstadoPartidaView.as_view(), name='estado_partida'),
     path('partida/<int:partida_id>/reportar/', views.SalaPartidaView.as_view(), name='reportar_resultado'),
+    path('partida/<int:partida_id>/evidencia/', views.EvidenciaPartidaView.as_view(), name='descargar_evidencia'),
 ]

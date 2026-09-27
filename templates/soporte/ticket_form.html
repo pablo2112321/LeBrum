@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load static %}
+{% block css_extra %}<link rel="stylesheet" href="{% static 'css/paginas/soporte.css' %}">{% endblock %}
+{% block content %}
+<main class="support-shell support-shell--narrow">
+<header class="support-header"><div><span class="cyber-kicker">NUEVA TRANSMISIÓN</span><h1>Abrir ticket</h1><p>Comparte todos los datos necesarios para agilizar la revisión.</p></div></header>
+<form method="post" class="support-form">{% csrf_token %}
+    {{ form.non_field_errors }}
+    {% for field in form %}<label>{{ field.label }}{{ field }}{% for error in field.errors %}<span class="form-error">{{ error }}</span>{% endfor %}</label>{% endfor %}
+    <label>{{ message_form.contenido_mensaje.label }}{{ message_form.contenido_mensaje }}{% for error in message_form.contenido_mensaje.errors %}<span class="form-error">{{ error }}</span>{% endfor %}</label>
+    <label>{{ message_form.url_adjunto.label }}{{ message_form.url_adjunto }}{% for error in message_form.url_adjunto.errors %}<span class="form-error">{{ error }}</span>{% endfor %}</label>
+    <div class="support-actions"><a class="cyber-btn-danger" href="{% url 'soporte:ticket_list' %}">Cancelar</a><button class="cyber-primary-button" type="submit">Enviar ticket</button></div>
+</form>
+</main>
+{% endblock %}

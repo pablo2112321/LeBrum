@@ -17,6 +17,7 @@ urlpatterns = [
 
     path('equipos/', include('equipos.urls')),
     path('torneos/', include('torneos.urls')),
+    path('soporte/', include('soporte.urls')),
     path('', include('principal.urls')),
     path('usuarios/', include('usuarios.urls')),
 ]

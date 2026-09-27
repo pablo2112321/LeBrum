@@ -244,7 +244,12 @@ class RankingView(ListView):
     context_object_name = 'jugadores'
 
     def get_queryset(self):
-        return Usuario.objects.order_by('-puntos_xp', '-victorias', 'username')[:50]
+        return Usuario.objects.order_by(
+            '-rating_competitivo',
+            '-puntos_xp',
+            '-victorias',
+            'username',
+        )[:50]
 
 
 @login_required

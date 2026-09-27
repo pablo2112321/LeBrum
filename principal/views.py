@@ -1,9 +1,13 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from usuarios.models import Usuario, Notificacion
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
-from django.views.generic import TemplateView
+from django.contrib import messages
+from django.views.generic import TemplateView, ListView
 from torneos.models import Torneo
+from .models import Noticia, Transmision, MensajeChat, ProductoTienda, CompraTienda
+from .forms import MensajeChatForm
+from .services import comprar_producto, PurchaseError
 
 
 class LobbyView(TemplateView):
@@ -80,6 +84,104 @@ def lobby_principal(request):
 
 def en_construccion(request):
     return render(request, 'principal/en_construccion.html')
+
+
+class NoticiasView(ListView):
+    """Lista las noticias publicadas por el equipo de LeBrum."""
+    model = Noticia
+    template_name = 'principal/modulo.html'
+    context_object_name = 'items'
+
+    def get_queryset(self):
+        return Noticia.objects.filter(publicada=True)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(titulo_modulo='NOTICIAS', subtitulo='Novedades de la escena competitiva', tipo_modulo='noticias')
+        return context
+
+
+class TransmisionesView(ListView):
+    """Muestra canales de competición en directo y próximos."""
+    model = Transmision
+    template_name = 'principal/modulo.html'
+    context_object_name = 'items'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(titulo_modulo='TRANSMISIONES', subtitulo='Señal oficial de la arena', tipo_modulo='transmisiones')
+        return context
+
+
+class JuegosView(ListView):
+    """Catálogo de videojuegos con torneos disponibles."""
+    template_name = 'principal/modulo.html'
+    context_object_name = 'items'
+
+    def get_queryset(self):
+        from torneos.models import Videojuego
+        return Videojuego.objects.prefetch_related('torneos').order_by('nombre')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(titulo_modulo='JUEGOS', subtitulo='Títulos activos en LeBrum', tipo_modulo='juegos')
+        return context
+
+
+class ChatView(ListView):
+    """Canal global persistente; publicar requiere autenticación."""
+    model = MensajeChat
+    template_name = 'principal/modulo.html'
+    context_object_name = 'items'
+
+    def get_queryset(self):
+        return MensajeChat.objects.filter(visible=True).select_related('usuario')[:80]
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(titulo_modulo='CHAT GLOBAL', subtitulo='Comunicación de la crew',
+                       tipo_modulo='chat', chat_form=MensajeChatForm())
+        return context
+
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('login')
+        form = MensajeChatForm(request.POST)
+        if form.is_valid():
+            mensaje = form.save(commit=False)
+            mensaje.usuario = request.user
+            mensaje.save()
+        return redirect('chat')
+
+
+class TiendaView(ListView):
+    """Vitrina de artículos cosméticos comprables con fichas."""
+    model = ProductoTienda
+    template_name = 'principal/modulo.html'
+    context_object_name = 'items'
+
+    def get_queryset(self):
+        return ProductoTienda.objects.filter(activo=True)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(titulo_modulo='TIENDA', subtitulo='Personaliza tu identidad de combate', tipo_modulo='tienda')
+        if self.request.user.is_authenticated:
+            context['compras'] = set(
+                CompraTienda.objects.filter(usuario=self.request.user).values_list('producto_id', flat=True)
+            )
+        return context
+
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('login')
+        producto = get_object_or_404(ProductoTienda, pk=request.POST.get('producto_id'))
+        try:
+            comprar_producto(request.user, producto)
+            messages.success(request, 'Artículo adquirido y equipado.')
+        except PurchaseError as error:
+            messages.error(request, str(error))
+        return redirect('tienda')
 
 @login_required
 def marcar_notificaciones_leidas(request):

@@ -2,6 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.core.exceptions import ValidationError
 import re
+from LeBrum.validators import validate_image_upload
 
 
 # Fondos de perfil seleccionables desde la Tienda (Slot "Fondo de Perfil")
@@ -74,6 +75,12 @@ class Usuario(AbstractUser):
     # Sistema de Ranking Mundial
     puntos_globales = models.IntegerField(default=0)
 
+    rating_competitivo = models.PositiveIntegerField(
+        default=1000,
+        verbose_name='Rating competitivo',
+        help_text='Rating ELO global del jugador.',
+    )
+
     # Billetera virtual de fichas LeBrum
     # Se inicializa en 0 al crear el usuario
     saldo_fichas = models.IntegerField(
@@ -99,6 +106,7 @@ class Usuario(AbstractUser):
         upload_to='avatares/',
         blank=True,
         null=True,
+        validators=[validate_image_upload],
         verbose_name='Avatar',
         help_text='Imagen de perfil del jugador.'
     )

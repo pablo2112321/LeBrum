@@ -1,5 +1,6 @@
 from django.db import models, transaction
 from django.conf import settings
+from LeBrum.validators import validate_image_upload
 
 
 class Equipo(models.Model):
@@ -42,6 +43,7 @@ class Equipo(models.Model):
         upload_to='equipos/logos/',
         blank=True,
         null=True,
+        validators=[validate_image_upload],
         verbose_name='Logo'
     )
 

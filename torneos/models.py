@@ -1,7 +1,9 @@
-from django.db import models, transaction
+from django.db import models
 from django.conf import settings
 from django.utils import timezone
 from datetime import timedelta
+from LeBrum.validators import validate_image_upload
+from LeBrum.storage import PrivateMediaStorage
 
 
 class Videojuego(models.Model):
@@ -20,6 +22,7 @@ class Videojuego(models.Model):
         upload_to='videojuegos/',
         blank=True,
         null=True,
+        validators=[validate_image_upload],
         verbose_name='Imagen de portada'
     )
 
@@ -118,7 +121,9 @@ class Torneo(models.Model):
 
     @property
     def plazas_ocupadas(self):
-        return self.inscripciones_completadas.count()
+        return self.inscripciones.exclude(
+            estado_pago=Inscripcion.ESTADO_RECHAZADO,
+        ).count()
 
     @property
     def plazas_disponibles(self):
@@ -206,26 +211,9 @@ class Inscripcion(models.Model):
     )
 
     def pagar_inscripcion(self, usuario):
-        if self.estado_pago == self.ESTADO_PAGADO:
-            return
+        from .services import pagar_inscripcion
 
-        if usuario.saldo_fichas < self.torneo.cuota:
-            raise ValueError('Saldo insuficiente en fichas LeBrum para completar la inscripción.')
-
-        if not self.torneo.puede_inscribir_equipo(self.equipo):
-            raise ValueError('El equipo no puede inscribirse en este torneo.')
-
-        self.fichas_usadas = int(self.torneo.cuota)
-        self.pagador = usuario
-        self.estado_pago = self.ESTADO_PAGADO
-
-        usuario.saldo_fichas -= self.fichas_usadas
-        if usuario.saldo_fichas < 0:
-            raise ValueError('El pago dejó saldo negativo, operación cancelada.')
-
-        with transaction.atomic():
-            usuario.save(update_fields=['saldo_fichas'])
-            self.save()
+        return pagar_inscripcion(self, usuario)
 
     class Meta:
         unique_together = ('torneo', 'equipo')
@@ -328,8 +316,10 @@ class Partida(models.Model):
 
     evidencia_victoria = models.ImageField(
         upload_to='evidencias_partidas/',
+        storage=PrivateMediaStorage(),
         null=True,
         blank=True,
+        validators=[validate_image_upload],
         verbose_name='Evidencia de victoria'
     )
 
@@ -372,6 +362,12 @@ class Partida(models.Model):
         blank=True,
         null=True,
         verbose_name='Estadísticas detalladas'
+    )
+
+    es_bye = models.BooleanField(
+        default=False,
+        verbose_name='Avance automático',
+        help_text='Indica que el equipo avanzó sin rival en esta ronda.',
     )
 
     @property
@@ -498,3 +494,51 @@ class RecompensaPartida(models.Model):
 
     def __str__(self):
         return f'{self.usuario} - {self.partida} ({self.xp_otorgada} XP)'
+
+
+class EventoRating(models.Model):
+    RESULTADO_VICTORIA = 'WIN'
+    RESULTADO_DERROTA = 'LOSS'
+    RESULTADO_BYE = 'BYE'
+
+    usuario = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='eventos_rating',
+        verbose_name='Jugador',
+    )
+    partida = models.ForeignKey(
+        Partida,
+        on_delete=models.CASCADE,
+        related_name='eventos_rating',
+        verbose_name='Partida',
+    )
+    torneo = models.ForeignKey(
+        Torneo,
+        on_delete=models.CASCADE,
+        related_name='eventos_rating',
+        verbose_name='Torneo',
+    )
+    rating_anterior = models.PositiveIntegerField(verbose_name='Rating anterior')
+    rating_nuevo = models.PositiveIntegerField(verbose_name='Rating nuevo')
+    delta = models.IntegerField(verbose_name='Variación')
+    resultado = models.CharField(max_length=10, verbose_name='Resultado')
+    algoritmo = models.CharField(
+        max_length=20,
+        default='elo-v1',
+        verbose_name='Algoritmo',
+    )
+    creada_el = models.DateTimeField(auto_now_add=True, verbose_name='Fecha')
+
+    class Meta:
+        verbose_name = 'evento de rating'
+        verbose_name_plural = 'eventos de rating'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['partida', 'usuario'],
+                name='evento_rating_partida_usuario_unico',
+            ),
+        ]
+
+    def __str__(self):
+        return f'{self.usuario} {self.delta:+d} rating'

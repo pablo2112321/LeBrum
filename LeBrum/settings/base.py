@@ -1,4 +1,5 @@
 import os
+import importlib.util
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -23,8 +24,15 @@ INSTALLED_APPS = [
     'torneos',
     'soporte',
     'principal',
+    'auditoria',
     
 ]
+
+# Channels es opcional para que las instalaciones existentes conserven el
+# fallback HTTP si todavía no han actualizado sus dependencias.
+CHANNELS_AVAILABLE = importlib.util.find_spec('channels') is not None
+if CHANNELS_AVAILABLE:
+    INSTALLED_APPS.append('channels')
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -32,6 +40,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'auditoria.middleware.SensitiveAccessAuditMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -58,6 +67,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'LeBrum.wsgi.application'
 ASGI_APPLICATION = 'LeBrum.asgi.application'
+
+if CHANNELS_AVAILABLE:
+    CHANNEL_LAYERS = {
+        'default': {
+            'BACKEND': 'channels.layers.InMemoryChannelLayer',
+        },
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -87,6 +103,15 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+# Evidencias de partidas: no deben quedar bajo MEDIA_ROOT ni servirse como
+# archivos estáticos. En producción, configurar el servidor para no publicar
+# esta ruta y usar PRIVATE_MEDIA_SCANNER como hook de antivirus externo.
+PRIVATE_MEDIA_ROOT = Path(os.getenv('PRIVATE_MEDIA_ROOT', BASE_DIR / 'private_media'))
+PRIVATE_MEDIA_SCANNER = os.getenv('PRIVATE_MEDIA_SCANNER', '')
+
+# Límite de defensa en profundidad para peticiones multipartaria.
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024
+FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024
 
 AUTH_USER_MODEL = 'usuarios.Usuario'
 

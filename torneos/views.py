@@ -6,11 +6,14 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Prefetch
 from django.core.exceptions import PermissionDenied
-from django.http import HttpRequest, HttpResponse
+from django.http import FileResponse, HttpRequest, HttpResponse, JsonResponse
+from django.http import Http404
 from django.views.generic import DetailView, ListView, View
+from auditoria.services import record_audit_event
 from .models import Torneo, Inscripcion, Partida
 from .forms import InscripcionForm, ResultadoPartidaForm
-from .services import procesar_inscripcion, procesar_resultado
+from .services import pagar_inscripcion, procesar_inscripcion, procesar_resultado
+from .realtime import publish_match_event
 
 
 class TorneoDetailView(DetailView):
@@ -178,6 +181,7 @@ class SalaPartidaView(View):
             self.partida.detalle_disputa = detalle
             self.partida.estado = Partida.ESTADO_EN_REVISION
             self.partida.save(update_fields=['en_disputa', 'detalle_disputa', 'estado'])
+            publish_match_event(self.partida)
             messages.warning(request, 'Disputa abierta. El Ojo de Halcón revisará la evidencia.')
             return redirect('detalle_partida', partida_id=self.partida.pk)
 
@@ -233,6 +237,64 @@ class SalaPartidaView(View):
         return render(request, self.template_name, contexto)
 
 
+class EstadoPartidaView(SalaPartidaView):
+    """Entrega el estado mínimo de la sala para actualizarla por sondeo."""
+
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> JsonResponse:
+        return JsonResponse(
+            {
+                'id': self.partida.pk,
+                'estado': self.partida.estado,
+                'ganador_id': self.partida.ganador_id,
+                'en_disputa': self.partida.en_disputa,
+                'updated_at': self.partida.reporte_creado_el.isoformat()
+                if self.partida.reporte_creado_el
+                else None,
+            },
+            headers={'Cache-Control': 'no-store'},
+        )
+
+
+class EvidenciaPartidaView(View):
+    """Descarga evidencia únicamente para capitanes participantes o staff."""
+
+    def get(self, request: HttpRequest, partida_id: int) -> HttpResponse:
+        if not request.user.is_authenticated:
+            return redirect('login')
+        partida = get_object_or_404(
+            Partida.objects.select_related(
+                'equipo_local__capitan',
+                'equipo_visitante__capitan',
+            ),
+            pk=partida_id,
+        )
+        capitanes = {
+            partida.equipo_local.capitan_id if partida.equipo_local else None,
+            partida.equipo_visitante.capitan_id if partida.equipo_visitante else None,
+        }
+        if not request.user.is_staff and request.user.id not in capitanes:
+            raise PermissionDenied('No tienes autorización para ver esta evidencia.')
+        if not partida.evidencia_victoria:
+            raise Http404('La partida no tiene evidencia.')
+
+        record_audit_event(
+            'evidence_download',
+            request=request,
+            target=partida,
+            metadata={'source': 'protected_endpoint'},
+        )
+        response = FileResponse(
+            partida.evidencia_victoria.open('rb'),
+            content_type='application/octet-stream',
+        )
+        response['Content-Disposition'] = (
+            f'attachment; filename="evidencia-partida-{partida.pk}.bin"'
+        )
+        response['X-Content-Type-Options'] = 'nosniff'
+        response['Cache-Control'] = 'private, no-store'
+        return response
+
+
 @login_required
 def inscribir_equipo(request: HttpRequest, torneo_id: int) -> HttpResponse:
     """Procesa la inscripción de un equipo mediante el servicio de dominio."""
@@ -279,10 +341,13 @@ def detalle_torneo(request, torneo_id):
 
         form = InscripcionForm(request.POST, user=request.user, torneo=torneo)
         if form.is_valid():
-            inscripcion = form.save(commit=False)
-            inscripcion.torneo = torneo
             try:
-                inscripcion.pagar_inscripcion(request.user)
+                inscripcion = procesar_inscripcion(
+                    torneo,
+                    form.cleaned_data['equipo'],
+                )
+                if inscripcion.estado_pago == Inscripcion.ESTADO_PENDIENTE:
+                    pagar_inscripcion(inscripcion, request.user)
                 mensaje = 'Inscripción realizada y pago completado.'
             except ValueError as exc:
                 mensaje = str(exc)

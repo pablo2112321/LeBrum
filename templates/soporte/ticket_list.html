@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load static %}
+{% block css_extra %}<link rel="stylesheet" href="{% static 'css/paginas/soporte.css' %}">{% endblock %}
+{% block content %}
+<main class="support-shell">
+    <header class="support-header">
+        <div><span class="cyber-kicker">CENTRO DE OPERACIONES</span><h1>Soporte / Tickets</h1>
+        <p>Canal seguro para resolver incidencias de la arena.</p></div>
+        <a class="cyber-primary-button" href="{% url 'soporte:ticket_create' %}">+ Nuevo ticket</a>
+    </header>
+    {% if tickets %}
+    <section class="ticket-grid">
+        {% for ticket in tickets %}
+        <a class="ticket-card" href="{% url 'soporte:ticket_detail' ticket.pk %}">
+            <div class="ticket-card__top"><strong>#{{ ticket.pk }}</strong><span class="ticket-status ticket-status--{{ ticket.estado|slugify }}">{{ ticket.get_estado_display }}</span></div>
+            <h2>{{ ticket.get_categoria_display }}</h2>
+            <p>{{ ticket.mensajes.first.contenido_mensaje|truncatechars:110 }}</p>
+            <small>{{ ticket.fecha_creacion|date:"d/m/Y H:i" }} · {{ ticket.mensajes.count }} mensaje{{ ticket.mensajes.count|pluralize }}</small>
+        </a>
+        {% endfor %}
+    </section>
+    {% else %}<div class="support-empty">No hay tickets registrados. ¿Necesitas asistencia?</div>{% endif %}
+</main>
+{% endblock %}

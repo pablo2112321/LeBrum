@@ -1,8 +1,10 @@
 from django.contrib import admin, messages
+from django.urls import reverse
 from django.utils.html import format_html, format_html_join
 
 from . import services
 from .models import Inscripcion, Partida, Torneo, Videojuego
+from auditoria.services import record_audit_event
 
 
 class InscripcionInline(admin.TabularInline):
@@ -130,6 +132,16 @@ class PartidaAdmin(admin.ModelAdmin):
         'resolver_disputa_local',
         'resolver_disputa_visitante',
     )
+    readonly_fields = ('enlace_evidencia',)
+
+    @admin.display(description='Evidencia privada')
+    def enlace_evidencia(self, obj):
+        if not obj or not obj.evidencia_victoria:
+            return 'Sin evidencia'
+        return format_html(
+            '<a href="{}" target="_blank" rel="noopener">Descargar evidencia protegida</a>',
+            reverse('descargar_evidencia', kwargs={'partida_id': obj.pk}),
+        )
 
     def _declarar_ganador(
         self,
@@ -153,6 +165,13 @@ class PartidaAdmin(admin.ModelAdmin):
                 continue
             try:
                 services.procesar_resultado(partida, equipo_ganador, force=force)
+                if force:
+                    record_audit_event(
+                        'dispute_resolution',
+                        request=request,
+                        target=partida,
+                        metadata={'winner_team_id': equipo_ganador.pk},
+                    )
                 procesadas += 1
             except ValueError as exc:
                 self.message_user(
@@ -193,15 +212,41 @@ class InscripcionAdmin(admin.ModelAdmin):
 
     @admin.action(description='Marcar inscripciones como Pagado')
     def accion_marcar_pagado(self, request, queryset):
-        torneos = {inscripcion.torneo for inscripcion in queryset.select_related('torneo')}
-        actualizadas = queryset.update(estado_pago=Inscripcion.ESTADO_PAGADO)
-        for torneo in torneos:
-            torneo.actualizar_estado_capacidad()
+        actualizadas = 0
+        for inscripcion in queryset:
+            try:
+                services.confirmar_pago_manual(inscripcion)
+                record_audit_event(
+                    'payment_state_change',
+                    request=request,
+                    target=inscripcion,
+                    metadata={'before': 'Pendiente', 'after': 'Pagado', 'source': 'admin'},
+                )
+                actualizadas += 1
+            except ValueError as exc:
+                self.message_user(
+                    request,
+                    f'Inscripción #{inscripcion.pk}: {exc}',
+                    level=messages.ERROR,
+                )
         self.message_user(
             request,
             f'{actualizadas} inscripción(es) marcada(s) como Pagado.',
             level=messages.SUCCESS,
         )
+
+    def save_model(self, request, obj, form, change):
+        previous_state = None
+        if change:
+            previous_state = type(obj).objects.get(pk=obj.pk).estado_pago
+        super().save_model(request, obj, form, change)
+        if change and previous_state != obj.estado_pago:
+            record_audit_event(
+                'payment_state_change',
+                request=request,
+                target=obj,
+                metadata={'before': previous_state, 'after': obj.estado_pago, 'source': 'admin'},
+            )
 
 
 @admin.register(Videojuego)
