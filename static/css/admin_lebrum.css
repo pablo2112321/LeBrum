@@ -1,4 +1,4 @@
-:root {
+﻿:root {
     --cyber-bg: #0a0a0f;
     --cyber-card: #12131a;
     --cyber-card-alt: #191b25;
@@ -206,7 +206,7 @@ a.button,
     border: 1px solid var(--cyber-yellow);
     border-radius: 0;
     clip-path: var(--cyber-cut);
-    color: #0a0a0f;
+    color: var(--cyber-bg);
     font-weight: 900;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -221,7 +221,7 @@ a.button:hover,
 .cyber-button:hover {
     background: var(--cyber-cyan);
     box-shadow: 7px 0 0 var(--cyber-magenta), -7px 0 0 var(--cyber-yellow);
-    color: #0a0a0f;
+    color: var(--cyber-bg);
 }
 
 .deletelink,

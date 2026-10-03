@@ -9,12 +9,13 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.utils import timezone
-from django.views.decorators.http import require_GET
+from django.views.decorators.http import require_GET, require_POST
 from django.views.generic import DetailView, ListView, View
 from torneos.models import RecompensaPartida
 from django.db.models import Q
 from .forms import EditarPerfilForm, LoadoutForm, RegistroUsuarioForm
-from .models import CuentaJuego, Notificacion, Usuario
+from .models import CuentaJuego, Notificacion, SolicitudPrivacidad, Usuario
+from .services import procesar_solicitud_privacidad
 from torneos.models import Torneo
 import requests  # Para hacer peticiones a la API oficial
 
@@ -22,6 +23,7 @@ import requests  # Para hacer peticiones a la API oficial
 # ==========================================
 # VALIDACIÓN EN TIEMPO REAL (JSON / AJAX)
 # ==========================================
+@login_required
 @require_GET
 def verificar_usuario(request):
     valor = request.GET.get('valor', '').strip()
@@ -33,6 +35,7 @@ def verificar_usuario(request):
     })
 
 
+@login_required
 @require_GET
 def verificar_tag(request):
     valor = request.GET.get('valor', '').strip()
@@ -42,6 +45,62 @@ def verificar_tag(request):
         'valor': valor,
         'disponible': not en_uso,
     })
+
+
+def privacidad(request):
+    """Muestra el aviso de privacidad y los derechos disponibles."""
+    return render(request, 'usuarios/privacidad.html')
+
+
+@login_required
+def exportar_datos(request):
+    """Entrega al titular una copia legible de sus datos principales."""
+    usuario = request.user
+    return JsonResponse({
+        'usuario': {
+            'username': usuario.username,
+            'email': usuario.email,
+            'tag_jugador': usuario.tag_jugador,
+            'riot_id': usuario.riot_id,
+            'steam_id': usuario.steam_id,
+            'creado_el': usuario.date_joined.isoformat(),
+        },
+        'competitivo': {
+            'rating': usuario.rating_competitivo,
+            'xp': usuario.puntos_xp,
+            'victorias': usuario.victorias,
+            'derrotas': usuario.derrotas,
+        },
+    }, json_dumps_params={'ensure_ascii': False, 'indent': 2})
+
+
+@login_required
+@require_POST
+def solicitar_privacidad(request):
+    """Registra una solicitud formal de derechos de privacidad."""
+    tipo = request.POST.get('tipo', '').strip()
+    tipos_validos = {choice[0] for choice in SolicitudPrivacidad.TIPOS}
+    if tipo not in tipos_validos:
+        return JsonResponse({'error': 'Tipo de solicitud no válido.'}, status=400)
+    solicitud = SolicitudPrivacidad.objects.create(
+        usuario=request.user,
+        tipo=tipo,
+        detalle=request.POST.get('detalle', '').strip(),
+    )
+    return JsonResponse({'id': solicitud.pk, 'estado': solicitud.estado}, status=201)
+
+
+@staff_member_required
+@require_POST
+def procesar_privacidad(request, solicitud_id: int):
+    """Permite al personal autorizado resolver una solicitud pendiente."""
+    solicitud = get_object_or_404(
+        SolicitudPrivacidad.objects.select_related('usuario'),
+        pk=solicitud_id,
+        estado='pending',
+    )
+    procesar_solicitud_privacidad(solicitud, request.user)
+    return JsonResponse({'id': solicitud.pk, 'estado': solicitud.estado})
 
 
 # Función de seguridad: Simulador / PING Real a la API de Riot Games

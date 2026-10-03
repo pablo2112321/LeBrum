@@ -1,4 +1,4 @@
-.support-shell { background: var(--cyber-bg); color: var(--cyber-text); min-height: 70vh; padding: 36px clamp(18px, 5vw, 70px); }
+﻿.support-shell { background: var(--cyber-bg); color: var(--cyber-text); min-height: 70vh; padding: 36px clamp(18px, 5vw, 70px); }
 .support-shell--narrow { margin: 0 auto; max-width: 1000px; }
 .support-header { align-items: flex-end; display: flex; gap: 24px; justify-content: space-between; margin-bottom: 28px; }
 .support-header h1 { font-size: clamp(2rem, 5vw, 3.5rem); letter-spacing: .06em; margin: 8px 0; text-transform: uppercase; }
@@ -16,7 +16,7 @@
 .support-empty { border: 1px dashed var(--cyber-cyan); color: var(--cyber-muted); padding: 40px; text-align: center; }
 .support-form { background: var(--cyber-panel); border: 1px solid rgba(0,240,255,.3); clip-path: var(--cyber-cut); display: grid; gap: 18px; padding: 28px; }
 .support-form label { color: var(--cyber-muted); display: grid; font-size: .8rem; font-weight: 900; gap: 8px; letter-spacing: .08em; text-transform: uppercase; }
-.cyber-input { background: #0a0a0f; border: 1px solid #343747; color: var(--cyber-text); font: inherit; padding: 12px; width: 100%; }
+.cyber-input { background: var(--cyber-bg); border: 1px solid #343747; color: var(--cyber-text); font: inherit; padding: 12px; width: 100%; }
 .cyber-input:focus { border-color: var(--cyber-cyan); box-shadow: 0 0 15px rgba(0,240,255,.25); outline: none; }
 .form-error { color: var(--cyber-magenta); font-size: .75rem; }
 .support-actions { margin-top: 10px; }
@@ -29,3 +29,4 @@
 .message-card a { color: var(--cyber-cyan); }
 .status-form { margin-top: 24px; }
 @media (max-width: 650px) { .support-header { align-items: stretch; flex-direction: column; } .support-actions { align-items: stretch; flex-direction: column; gap: 12px; } }
+

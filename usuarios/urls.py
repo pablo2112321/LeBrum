@@ -12,6 +12,14 @@ urlpatterns = [
     path('perfil/editar/', views.editar_perfil, name='editar_perfil'),
     path('perfil/<str:nametag>/', views.PerfilDetalleView.as_view(), name='perfil_detalle'),
     path('perfil-buscar/', views.buscar_jugador, name='buscar_jugador'),
+    path('privacidad/', views.privacidad, name='privacidad'),
+    path('privacidad/exportar/', views.exportar_datos, name='exportar_datos'),
+    path('privacidad/solicitar/', views.solicitar_privacidad, name='solicitar_privacidad'),
+    path(
+        'privacidad/solicitudes/<int:solicitud_id>/procesar/',
+        views.procesar_privacidad,
+        name='procesar_privacidad',
+    ),
     path(
         'notificaciones/marcar-leidas/',
         views.MarcarNotificacionesLeidasView.as_view(),

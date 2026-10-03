@@ -3,6 +3,7 @@ import importlib.util
 from pathlib import Path
 
 from dotenv import load_dotenv
+from django.core.exceptions import ImproperlyConfigured
 
 # Carga las variables locales sin sobrescribir variables definidas por el entorno.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -31,6 +32,7 @@ INSTALLED_APPS = [
 # Channels es opcional para que las instalaciones existentes conserven el
 # fallback HTTP si todavía no han actualizado sus dependencias.
 CHANNELS_AVAILABLE = importlib.util.find_spec('channels') is not None
+REDIS_URL = os.getenv('REDIS_URL', '').strip()
 if CHANNELS_AVAILABLE:
     INSTALLED_APPS.append('channels')
 
@@ -69,11 +71,19 @@ WSGI_APPLICATION = 'LeBrum.wsgi.application'
 ASGI_APPLICATION = 'LeBrum.asgi.application'
 
 if CHANNELS_AVAILABLE:
-    CHANNEL_LAYERS = {
-        'default': {
-            'BACKEND': 'channels.layers.InMemoryChannelLayer',
-        },
-    }
+    if REDIS_URL:
+        CHANNEL_LAYERS = {
+            'default': {
+                'BACKEND': 'channels_redis.core.RedisChannelLayer',
+                'CONFIG': {'hosts': [REDIS_URL]},
+            },
+        }
+    else:
+        CHANNEL_LAYERS = {
+            'default': {
+                'BACKEND': 'channels.layers.InMemoryChannelLayer',
+            },
+        }
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -108,6 +118,10 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # esta ruta y usar PRIVATE_MEDIA_SCANNER como hook de antivirus externo.
 PRIVATE_MEDIA_ROOT = Path(os.getenv('PRIVATE_MEDIA_ROOT', BASE_DIR / 'private_media'))
 PRIVATE_MEDIA_SCANNER = os.getenv('PRIVATE_MEDIA_SCANNER', '')
+TRUSTED_PROXY_COUNT = int(os.getenv('TRUSTED_PROXY_COUNT', '0'))
+
+if PRIVATE_MEDIA_ROOT.resolve() == MEDIA_ROOT.resolve():
+    raise ImproperlyConfigured('PRIVATE_MEDIA_ROOT no puede coincidir con MEDIA_ROOT.')
 
 # Límite de defensa en profundidad para peticiones multipartaria.
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024
@@ -122,3 +136,32 @@ LOGIN_URL = 'login'
 RIOT_API_KEY = os.getenv('RIOT_API_KEY', '')
 STEAM_API_KEY = os.getenv('STEAM_API_KEY', '')
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', '')
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'security': {
+            'format': '{asctime} {levelname} {name} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'security',
+        },
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['console'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'lebrum.security': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
+}

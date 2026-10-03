@@ -1,17 +1,17 @@
-/* ============================================================
+﻿/* ============================================================
    EQUIPOS.CSS - SECTOR CREWS DE LABRUMA (CYBERPUNK)
-   Listado + Creación + estilos compartidos de la Crew
+   Listado + CreaciÃ³n + estilos compartidos de la Crew
    ============================================================ */
 
 .eq-page {
-    --eq-cyan: #00e5ff;
-    --eq-magenta: #ec008c;
+    --eq-cyan: var(--cyber-cyan);
+    --eq-magenta: var(--cyber-magenta);
     --eq-magenta-soft: #ff3ea5;
-    --eq-gold: #ffd700;
-    --eq-green: #4ade80;
-    --eq-red: #f87171;
+    --eq-gold: var(--cyber-yellow);
+    --eq-green: var(--cyber-cyan);
+    --eq-red: var(--cyber-magenta);
     --eq-text: #e6eef8;
-    --eq-muted: #94a3b8;
+    --eq-muted: var(--cyber-muted);
     --eq-panel: rgba(8, 8, 12, 0.72);
 
     position: relative;
@@ -56,11 +56,11 @@
     font-weight: 900;
     letter-spacing: 1.4px;
     text-transform: uppercase;
-    color: #f8fafc;
+    color: var(--cyber-text);
 }
 
 .eq-hero h1 span {
-    background: linear-gradient(90deg, #00e5ff, #ec008c, #00e5ff);
+    background: linear-gradient(90deg, var(--cyber-cyan), var(--cyber-magenta), var(--cyber-cyan));
     background-size: 200% auto;
     -webkit-background-clip: text;
     background-clip: text;
@@ -78,7 +78,7 @@
     color: var(--eq-muted);
 }
 
-/* ---------------- BOTONES NEÓN ---------------- */
+/* ---------------- BOTONES NEÃ“N ---------------- */
 .eq-btn {
     display: inline-flex;
     align-items: center;
@@ -99,7 +99,7 @@
 
 .eq-btn--cyan {
     color: #000;
-    background: linear-gradient(135deg, #00e5ff, #ec008c);
+    background: linear-gradient(135deg, var(--cyber-cyan), var(--cyber-magenta));
     border: none;
     box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.14), 0 0 28px rgba(236, 0, 140, 0.4);
 }
@@ -150,7 +150,7 @@
     color: #86efac;
 }
 
-/* ---------------- ALERTA NEÓN DE PERFIL INCOMPLETO ---------------- */
+/* ---------------- ALERTA NEÃ“N DE PERFIL INCOMPLETO ---------------- */
 .eq-alerta--bloqueo {
     display: flex;
     flex-direction: column;
@@ -193,7 +193,7 @@
     color: #fecaca;
 }
 
-/* ---------------- BARRA DE BÚSQUEDA EN VIVO ---------------- */
+/* ---------------- BARRA DE BÃšSQUEDA EN VIVO ---------------- */
 .eq-search {
     display: flex;
     align-items: center;
@@ -224,7 +224,7 @@
     background: transparent;
     border: none;
     outline: none;
-    color: #f8fafc;
+    color: var(--cyber-text);
     font-size: 0.95rem;
     padding: 12px 8px;
     font-family: inherit;
@@ -296,7 +296,7 @@
     min-width: 66px;
     border-radius: 16px;
     padding: 3px;
-    background: conic-gradient(from 180deg, #00e5ff, #ec008c, #00e5ff);
+    background: conic-gradient(from 180deg, var(--cyber-cyan), var(--cyber-magenta), var(--cyber-cyan));
     box-shadow: 0 0 18px rgba(0, 229, 255, 0.35);
     display: flex;
     align-items: center;
@@ -309,7 +309,7 @@
     height: 100%;
     object-fit: cover;
     border-radius: 13px;
-    background: #0f172a;
+    background: var(--cyber-bg);
 }
 
 .eq-card-logo i {
@@ -319,7 +319,7 @@
     align-items: center;
     justify-content: center;
     border-radius: 13px;
-    background: linear-gradient(145deg, #1e293b, #0b1220);
+    background: linear-gradient(145deg, var(--cyber-panel-alt), #0b1220);
     color: var(--eq-cyan);
     font-size: 1.5rem;
     text-shadow: 0 0 12px rgba(0, 229, 255, 0.7);
@@ -333,7 +333,7 @@
     font-weight: 900;
     letter-spacing: 0.8px;
     text-transform: uppercase;
-    color: #f8fafc;
+    color: var(--cyber-text);
     word-break: break-word;
 }
 
@@ -346,7 +346,7 @@
     font-weight: 900;
     letter-spacing: 1.6px;
     color: #000;
-    background: linear-gradient(135deg, #00e5ff, #ec008c);
+    background: linear-gradient(135deg, var(--cyber-cyan), var(--cyber-magenta));
     box-shadow: 0 0 12px rgba(236, 0, 140, 0.4);
 }
 
@@ -388,7 +388,7 @@
 
 .eq-card .eq-btn--outline { margin-top: 2px; }
 
-/* ---------------- ESTADO VACÍO ---------------- */
+/* ---------------- ESTADO VACÃO ---------------- */
 .eq-vacio {
     display: flex;
     flex-direction: column;
@@ -457,7 +457,7 @@
     background: rgba(2, 2, 6, 0.8);
     border: 1px solid rgba(148, 163, 184, 0.3);
     border-radius: 12px;
-    color: #f8fafc;
+    color: var(--cyber-text);
     font-size: 0.95rem;
     font-family: inherit;
     outline: none;
@@ -495,7 +495,7 @@
     gap: 0 22px;
 }
 
-/* Botón FORJAR CREW (masivo, pulso) */
+/* BotÃ³n FORJAR CREW (masivo, pulso) */
 .eq-btn--forjar {
     width: 100%;
     margin-top: 10px;
@@ -503,7 +503,7 @@
     font-size: 1.25rem;
     letter-spacing: 4px;
     color: #000;
-    background: linear-gradient(135deg, #00e5ff, #ec008c);
+    background: linear-gradient(135deg, var(--cyber-cyan), var(--cyber-magenta));
     border: none;
     border-radius: 16px;
     box-shadow: 0 0 0 4px rgba(0, 229, 255, 0.16), 0 0 30px rgba(236, 0, 140, 0.5);
@@ -531,3 +531,4 @@
     .eq-hero { padding: 24px 20px; }
     .eq-hero h1 { font-size: 1.7rem; }
 }
+

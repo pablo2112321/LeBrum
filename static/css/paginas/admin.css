@@ -1,13 +1,13 @@
-/* ============================================================
-   ADMIN.CSS - OJO DE HALCÓN (PANEL ADMIN INDUSTRIAL)
+﻿/* ============================================================
+   ADMIN.CSS - OJO DE HALCÃ“N (PANEL ADMIN INDUSTRIAL)
    ============================================================ */
 
 :root {
-    --halcon-purple: #ff0055;
-    --halcon-cyan: #00f0ff;
-    --halcon-gold: #ffe600;
-    --halcon-text: #ffffff;
-    --halcon-muted: #a0a5b5;
+    --halcon-purple: var(--cyber-magenta);
+    --halcon-cyan: var(--cyber-cyan);
+    --halcon-gold: var(--cyber-yellow);
+    --halcon-text: var(--cyber-text);
+    --halcon-muted: var(--cyber-muted);
 }
 
 .halcon-shell {
@@ -17,7 +17,7 @@
     padding: 36px 40px 60px;
     background:
         repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 5px),
-        #0a0a0f;
+        var(--cyber-bg);
     color: var(--halcon-text);
     border-radius: 0 0 24px 24px;
 }
@@ -111,7 +111,7 @@
 .halcon-stat .stat-valor {
     font-size: 1.6rem;
     font-weight: 900;
-    color: #ffffff;
+    color: var(--cyber-text);
 }
 
 .halcon-stat .stat-label {
@@ -204,7 +204,7 @@
     font-weight: 900;
     letter-spacing: 1px;
     text-transform: uppercase;
-    background: linear-gradient(90deg, #ffffff, #c77dff, #48cae4);
+    background: linear-gradient(90deg, var(--cyber-text), var(--cyber-magenta), var(--cyber-cyan));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -215,7 +215,7 @@
     color: var(--halcon-muted);
 }
 
-/* --- BOTÓN GRANDE "+ CREAR NUEVO TORNEO" --- */
+/* --- BOTÃ“N GRANDE "+ CREAR NUEVO TORNEO" --- */
 .halcon-crear-accion {
     display: flex;
     justify-content: flex-end;
@@ -232,7 +232,7 @@
     font-weight: 900;
     letter-spacing: 1px;
     text-transform: uppercase;
-    color: #ffffff;
+    color: var(--cyber-text);
     text-decoration: none;
     border: 1px solid rgba(79, 173, 255, 0.6);
     background: linear-gradient(135deg, rgba(138, 43, 226, 0.95), rgba(79, 173, 255, 0.9));
@@ -275,7 +275,7 @@
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.8px;
-    color: #ffffff;
+    color: var(--cyber-text);
 }
 
 .halcon-tabla-card h3 i {
@@ -330,7 +330,7 @@
 
 .halcon-tabla .celda-nombre {
     font-weight: 800;
-    color: #ffffff;
+    color: var(--cyber-text);
 }
 
 .halcon-tabla .celda-muted {
@@ -352,7 +352,7 @@
 .halcon-estado--abierto {
     background: rgba(34, 197, 94, 0.14);
     border-color: rgba(34, 197, 94, 0.45);
-    color: #4ade80;
+    color: var(--cyber-cyan);
 }
 
 .halcon-estado--lleno {
@@ -364,7 +364,7 @@
 .halcon-estado--curso {
     background: rgba(72, 202, 228, 0.14);
     border-color: rgba(72, 202, 228, 0.45);
-    color: #48cae4;
+    color: var(--cyber-cyan);
 }
 
 .halcon-estado--finalizado {
@@ -373,7 +373,7 @@
     color: var(--halcon-muted);
 }
 
-/* Contador de inscritos (barra de ocupación) */
+/* Contador de inscritos (barra de ocupaciÃ³n) */
 .halcon-ocupacion {
     display: flex;
     align-items: center;
@@ -403,7 +403,7 @@
     white-space: nowrap;
 }
 
-/* Estado vacío: arena despejada */
+/* Estado vacÃ­o: arena despejada */
 .halcon-vacio {
     display: flex;
     flex-direction: column;
@@ -446,3 +446,4 @@
         justify-content: center;
     }
 }
+

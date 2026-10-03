@@ -1,4 +1,4 @@
-.global-ranking {
+﻿.global-ranking {
     color: var(--cyber-text);
     margin: 0 auto;
     max-width: 1180px;
@@ -128,3 +128,4 @@
         flex-direction: column;
     }
 }
+

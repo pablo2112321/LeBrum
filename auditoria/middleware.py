@@ -1,7 +1,11 @@
+import logging
+
 from django.conf import settings
 from django.utils.deprecation import MiddlewareMixin
 
 from .services import record_audit_event
+
+security_logger = logging.getLogger('lebrum.security')
 
 
 class SensitiveAccessAuditMiddleware(MiddlewareMixin):
@@ -24,4 +28,18 @@ class SensitiveAccessAuditMiddleware(MiddlewareMixin):
                     'method': request.method,
                     'status_code': response.status_code,
                 })
+        if response.status_code >= 500:
+            security_logger.error(
+                'Error interno en %s %s con estado %s',
+                request.method,
+                request.path,
+                response.status_code,
+            )
+        elif response.status_code in {401, 403}:
+            security_logger.warning(
+                'Acceso rechazado en %s %s con estado %s',
+                request.method,
+                request.path,
+                response.status_code,
+            )
         return response

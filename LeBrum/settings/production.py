@@ -39,6 +39,13 @@ DATABASES = {
     )
 }
 
+if not REDIS_URL:
+    raise ImproperlyConfigured('La variable de entorno REDIS_URL es obligatoria en producción.')
+if not PRIVATE_MEDIA_SCANNER:
+    raise ImproperlyConfigured(
+        'La variable de entorno PRIVATE_MEDIA_SCANNER es obligatoria en producción.'
+    )
+
 SECURE_SSL_REDIRECT = True
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True

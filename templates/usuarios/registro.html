@@ -14,7 +14,7 @@
             <img src="{% static 'img/Logo.png' %}" alt="LeBrum Logo" class="auth-logo">
             <div>
                 <h1>Registro LeBrum</h1>
-                <p>Activa tu cuenta y lidera a tu escuadrón con estilo galáctico.</p>
+                <p>Activa tu cuenta y lidera a tu escuadrón en la arena competitiva.</p>
             </div>
         </div>
 
@@ -96,8 +96,13 @@
                 <i class="fas fa-rocket"></i> Crear cuenta
             </button>
 
+            <p class="auth-privacy-notice">
+                Al registrarte confirmas que leíste el
+                <a href="{% url 'privacidad' %}">aviso de privacidad</a>.
+            </p>
+
             <div class="auth-footer">
-                <p style="margin:0;color:var(--text-muted);">¿Ya tienes una cuenta?</p>
+                <p class="auth-footer__prompt">¿Ya tienes una cuenta?</p>
                 <a href="{% url 'login' %}">Inicia sesión aquí</a>
             </div>
         </form>

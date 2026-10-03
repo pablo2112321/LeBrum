@@ -153,15 +153,9 @@
                     </span>
 
                     <div class="eqd-agente-ids">
-                        {% if m.usuario.riot_id %}
-                            <span class="eqd-id"><i class="fab fa-riotgames"></i> {{ m.usuario.riot_id }}</span>
-                        {% endif %}
-                        {% if m.usuario.steam_id %}
-                            <span class="eqd-id"><i class="fab fa-steam"></i> {{ m.usuario.steam_id }}</span>
-                        {% endif %}
-                        {% if not m.usuario.riot_id and not m.usuario.steam_id %}
-                            <span class="eqd-id eqd-id--none">SIN ID COMPETITIVO</span>
-                        {% endif %}
+                        <span class="eqd-id eqd-id--private">
+                            <i class="fas fa-shield-halved"></i> ID competitivo protegido
+                        </span>
                     </div>
                 </article>
             {% empty %}

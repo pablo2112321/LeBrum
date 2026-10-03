@@ -1,0 +1,49 @@
+{% extends 'auth_base.html' %}
+
+{% block title %}Privacidad | LeBrum{% endblock %}
+
+{% block content %}
+<main class="auth-page">
+    <article class="auth-card glass-card">
+        <h1>AVISO DE PRIVACIDAD</h1>
+        <p>LeBrum trata los datos necesarios para gestionar cuentas, equipos, torneos,
+            pagos internos, soporte y seguridad de la plataforma.</p>
+        <h2>Datos tratados</h2>
+        <p>Identidad de cuenta, correo, identificadores competitivos, estadísticas,
+            registros de soporte, actividad de seguridad y operaciones económicas.</p>
+        <h2>Finalidades y conservación</h2>
+        <p>Los datos se usan para prestar el servicio, prevenir fraude, resolver disputas
+            y cumplir obligaciones legales. Se conservarán sólo durante el plazo necesario
+            para cada finalidad y luego serán eliminados o anonimizados.</p>
+        <h2>Tus opciones</h2>
+        <p>Puedes solicitar acceso, corrección, eliminación u oposición mediante soporte.
+            También puedes descargar los datos básicos asociados a tu cuenta:</p>
+        <a class="btn-neon btn-neon--primary" href="{% url 'exportar_datos' %}">
+            EXPORTAR MIS DATOS
+        </a>
+        {% if request.user.is_authenticated %}
+            <form method="post" action="{% url 'solicitar_privacidad' %}" class="privacy-request-form">
+                {% csrf_token %}
+                <label for="privacy-request-type">SOLICITAR UN DERECHO</label>
+                <select id="privacy-request-type" name="tipo" required>
+                    <option value="access">Acceso</option>
+                    <option value="rectification">Rectificación</option>
+                    <option value="erasure">Eliminación y anonimización</option>
+                    <option value="opposition">Oposición</option>
+                </select>
+                <textarea name="detalle" rows="3" maxlength="2000"
+                          placeholder="Describe tu solicitud (opcional)"></textarea>
+                <button class="btn-neon btn-neon--primary" type="submit">
+                    ENVIAR SOLICITUD
+                </button>
+            </form>
+        {% else %}
+            <p>Inicia sesión para enviar una solicitud formal de privacidad.</p>
+        {% endif %}
+        <p class="auth-privacy-notice">
+            Esta información es orientativa y debe complementarse con la política formal
+            y revisión jurídica aplicable en Chile.
+        </p>
+    </article>
+</main>
+{% endblock %}

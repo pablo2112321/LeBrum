@@ -1,17 +1,17 @@
-/* Esto arregla el modelo de caja para toda tu web */
+﻿/* Esto arregla el modelo de caja para toda tu web */
 * {
     box-sizing: border-box;
 }
 
 /* --- VARIABLES GLOBALES --- */
 :root {
-    --bg-dark: #121212;
-    --bg-sidebar: #181818;
-    --bg-card: #202020;
-    --accent-blue: #2563eb;
-    --text-main: #ffffff;
-    --text-muted: #a0a0a0;
-    --border-color: #2a2a2a;
+    --bg-dark: var(--cyber-bg);
+    --bg-sidebar: var(--cyber-panel);
+    --bg-card: var(--cyber-panel);
+    --accent-blue: var(--cyber-cyan);
+    --text-main: var(--cyber-text);
+    --text-muted: var(--cyber-muted);
+    --border-color: var(--cyber-line);
 }
 
 body {
@@ -24,7 +24,7 @@ body {
 /* Barra de Scroll Global para toda la web */
 ::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-track { background: var(--bg-dark); }
-::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+::-webkit-scrollbar-thumb { background: var(--cyber-line); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--accent-blue); }
 
 /* --- ESTRUCTURA GENERAL --- */
@@ -60,7 +60,7 @@ body {
     letter-spacing: 2px;
 }
 
-/* Contenedor del menú con scroll habilitado */
+/* Contenedor del menÃº con scroll habilitado */
 .sidebar-nav {
     display: flex;
     flex-direction: column;
@@ -69,7 +69,7 @@ body {
     padding-bottom: 20px;
 }
 
-/* Estilos de la barra de scroll del menú */
+/* Estilos de la barra de scroll del menÃº */
 .sidebar-nav::-webkit-scrollbar {
     width: 5px; 
 }
@@ -77,7 +77,7 @@ body {
     background: transparent;
 }
 .sidebar-nav::-webkit-scrollbar-thumb {
-    background-color: #334155; 
+    background-color: var(--cyber-line); 
     border-radius: 10px;
 }
 .sidebar-nav::-webkit-scrollbar-thumb:hover {
@@ -96,27 +96,27 @@ body {
     border-left: 4px solid transparent; 
 }
 
-/* Estado al hacer CLIC (Efecto de hundimiento físico) */
+/* Estado al hacer CLIC (Efecto de hundimiento fÃ­sico) */
 .sidebar-nav a:active {
-    transform: scale(0.95); /* Encoge el botón un 5% */
-    transition: transform 0.1s ease; /* Súper rápido para que se sienta reactivo */
+    transform: scale(0.95); /* Encoge el botÃ³n un 5% */
+    transition: transform 0.1s ease; /* SÃºper rÃ¡pido para que se sienta reactivo */
 }
 
-/* Estado Hover (Animación RGB) */
+/* Estado Hover (AnimaciÃ³n RGB) */
 .sidebar-nav a:hover {
     background-color: rgba(255, 255, 255, 0.08);
     animation: rgb-glow 2s linear infinite; 
 }
 
-/* --- ANIMACIÓN RGB GAMER --- */
+/* --- ANIMACIÃ“N RGB GAMER --- */
 @keyframes rgb-glow {
-    0%   { color: #ff0055; border-left-color: #ff0055; text-shadow: 0 0 10px rgba(255, 0, 85, 0.6); }
+    0%   { color: var(--cyber-magenta); border-left-color: var(--cyber-magenta); text-shadow: 0 0 10px rgba(255, 0, 85, 0.6); }
     16%  { color: #ffaa00; border-left-color: #ffaa00; text-shadow: 0 0 10px rgba(255, 170, 0, 0.6); }
     33%  { color: #aaff00; border-left-color: #aaff00; text-shadow: 0 0 10px rgba(170, 255, 0, 0.6); }
     50%  { color: #00ffaa; border-left-color: #00ffaa; text-shadow: 0 0 10px rgba(0, 255, 170, 0.6); }
     66%  { color: #00aaff; border-left-color: #00aaff; text-shadow: 0 0 10px rgba(0, 170, 255, 0.6); }
     83%  { color: #aa00ff; border-left-color: #aa00ff; text-shadow: 0 0 10px rgba(170, 0, 255, 0.6); }
-    100% { color: #ff0055; border-left-color: #ff0055; text-shadow: 0 0 10px rgba(255, 0, 85, 0.6); }
+    100% { color: var(--cyber-magenta); border-left-color: var(--cyber-magenta); text-shadow: 0 0 10px rgba(255, 0, 85, 0.6); }
 }
 
 /* --- BARRA SUPERIOR (TOPBAR) --- */
@@ -141,7 +141,7 @@ body {
     width: 450px; 
 }
 
-/* Cuando el buscador está seleccionado/activo */
+/* Cuando el buscador estÃ¡ seleccionado/activo */
 .search-box:focus-within {
     box-shadow: 0 0 15px rgba(37, 99, 235, 0.4); /* Brillo azul externo */
     border: 1px solid var(--accent-blue);
@@ -183,7 +183,7 @@ body {
 }
 
 .notification:hover {
-    background-color: #2a2a2a; 
+    background-color: var(--cyber-line); 
 }
 
 .avatar {
@@ -277,7 +277,7 @@ body {
     }
 }
 
-/* Animación de entrada para todas las páginas */
+/* AnimaciÃ³n de entrada para todas las pÃ¡ginas */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(15px); }
     to { opacity: 1; transform: translateY(0); }
@@ -287,7 +287,7 @@ body {
     animation: fadeIn 0.4s ease-out forwards;
 }
 
-/* --- MICRO-INTERACCIÓN 1: CAMPANA VIBRANTE --- */
+/* --- MICRO-INTERACCIÃ“N 1: CAMPANA VIBRANTE --- */
 @keyframes ring-bell {
     0%   { transform: rotate(0); }
     15%  { transform: rotate(15deg); }
@@ -303,7 +303,7 @@ body {
     color: var(--accent-blue); 
 }
 
-/* --- MICRO-INTERACCIÓN 2: PULSO DE ENERGÍA EN AVATAR --- */
+/* --- MICRO-INTERACCIÃ“N 2: PULSO DE ENERGÃA EN AVATAR --- */
 @keyframes avatar-pulse {
     0%   { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.7); }
     70%  { box-shadow: 0 0 0 10px rgba(37, 99, 235, 0); }
@@ -321,7 +321,7 @@ body {
     position: absolute;
     top: -2px;   /* Ajustado para que no flote tanto */
     right: -2px;  /* Ajustado hacia la esquina */
-    background-color: #ef4444; 
+    background-color: var(--cyber-magenta); 
     color: white;
     font-size: 0.7rem;
     font-weight: bold;
@@ -334,7 +334,7 @@ body {
     border: 2px solid var(--bg-dark);
 }
 
-/* La caja flotante (menú desplegable) */
+/* La caja flotante (menÃº desplegable) */
 .notification-dropdown {
     position: absolute;
     top: 60px;
@@ -350,7 +350,7 @@ body {
     overflow: hidden;
 }
 
-/* Animación de apertura */
+/* AnimaciÃ³n de apertura */
 @keyframes fadeInDropdown {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
@@ -399,7 +399,7 @@ body {
     background-color: rgba(255, 255, 255, 0.05);
 }
 
-/* Si no está leída, le damos un sutil fondo distinto */
+/* Si no estÃ¡ leÃ­da, le damos un sutil fondo distinto */
 .notification-item.unread {
     background-color: rgba(37, 99, 235, 0.05);
 }

@@ -1,5 +1,10 @@
+import shutil
+import subprocess
+import tempfile
+from pathlib import Path
 from typing import Any
 
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from PIL import Image, UnidentifiedImageError
 
@@ -37,3 +42,38 @@ def validate_image_upload(value: Any) -> None:
         and (width > MAX_IMAGE_DIMENSION or height > MAX_IMAGE_DIMENSION)
     ):
         raise ValidationError('La imagen no puede superar 4096 píxeles por lado.')
+
+    scanner = str(getattr(settings, 'PRIVATE_MEDIA_SCANNER', '')).strip()
+    if scanner:
+        scan_uploaded_file(value, scanner)
+
+
+def scan_uploaded_file(value: Any, scanner: str) -> None:
+    """Escanea un archivo temporal con ClamAV y rechaza resultados inseguros."""
+    scanner_path = shutil.which(scanner) or (
+        scanner if Path(scanner).is_file() else None
+    )
+    if not scanner_path:
+        raise ValidationError('El escáner antivirus configurado no está disponible.')
+
+    try:
+        with tempfile.NamedTemporaryFile(suffix='.upload') as temporary_file:
+            value.seek(0)
+            shutil.copyfileobj(value, temporary_file)
+            temporary_file.flush()
+            result = subprocess.run(
+                [scanner_path, '--no-summary', temporary_file.name],
+                capture_output=True,
+                text=True,
+                timeout=30,
+                check=False,
+            )
+    except (OSError, subprocess.SubprocessError) as exc:
+        raise ValidationError('No fue posible completar el escaneo antivirus.') from exc
+    finally:
+        value.seek(0)
+
+    if result.returncode == 1:
+        raise ValidationError('El archivo fue rechazado por el escáner antivirus.')
+    if result.returncode != 0:
+        raise ValidationError('El escáner antivirus no pudo validar el archivo.')

@@ -1,5 +1,6 @@
 from typing import Any
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.http import HttpRequest
 
@@ -25,7 +26,12 @@ def record_audit_event(
     ip_address = None
     path = ''
     if request is not None:
-        ip_address = request.META.get('HTTP_X_FORWARDED_FOR', '').split(',')[0].strip()
+        trusted_proxy_count = int(getattr(settings, 'TRUSTED_PROXY_COUNT', 0))
+        if trusted_proxy_count:
+            forwarded = request.META.get('HTTP_X_FORWARDED_FOR', '')
+            addresses = [address.strip() for address in forwarded.split(',') if address.strip()]
+            if len(addresses) > trusted_proxy_count:
+                ip_address = addresses[-trusted_proxy_count - 1]
         ip_address = ip_address or request.META.get('REMOTE_ADDR')
         path = request.path
     return AuditEvent.objects.create(

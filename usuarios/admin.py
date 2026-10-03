@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .models import Usuario
+from .models import SolicitudPrivacidad, Usuario
 from auditoria.services import record_audit_event
 
 
@@ -72,3 +72,11 @@ class UsuarioAdmin(UserAdmin):
                     'source': 'admin',
                 },
             )
+
+
+@admin.register(SolicitudPrivacidad)
+class SolicitudPrivacidadAdmin(admin.ModelAdmin):
+    list_display = ('usuario', 'tipo', 'estado', 'creada_el', 'procesada_el')
+    list_filter = ('tipo', 'estado')
+    search_fields = ('usuario__username', 'usuario__email', 'detalle')
+    readonly_fields = ('creada_el', 'procesada_el', 'procesada_por')

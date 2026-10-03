@@ -1,0 +1,262 @@
+﻿        /* --- ESTILOS DEL LOGO EN LA BARRA LATERAL --- */
+        .sidebar .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 20px 25px;
+            text-decoration: none;
+        }
+
+        .logo-img {
+            max-height: 42px;
+            width: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 0 8px rgba(199, 125, 255, 0.4));
+        }
+
+        .sidebar .logo-container h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 900;
+            background: linear-gradient(to right, var(--cyber-magenta), var(--cyber-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        /* --- ESTILOS DEL PERFIL APILADO (STACKED) EN LA TOPBAR --- */
+        .user-menu-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .user-stacked-trigger {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            padding: 4px 10px;
+            border-radius: 14px;
+            transition: all 0.25s ease;
+            text-decoration: none;
+        }
+
+        .user-stacked-trigger:hover {
+            background: rgba(30, 41, 59, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Marco del Avatar para Usuario Logueado (Borde NeÃ³n) */
+        .user-avatar-frame {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #9d4edd, var(--cyber-cyan));
+            padding: 2.5px; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 12px rgba(72, 202, 228, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .user-stacked-trigger:hover .user-avatar-frame {
+            box-shadow: 0 0 20px rgba(199, 125, 255, 0.6);
+        }
+
+        /* --- EFECTO FANTASMA / OSCURO PARA VISITANTE (SIN NEÃ“N, NEGRO Y OPACO) --- */
+        .user-avatar-frame.ghost-frame {
+            background: var(--cyber-bg);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+        }
+
+        .user-avatar-inner {
+            width: 100%;
+            height: 100%;
+            background-color: var(--cyber-bg);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* Imagen Fantasma Opaca */
+        .ghost-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            opacity: 0.45; /* Apariencia fantasma/opaca */
+            filter: grayscale(70%) brightness(0.7);
+            transition: all 0.3s ease;
+        }
+
+        .user-stacked-trigger:hover .ghost-img {
+            opacity: 0.85;
+            filter: grayscale(0%) brightness(0.95);
+        }
+
+        /* Imagen Normal para Usuario Logueado */
+        .user-avatar-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        /* Nombre de usuario apilado */
+        .stacked-username {
+            color: var(--cyber-text);
+            font-weight: 800;
+            font-size: 0.85rem;
+            margin-top: 4px;
+            line-height: 1;
+            letter-spacing: 0.3px;
+        }
+
+        /* Insignias de Rango / Estatus */
+        .badge-boss {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: linear-gradient(45deg, var(--cyber-yellow), var(--cyber-yellow));
+            color: #000;
+            font-size: 0.65rem;
+            font-weight: 900;
+            padding: 2px 7px;
+            border-radius: 6px;
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 0 8px rgba(251, 133, 0, 0.4);
+        }
+
+        .badge-player {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(72, 202, 228, 0.15);
+            color: var(--cyber-cyan);
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 2px 7px;
+            border-radius: 6px;
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: 1px solid rgba(72, 202, 228, 0.3);
+        }
+
+        /* --- MENÃš DESPLEGABLE CRISTALINO (DROPDOWN) --- */
+        .user-dropdown {
+            display: none; 
+            position: absolute;
+            right: 0;
+            top: 105px;
+            background: rgba(11, 17, 32, 0.95);
+            backdrop-filter: blur(12px);
+            min-width: 210px;
+            border: 1px solid var(--cyber-line);
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.85), 0 0 20px rgba(199, 125, 255, 0.15);
+            overflow: hidden;
+            z-index: 1000;
+            animation: fadeInDown 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .user-dropdown.show { display: block; }
+
+        .user-dropdown a,
+        .user-dropdown button.logout-link {
+            color: #cbd5e1;
+            padding: 13px 18px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            width: 100%;
+            background: none;
+            border: none;
+            cursor: pointer;
+            box-sizing: border-box;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .user-dropdown a:hover,
+        .user-dropdown button.logout-link:hover {
+            background: rgba(199, 125, 255, 0.12);
+            color: var(--cyber-cyan);
+            padding-left: 24px; 
+            border-left: 4px solid var(--cyber-cyan);
+        }
+
+        .user-dropdown button.logout-link:hover {
+            background: rgba(239, 68, 68, 0.12);
+            color: var(--cyber-magenta);
+            border-left-color: var(--cyber-magenta);
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-12px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+.construction-page {
+    animation: rgb-glow 3s infinite;
+    margin-top: 100px;
+    text-align: center;
+}
+
+.construction-page__icon {
+    color: var(--cyber-cyan);
+    font-size: 5rem;
+    margin-bottom: 20px;
+}
+
+.construction-page__title {
+    font-size: 2.5rem;
+    text-transform: uppercase;
+}
+
+.construction-page__message {
+    color: var(--cyber-muted);
+    font-size: 1.2rem;
+}
+
+.construction-page__back {
+    background-color: var(--cyber-cyan);
+    color: var(--cyber-text);
+    display: inline-block;
+    font-weight: bold;
+    margin-top: 30px;
+    padding: 12px 30px;
+    text-decoration: none;
+}
+
+.ranking-empty {
+    color: var(--cyber-muted);
+    padding: 30px;
+    text-align: center;
+}
+
+.tournament-list-page,
+.admin-control-page {
+    color: var(--cyber-text);
+}
+
+.tournament-list-page__separator,
+.admin-control-page__separator {
+    border-color: rgba(var(--cyber-text-rgb, 255, 255, 255), .2);
+}
+
+.admin-control-page__card {
+    border: 1px solid rgba(255, 230, 0, .4);
+}
+

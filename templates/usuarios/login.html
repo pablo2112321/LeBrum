@@ -48,12 +48,12 @@
                 <small class="field-feedback" id="fb-login-pass"></small>
             </label>
 
-            <div style="display:flex;gap:12px;align-items:center;justify-content:space-between;">
-                <label class="game-sync-field" style="gap:8px;">
+            <div class="login-options">
+                <label class="game-sync-field login-options__remember">
                     <input type="checkbox" name="remember" id="remember">
-                    <span style="font-weight:600;color:var(--text-muted);">Recordarme</span>
+                    <span>Recordarme</span>
                 </label>
-                <a href="#" style="color:var(--neon-cyan);font-weight:700;text-decoration:none;">¿Olvidaste tu contraseña?</a>
+                <a href="#" class="login-options__forgot">¿Olvidaste tu contraseña?</a>
             </div>
 
             <button type="submit" class="btn-neon btn-neon--primary">
@@ -62,7 +62,7 @@
         </form>
 
         <div class="auth-footer">
-            <p style="margin:0;color:var(--text-muted);">¿No tienes cuenta?</p>
+            <p class="auth-footer__prompt">¿No tienes cuenta?</p>
             <a href="{% url 'registro' %}">Regístrate aquí</a>
         </div>
     </div>

@@ -7,9 +7,21 @@
     --cyber-magenta: #ff0055;
     --cyber-text: #ffffff;
     --cyber-muted: #a0a5b5;
+    --cyber-line: #303341;
+    --cyber-bg-rgb: 10, 10, 15;
+    --cyber-panel-rgb: 18, 19, 26;
+    --cyber-cyan-rgb: 0, 240, 255;
+    --cyber-magenta-rgb: 255, 0, 85;
+    --cyber-yellow-rgb: 255, 230, 0;
+    --cyber-text-rgb: 255, 255, 255;
     --bg-card: var(--cyber-panel);
     --text-muted: var(--cyber-muted);
     --cyber-cut: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%);
+}
+
+.js-progress-bar {
+    display: block;
+    max-width: 100%;
 }
 
 .cyber-tournaments,

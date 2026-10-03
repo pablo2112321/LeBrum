@@ -1,16 +1,16 @@
-/* ============================================================
+﻿/* ============================================================
    DETALLE_EQUIPO.CSS - HUD DE ESCUADRA / LANDING DE LA CREW
    ============================================================ */
 
 .eqd {
-    --eqd-cyan: #00e5ff;
-    --eqd-magenta: #ec008c;
+    --eqd-cyan: var(--cyber-cyan);
+    --eqd-magenta: var(--cyber-magenta);
     --eqd-magenta-soft: #ff3ea5;
-    --eqd-gold: #ffd700;
-    --eqd-green: #4ade80;
-    --eqd-red: #f87171;
+    --eqd-gold: var(--cyber-yellow);
+    --eqd-green: var(--cyber-cyan);
+    --eqd-red: var(--cyber-magenta);
     --eqd-text: #e6eef8;
-    --eqd-muted: #94a3b8;
+    --eqd-muted: var(--cyber-muted);
     --eqd-panel: rgba(8, 8, 12, 0.72);
 
     position: relative;
@@ -101,7 +101,7 @@
     min-width: 128px;
     border-radius: 28px;
     padding: 4px;
-    background: conic-gradient(from 180deg, #00e5ff, #ec008c, #00e5ff);
+    background: conic-gradient(from 180deg, var(--cyber-cyan), var(--cyber-magenta), var(--cyber-cyan));
     box-shadow: 0 0 40px rgba(0, 229, 255, 0.55);
     display: flex;
     align-items: center;
@@ -120,7 +120,7 @@
     height: 100%;
     object-fit: cover;
     border-radius: 24px;
-    background: #0f172a;
+    background: var(--cyber-bg);
 }
 
 .eqd-logo i {
@@ -130,7 +130,7 @@
     align-items: center;
     justify-content: center;
     border-radius: 24px;
-    background: linear-gradient(145deg, #1e293b, #0b1220);
+    background: linear-gradient(145deg, var(--cyber-panel-alt), #0b1220);
     color: var(--eqd-cyan);
     font-size: 3rem;
     text-shadow: 0 0 18px rgba(0, 229, 255, 0.8);
@@ -144,7 +144,7 @@
     font-weight: 900;
     letter-spacing: 1.6px;
     text-transform: uppercase;
-    background: linear-gradient(90deg, #00e5ff, #ec008c, #00e5ff);
+    background: linear-gradient(90deg, var(--cyber-cyan), var(--cyber-magenta), var(--cyber-cyan));
     background-size: 200% auto;
     -webkit-background-clip: text;
     background-clip: text;
@@ -173,7 +173,7 @@
     font-weight: 900;
     letter-spacing: 2px;
     color: #000;
-    background: linear-gradient(135deg, #00e5ff, #ec008c);
+    background: linear-gradient(135deg, var(--cyber-cyan), var(--cyber-magenta));
     box-shadow: 0 0 18px rgba(236, 0, 140, 0.5);
 }
 
@@ -208,7 +208,7 @@
 
 .eqd-torneo i { color: var(--eqd-cyan); text-shadow: 0 0 10px rgba(0, 229, 255, 0.7); }
 
-/* ---------------- CUADRO DE ESTADÍSTICAS HOLOGRÁFICO ---------------- */
+/* ---------------- CUADRO DE ESTADÃSTICAS HOLOGRÃFICO ---------------- */
 .eqd-stats {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -251,7 +251,7 @@
 .eqd-stat-num {
     font-size: 2rem;
     font-weight: 900;
-    color: #f8fafc;
+    color: var(--cyber-text);
     text-shadow: 0 0 16px rgba(0, 229, 255, 0.45);
 }
 
@@ -290,7 +290,7 @@
 
 .eqd-btn--unirse {
     color: #000;
-    background: linear-gradient(135deg, #00e5ff, #ec008c);
+    background: linear-gradient(135deg, var(--cyber-cyan), var(--cyber-magenta));
     box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.14), 0 0 28px rgba(236, 0, 140, 0.45);
     animation: eqd-unirse-pulso 2.2s ease-in-out infinite;
 }
@@ -333,7 +333,7 @@
     box-shadow: 0 0 22px rgba(74, 222, 128, 0.2);
 }
 
-/* ---------------- GESTIÓN DE ROSTER (CAPITÁN) ---------------- */
+/* ---------------- GESTIÃ“N DE ROSTER (CAPITÃN) ---------------- */
 .eqd-roster-admin {
     padding: 28px 30px;
     margin-bottom: 30px;
@@ -453,7 +453,7 @@
     font-weight: 900;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: #f8fafc;
+    color: var(--cyber-text);
     text-shadow: 0 0 16px rgba(0, 229, 255, 0.3);
 }
 
@@ -513,7 +513,7 @@
     justify-content: center;
     color: #000;
     font-size: 0.95rem;
-    background: linear-gradient(135deg, #ffd700, #f59e0b);
+    background: linear-gradient(135deg, var(--cyber-yellow), #f59e0b);
     box-shadow: 0 0 18px rgba(255, 215, 0, 0.75);
     z-index: 2;
 }
@@ -523,7 +523,7 @@
     height: 92px;
     border-radius: 50%;
     padding: 4px;
-    background: conic-gradient(from 180deg, #00e5ff, #ec008c, #00e5ff);
+    background: conic-gradient(from 180deg, var(--cyber-cyan), var(--cyber-magenta), var(--cyber-cyan));
     box-shadow: 0 0 24px rgba(0, 229, 255, 0.4);
     overflow: hidden;
     display: flex;
@@ -532,7 +532,7 @@
 }
 
 .eqd-agente--capitan .eqd-agente-avatar {
-    background: conic-gradient(from 180deg, #ffd700, #f59e0b, #ffd700);
+    background: conic-gradient(from 180deg, var(--cyber-yellow), #f59e0b, var(--cyber-yellow));
     box-shadow: 0 0 28px rgba(255, 215, 0, 0.55);
 }
 
@@ -541,7 +541,7 @@
     height: 100%;
     object-fit: cover;
     border-radius: 50%;
-    background: #0f172a;
+    background: var(--cyber-bg);
 }
 
 .eqd-agente-nombre {
@@ -550,7 +550,7 @@
     font-weight: 900;
     letter-spacing: 0.8px;
     text-transform: uppercase;
-    color: #f8fafc;
+    color: var(--cyber-text);
     word-break: break-word;
 }
 
@@ -574,7 +574,7 @@
     border: 1px solid currentColor;
 }
 
-.eqd-agente-rango.rango-nivel-0 { color: #94a3b8; background: rgba(148, 163, 184, 0.08); }
+.eqd-agente-rango.rango-nivel-0 { color: var(--cyber-muted); background: rgba(148, 163, 184, 0.08); }
 .eqd-agente-rango.rango-nivel-1 { color: var(--eqd-green); background: rgba(74, 222, 128, 0.08); }
 .eqd-agente-rango.rango-nivel-2 { color: var(--eqd-cyan); background: rgba(0, 229, 255, 0.08); }
 .eqd-agente-rango.rango-nivel-3 { color: var(--eqd-magenta-soft); background: rgba(236, 0, 140, 0.08); }
@@ -636,3 +636,4 @@
     .eqd-stats { grid-template-columns: 1fr; }
     .eqd-banner-inner { flex-direction: column; align-items: flex-start; }
 }
+

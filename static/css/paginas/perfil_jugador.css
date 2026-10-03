@@ -1,4 +1,4 @@
-.player-profile {
+﻿.player-profile {
     color: var(--cyber-text);
     margin: 0 auto;
     max-width: 1100px;
@@ -364,3 +364,4 @@
         width: 100%;
     }
 }
+

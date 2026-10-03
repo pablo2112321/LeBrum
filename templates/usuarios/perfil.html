@@ -79,7 +79,8 @@
                         <span class="loadout-rango-xp"><i class="fas fa-bolt"></i> {{ request.user.puntos_xp }} XP</span>
                     </div>
                     <div class="loadout-rango-bar">
-                        <span class="loadout-rango-fill" style="width: {{ request.user.progreso_rango }}%;"></span>
+                        <span class="loadout-rango-fill js-progress-bar"
+                              data-progress="{{ request.user.progreso_rango }}"></span>
                     </div>
                     <div class="loadout-rango-next">
                         {% if request.user.rango_siguiente %}

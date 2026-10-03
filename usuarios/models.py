@@ -303,3 +303,42 @@ class Notificacion(models.Model):
     def texto(self):
         """Mantiene compatibilidad con las plantillas heredadas."""
         return self.mensaje
+
+
+class SolicitudPrivacidad(models.Model):
+    TIPOS = [
+        ('access', 'Acceso'),
+        ('rectification', 'Rectificación'),
+        ('erasure', 'Eliminación'),
+        ('opposition', 'Oposición'),
+    ]
+    ESTADOS = [
+        ('pending', 'Pendiente'),
+        ('processing', 'En proceso'),
+        ('completed', 'Completada'),
+        ('rejected', 'Rechazada'),
+    ]
+
+    usuario = models.ForeignKey(
+        Usuario,
+        on_delete=models.CASCADE,
+        related_name='solicitudes_privacidad',
+    )
+    tipo = models.CharField(max_length=20, choices=TIPOS)
+    detalle = models.TextField(blank=True, default='')
+    estado = models.CharField(max_length=20, choices=ESTADOS, default='pending')
+    creada_el = models.DateTimeField(auto_now_add=True)
+    procesada_el = models.DateTimeField(null=True, blank=True)
+    procesada_por = models.ForeignKey(
+        Usuario,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='solicitudes_privacidad_procesadas',
+    )
+
+    class Meta:
+        ordering = ('-creada_el',)
+
+    def __str__(self):
+        return f'{self.usuario.username} - {self.get_tipo_display()} ({self.get_estado_display()})'

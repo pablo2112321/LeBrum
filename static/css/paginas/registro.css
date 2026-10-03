@@ -1,22 +1,22 @@
-/* ============================================================
-   REGISTRO.CSS - REFACTORIZACIÓN ARMÓNICA (PREMIUM GLASS)
+﻿/* ============================================================
+   REGISTRO.CSS - REFACTORIZACIÃ“N ARMÃ“NICA (PREMIUM GLASS)
    ============================================================ */
 
 :root {
     /* Variables de Marca - Mantener consistencia */
-    --brand-naranja: #fb8500;
+    --brand-naranja: var(--cyber-yellow);
     --brand-naranja-hover: #ff9f1c;
-    --brand-purple: #c77dff;
-    --brand-cyan: #48cae4;
-    --brand-success: #22c55e;
-    --brand-error: #ef4444;
-    --text-primary: #f8fafc;
-    --text-muted: #94a3b8;
+    --brand-purple: var(--cyber-magenta);
+    --brand-cyan: var(--cyber-cyan);
+    --brand-success: var(--cyber-cyan);
+    --brand-error: var(--cyber-magenta);
+    --text-primary: var(--cyber-text);
+    --text-muted: var(--cyber-muted);
     
-    /* MODIFICACIÓN CLAVE PARA ARMONÍA: LIGEREZA */
-    /* Fondo de Tarjeta: Mucho más claro/blanco translúcido para "romper" la oscuridad */
+    /* MODIFICACIÃ“N CLAVE PARA ARMONÃA: LIGEREZA */
+    /* Fondo de Tarjeta: Mucho mÃ¡s claro/blanco translÃºcido para "romper" la oscuridad */
     --bg-dark-glass: rgba(255, 255, 255, 0.03); 
-    /* Borde: Más visible para definir el cristal */
+    /* Borde: MÃ¡s visible para definir el cristal */
     --border-glass: rgba(255, 255, 255, 0.15);
     --border-radius-main: 22px;
 }
@@ -42,7 +42,7 @@ html, body {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    /* Ligeramente más padding para separar de los bordes del navegador */
+    /* Ligeramente mÃ¡s padding para separar de los bordes del navegador */
     padding: clamp(32px, 6vw, 60px) clamp(16px, 4vw, 24px) clamp(48px, 8vw, 90px);
     background-color: #030208;
     color: var(--text-primary);
@@ -65,7 +65,7 @@ html, body {
     overflow: hidden;
     /* Padding interno sutil para que la card respire dentro del marco */
     padding: clamp(28px, 6vw, 56px) clamp(16px, 4vw, 22px);
-    /* Asegúrate de que la ruta sea correcta */
+    /* AsegÃºrate de que la ruta sea correcta */
     background: url('../../img/crear-cuenta.jpg') no-repeat center center / cover;
     border: 1px solid rgba(199, 125, 255, 0.22);
     /* Resplandor exterior sutil basado en el color naranja del agujero negro */
@@ -75,13 +75,13 @@ html, body {
         0 0 50px rgba(251, 133, 0, 0.15); /* Halo naranja BH */
 }
 
-/* MODIFICACIÓN CLAVE PARA ARMONÍA: ILUMINAR FONDO */
-/* Reducción drástica de la opacidad. La imagen BH debe ser la heroína */
+/* MODIFICACIÃ“N CLAVE PARA ARMONÃA: ILUMINAR FONDO */
+/* ReducciÃ³n drÃ¡stica de la opacidad. La imagen BH debe ser la heroÃ­na */
 .photo-frame-overlay {
     position: absolute;
     inset: 0;
     background:
-        /* Viñeta sutil en los bordes para centrar la mirada */
+        /* ViÃ±eta sutil en los bordes para centrar la mirada */
         radial-gradient(circle at center, rgba(3, 2, 8, 0.2) 0%, rgba(3, 2, 8, 0.6) 80%, rgba(3, 2, 8, 0.8) 100%),
         /* Preservar el tinte morado muy sutilmente */
         radial-gradient(ellipse at 30% 40%, rgba(199, 125, 255, 0.08) 0%, transparent 55%);
@@ -93,15 +93,15 @@ html, body {
     position: relative;
     z-index: 1;
     width: 100%;
-    /* ENGRANDECER: Ancho máximo mayor para inputs amplios. min(92vw, 860px); era 700px */
+    /* ENGRANDECER: Ancho mÃ¡ximo mayor para inputs amplios. min(92vw, 860px); era 700px */
     max-width: 860px;
     margin: 0 auto;
 }
 
-/* --- TARJETA ÚNICA (Glassmorphism Optimizado) --- */
+/* --- TARJETA ÃšNICA (Glassmorphism Optimizado) --- */
 .glass-register-card {
     background: var(--bg-dark-glass);
-    /* Aumentar la saturación para que el difuminado popee más al mostrar el fondo brillante */
+    /* Aumentar la saturaciÃ³n para que el difuminado popee mÃ¡s al mostrar el fondo brillante */
     backdrop-filter: blur(22px) saturate(180%);
     -webkit-backdrop-filter: blur(22px) saturate(180%);
     border: 1px solid var(--border-glass);
@@ -130,18 +130,18 @@ html, body {
 }
 
 .form-header h1 {
-    font-size: clamp(1.4rem, 4vw, 2.2rem); /* Ligeramente más grande */
+    font-size: clamp(1.4rem, 4vw, 2.2rem); /* Ligeramente mÃ¡s grande */
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 1.5px;
-    color: #ffffff;
+    color: var(--cyber-text);
     margin-bottom: 8px;
     line-height: 1.2;
 }
 
 .form-header p {
     color: var(--text-muted);
-    font-size: clamp(0.85rem, 2vw, 1.05rem); /* Ligeramente más grande */
+    font-size: clamp(0.85rem, 2vw, 1.05rem); /* Ligeramente mÃ¡s grande */
 }
 
 /* --- ALERTAS --- */
@@ -172,7 +172,7 @@ html, body {
 }
 
 .form-section-header:not(:first-of-type) {
-    margin-top: 35px; /* Más espacio entre secciones */
+    margin-top: 35px; /* MÃ¡s espacio entre secciones */
 }
 
 .form-section-header i {
@@ -185,17 +185,17 @@ html, body {
 }
 
 .form-section-header h2 {
-    font-size: clamp(1rem, 2.5vw, 1.25rem); /* Ligeramente más grande */
+    font-size: clamp(1rem, 2.5vw, 1.25rem); /* Ligeramente mÃ¡s grande */
     font-weight: 800;
     text-transform: uppercase;
-    color: #ffffff;
+    color: var(--cyber-text);
 }
 
 /* Grid de Inputs */
 .form-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 20px 25px; /* Armonía entre filas y columnas */
+    gap: 20px 25px; /* ArmonÃ­a entre filas y columnas */
 }
 
 @media (max-width: 560px) {
@@ -213,7 +213,7 @@ html, body {
 }
 
 .input-box label {
-    font-size: 0.8rem; /* Ligeramente más grande */
+    font-size: 0.8rem; /* Ligeramente mÃ¡s grande */
     font-weight: 700;
     text-transform: uppercase;
     color: #cbd5e1;
@@ -249,11 +249,11 @@ html, body {
 /* Inputs Estilizados */
 .input-box input {
     width: 100%;
-    padding: 13px 40px 13px 18px; /* Ligeramente más padding horizontal */
+    padding: 13px 40px 13px 18px; /* Ligeramente mÃ¡s padding horizontal */
     background: rgba(6, 7, 16, 0.62);
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 12px;
-    color: #ffffff;
+    color: var(--cyber-text);
     font-size: 0.95rem;
     outline: none;
     transition: all 0.25s ease;
@@ -269,7 +269,7 @@ html, body {
     box-shadow: 0 0 15px rgba(72, 202, 228, 0.2);
 }
 
-/* Estados de Validación */
+/* Estados de ValidaciÃ³n */
 .input-box.valid input {
     border-color: var(--brand-success);
     box-shadow: 0 0 12px rgba(34, 197, 94, 0.2);
@@ -292,7 +292,7 @@ html, body {
     display: block;
 }
 
-/* --- VINCULACIÓN DE JUEGOS --- */
+/* --- VINCULACIÃ“N DE JUEGOS --- */
 .game-sync-container {
     display: flex;
     gap: 20px;
@@ -351,7 +351,7 @@ html, body {
 }
 
 .designer-checkbox input:checked + .checkbox-check::after {
-    content: '✓';
+    content: 'âœ“';
     position: absolute;
     color: #000000;
     font-size: 14px;
@@ -363,7 +363,7 @@ html, body {
 .game-label {
     font-size: 0.85rem;
     font-weight: 800;
-    color: #ffffff;
+    color: var(--cyber-text);
     text-transform: uppercase;
 }
 
@@ -373,7 +373,7 @@ html, body {
     background: rgba(4, 5, 12, 0.55);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 10px;
-    color: #ffffff;
+    color: var(--cyber-text);
     font-size: 0.9rem;
     outline: none;
     transition: border-color 0.3s ease;
@@ -398,7 +398,7 @@ html, body {
     display: block;
 }
 
-/* --- BOTÓN PRINCIPAL (NARANJA LEBRUM) --- */
+/* --- BOTÃ“N PRINCIPAL (NARANJA LEBRUM) --- */
 .btn-primary-designer {
     width: 100%;
     padding: 16px;
@@ -449,7 +449,7 @@ html, body {
 }
 
 .form-footer a:hover {
-    color: #ffffff;
+    color: var(--cyber-text);
     text-decoration: underline;
 }
 

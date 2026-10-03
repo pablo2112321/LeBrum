@@ -74,7 +74,7 @@
                             <td>
                                 <div class="halcon-ocupacion">
                                     <div class="barra">
-                                        <span style="width: {% if torneo.cupo_maximo %}{% widthratio torneo.plazas_ocupadas torneo.cupo_maximo 100 %}{% else %}0{% endif %}%;"></span>
+                                        <span class="js-progress-bar" data-progress="{% if torneo.cupo_maximo %}{% widthratio torneo.plazas_ocupadas torneo.cupo_maximo 100 %}{% else %}0{% endif %}"></span>
                                     </div>
                                     <span class="num">{{ torneo.plazas_ocupadas }}/{{ torneo.cupo_maximo }}</span>
                                 </div>

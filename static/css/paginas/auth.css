@@ -1,13 +1,13 @@
-:root {
-    --bg-base: #0a0a0f;
+﻿:root {
+    --bg-base: var(--cyber-bg);
     --bg-overlay: rgba(10, 10, 15, 0.92);
-    --glass-bg: #12131a;
+    --glass-bg: var(--cyber-panel);
     --glass-border: rgba(0, 240, 255, 0.45);
-    --neon-yellow: #ffe600;
-    --neon-magenta: #ff0055;
-    --neon-cyan: #00f0ff;
-    --text-main: #ffffff;
-    --text-muted: #a0a5b5;
+    --neon-yellow: var(--cyber-yellow);
+    --neon-magenta: var(--cyber-magenta);
+    --neon-cyan: var(--cyber-cyan);
+    --text-main: var(--cyber-text);
+    --text-muted: var(--cyber-muted);
     --shadow-glow: 0 0 15px rgba(0, 240, 255, 0.4);
 }
 
@@ -19,7 +19,7 @@
 
 html, body {
     min-height: 100%;
-    background: #0a0a0f;
+    background: var(--cyber-bg);
     color: var(--text-main);
     font-family: 'Inter', 'Segoe UI', sans-serif;
 }
@@ -92,7 +92,7 @@ body::before {
 .auth-brand h1 {
     font-size: clamp(1.9rem, 3vw, 2.5rem);
     letter-spacing: 1px;
-    color: #ffffff;
+    color: var(--cyber-text);
 }
 
 .auth-brand p {
@@ -152,7 +152,7 @@ input.neo-input {
     border-radius: 18px;
     border: 1px solid rgba(255, 255, 255, 0.12);
     background: rgba(8, 9, 18, 0.9);
-    color: #f8fafc;
+    color: var(--cyber-text);
     font-size: 0.98rem;
     outline: none;
     transition: all 0.25s ease;
@@ -205,7 +205,7 @@ input.neo-input {
     display: flex;
     align-items: center;
     gap: 12px;
-    color: #f8fafc;
+    color: var(--cyber-text);
     font-size: 0.95rem;
 }
 
@@ -222,7 +222,7 @@ input.neo-input {
     border-radius: 14px;
     border: 1px solid rgba(255, 255, 255, 0.1);
     background: rgba(10, 10, 18, 0.80);
-    color: #f8fafc;
+    color: var(--cyber-text);
     font-size: 0.95rem;
 }
 
@@ -242,7 +242,7 @@ input.neo-input {
     border-radius: 18px;
     padding: 0 22px;
     background: linear-gradient(135deg, rgba(138, 43, 226, 0.98), rgba(79, 173, 255, 0.95));
-    color: #ffffff;
+    color: var(--cyber-text);
     font-size: 1rem;
     font-weight: 800;
     letter-spacing: 0.8px;
@@ -273,6 +273,50 @@ input.neo-input {
     margin-top: 10px;
     color: var(--text-muted);
     font-size: 0.9rem;
+}
+
+.login-options {
+    align-items: center;
+    display: flex;
+    gap: 12px;
+    justify-content: space-between;
+}
+
+.login-options__remember {
+    gap: 8px;
+}
+
+.login-options__remember span,
+.auth-footer__prompt {
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.login-options__forgot {
+    color: var(--neon-cyan);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.privacy-request-form {
+    display: grid;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.privacy-request-form label {
+    color: var(--text-muted);
+    font-size: .8rem;
+    font-weight: 800;
+}
+
+.privacy-request-form select,
+.privacy-request-form textarea {
+    background: var(--bg-base);
+    border: 1px solid var(--neon-cyan);
+    color: var(--text-main);
+    font: inherit;
+    padding: 10px;
 }
 
 .auth-footer a {
@@ -370,7 +414,7 @@ input.neo-input {
 }
 
 /* ============================================================
-   FEEDBACK EN TIEMPO REAL (VALIDACIÓN UX)
+   FEEDBACK EN TIEMPO REAL (VALIDACIÃ“N UX)
    ============================================================ */
 .field-feedback {
     display: block;
@@ -392,13 +436,13 @@ input.neo-input {
     transform: translateY(0);
 }
 
-/* Verde neón (éxito) */
+/* Verde neÃ³n (Ã©xito) */
 .field-feedback.fb-ok {
-    color: #4ade80;
+    color: var(--cyber-cyan);
     text-shadow: 0 0 10px rgba(74, 222, 128, 0.7);
 }
 
-/* Rojo / naranja neón (error) */
+/* Rojo / naranja neÃ³n (error) */
 .field-feedback.fb-err {
     color: #fb7185;
     text-shadow: 0 0 10px rgba(251, 113, 133, 0.65);
@@ -428,7 +472,7 @@ input.neo-input {
 }
 
 /* ============================================================
-   BOTÓN VOLVER AL LOBBY (NEÓN / VIDRIO)
+   BOTÃ“N VOLVER AL LOBBY (NEÃ“N / VIDRIO)
    ============================================================ */
 .btn-volver {
     position: fixed;
