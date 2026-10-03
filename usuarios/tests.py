@@ -8,6 +8,33 @@ from .models import Notificacion, SolicitudPrivacidad, Usuario
 
 
 class UsuarioFlowTests(TestCase):
+    def test_ojo_de_halcon_es_dashboard_separado_del_admin_de_django(self):
+        staff = Usuario.objects.create_user(
+            username='dashboard-staff',
+            password='password-segura',
+            is_staff=True,
+        )
+        self.client.force_login(staff)
+
+        dashboard = self.client.get('/ojo-de-halcon/')
+        django_admin = self.client.get('/admin-secreto/')
+
+        self.assertEqual(dashboard.status_code, 200)
+        self.assertContains(dashboard, 'Ojo de Halcón')
+        self.assertEqual(django_admin.status_code, 200)
+        self.assertContains(django_admin, 'Centro de Mando LeBrum')
+
+    def test_usuario_no_staff_no_accede_al_dashboard(self):
+        usuario = Usuario.objects.create_user(
+            username='dashboard-player',
+            password='password-segura',
+        )
+        self.client.force_login(usuario)
+
+        response = self.client.get('/ojo-de-halcon/')
+
+        self.assertEqual(response.status_code, 302)
+
     def test_usuario_puede_marcar_y_limpiar_notificaciones_antiguas(self):
         usuario = Usuario.objects.create_user(
             username='notificado',

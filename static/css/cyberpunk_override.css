@@ -1,0 +1,329 @@
+:root {
+    --tactical-bg: #0B0C10;
+    --tactical-panel: #11141B;
+    --tactical-panel-soft: #171B24;
+    --tactical-purple: #7000FF;
+    --tactical-cyan: #66FCF1;
+    --tactical-muted: #94A3B8;
+    --tactical-white: #FFFFFF;
+    --tactical-border: rgba(148, 163, 184, .18);
+    --tactical-chroma: linear-gradient(105deg, var(--tactical-purple), var(--tactical-cyan), var(--tactical-purple));
+    --tactical-cut: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+}
+
+html,
+body {
+    background: var(--tactical-bg) !important;
+    color: var(--tactical-white) !important;
+    font-family: 'Rajdhani', 'Segoe UI', sans-serif !important;
+}
+
+body {
+    background-image:
+        linear-gradient(rgba(102, 252, 241, .025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(112, 0, 255, .025) 1px, transparent 1px) !important;
+    background-size: 48px 48px !important;
+    background-attachment: fixed !important;
+}
+
+body::before,
+body::after {
+    display: none !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+button,
+.btn-primary,
+.cyber-button,
+.cyber-card-action,
+.halcon-boton {
+    font-family: 'Orbitron', 'Rajdhani', sans-serif !important;
+    font-weight: 700 !important;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+}
+
+button,
+a,
+.cyber-card,
+.cyber-tournament-card,
+.ticket-card,
+.player-card,
+.player-teams,
+.news-card,
+.halcon-card,
+.halcon-stat,
+.cyber-card-action,
+.cyber-primary-button,
+.btn-primary,
+.sidebar-nav a,
+.user-dropdown a,
+.user-dropdown button {
+    transition: background-color .3s ease, border-color .3s ease,
+        box-shadow .3s ease, color .3s ease, transform .3s ease,
+        opacity .3s ease !important;
+}
+
+.sidebar {
+    background: var(--tactical-bg) !important;
+    border-right: 1px solid var(--tactical-border) !important;
+}
+
+.sidebar::after {
+    display: none !important;
+}
+
+.sidebar-nav a {
+    background: transparent !important;
+    border-left: 2px solid transparent !important;
+    border-radius: 0 !important;
+    color: var(--tactical-muted) !important;
+    filter: none !important;
+    padding-left: 25px !important;
+    text-shadow: none !important;
+}
+
+.sidebar-nav a::before,
+.sidebar-nav a::after {
+    display: none !important;
+}
+
+.sidebar-nav a:hover {
+    background: rgba(148, 163, 184, .06) !important;
+    color: var(--tactical-white) !important;
+    transform: translateX(2px);
+}
+
+.sidebar-nav a.active {
+    animation: none !important;
+    background: rgba(148, 163, 184, .09) !important;
+    border-left-color: var(--tactical-cyan) !important;
+    color: var(--tactical-white) !important;
+    box-shadow: none !important;
+}
+
+.sidebar-nav a i {
+    color: currentColor !important;
+    filter: none !important;
+}
+
+.logo-img {
+    filter: drop-shadow(0 0 8px rgba(112, 0, 255, .22)) !important;
+}
+
+.sidebar .logo-container h2 {
+    background: none !important;
+    color: var(--tactical-white) !important;
+    -webkit-text-fill-color: currentColor !important;
+}
+
+.topbar {
+    background: rgba(11, 12, 16, .94) !important;
+    border-bottom: 1px solid var(--tactical-border) !important;
+}
+
+.search-box {
+    background: var(--tactical-panel) !important;
+    border: 1px solid var(--tactical-border) !important;
+    box-shadow: none !important;
+}
+
+.search-box:focus-within {
+    border-color: var(--tactical-cyan) !important;
+    box-shadow: 0 0 0 3px rgba(102, 252, 241, .08) !important;
+}
+
+.search-box i,
+.notification,
+.stacked-username {
+    color: var(--tactical-muted) !important;
+}
+
+.notification {
+    background: var(--tactical-panel) !important;
+}
+
+.notification:hover {
+    color: var(--tactical-white) !important;
+    background: var(--tactical-panel-soft) !important;
+}
+
+.user-stacked-trigger:hover {
+    background: rgba(148, 163, 184, .06) !important;
+    transform: none !important;
+}
+
+.user-avatar-frame {
+    background: var(--tactical-chroma) !important;
+    background-size: 200% 100% !important;
+    animation: tactical-chroma-flow 6s ease-in-out infinite !important;
+    box-shadow: 0 0 12px rgba(112, 0, 255, .18) !important;
+}
+
+.user-stacked-trigger:hover .user-avatar-frame {
+    box-shadow: 0 0 18px rgba(102, 252, 241, .22) !important;
+}
+
+.badge-boss,
+.badge-player {
+    background: var(--tactical-panel-soft) !important;
+    border: 1px solid var(--tactical-border) !important;
+    box-shadow: none !important;
+    color: var(--tactical-muted) !important;
+}
+
+.user-dropdown {
+    background: rgba(17, 20, 27, .98) !important;
+    border: 1px solid var(--tactical-border) !important;
+    border-radius: 0 !important;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, .42) !important;
+    clip-path: var(--tactical-cut) !important;
+}
+
+.user-dropdown a,
+.user-dropdown button.logout-link {
+    background: transparent !important;
+    border-left: 2px solid transparent !important;
+    color: var(--tactical-muted) !important;
+}
+
+.user-dropdown a:hover {
+    background: rgba(148, 163, 184, .07) !important;
+    border-left-color: var(--tactical-cyan) !important;
+    color: var(--tactical-white) !important;
+    padding-left: 22px !important;
+}
+
+.user-dropdown button.logout-link {
+    color: var(--tactical-purple) !important;
+}
+
+.user-dropdown button.logout-link:hover {
+    background: rgba(112, 0, 255, .1) !important;
+    border-left-color: var(--tactical-purple) !important;
+    color: var(--tactical-white) !important;
+    padding-left: 22px !important;
+}
+
+.cyber-card,
+.cyber-tournament-card,
+.ticket-card,
+.player-card,
+.player-teams,
+.news-card,
+.halcon-card,
+.halcon-stat,
+.cyber-detail-panel,
+.cyber-detail-hero {
+    background: var(--tactical-panel) !important;
+    border: 1px solid transparent !important;
+    background-image: linear-gradient(var(--tactical-panel), var(--tactical-panel)), var(--tactical-chroma) !important;
+    background-origin: border-box !important;
+    background-clip: padding-box, border-box !important;
+    background-size: 100% 100%, 220% 100% !important;
+    border-radius: 0 !important;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, .22) !important;
+    clip-path: var(--tactical-cut) !important;
+}
+
+.cyber-card:hover,
+.cyber-tournament-card:hover,
+.ticket-card:hover,
+.player-card:hover,
+.news-card:hover,
+.halcon-card:hover {
+    animation: tactical-border-flow 5s ease-in-out infinite !important;
+    box-shadow: 0 14px 32px rgba(0, 0, 0, .32), 0 0 18px rgba(112, 0, 255, .1) !important;
+    filter: none !important;
+    transform: translateY(-3px) !important;
+}
+
+.cyber-card::after,
+.cyber-tournament-card::after,
+.ticket-card::after,
+.player-card::after,
+.news-card::after,
+.halcon-card::after {
+    display: none !important;
+}
+
+.cyber-card-action,
+.cyber-primary-button,
+.btn-primary,
+.halcon-boton,
+button[type='submit'] {
+    background: var(--tactical-panel) !important;
+    border: 1px solid var(--tactical-border) !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    clip-path: var(--tactical-cut) !important;
+    color: var(--tactical-white) !important;
+}
+
+.cyber-card-action:hover,
+.cyber-primary-button:hover,
+.btn-primary:hover,
+.halcon-boton:hover,
+button[type='submit']:hover,
+.hud-btn-arena:hover {
+    background: var(--tactical-panel-soft) !important;
+    border-color: var(--tactical-cyan) !important;
+    box-shadow: 0 0 0 3px rgba(102, 252, 241, .06), 0 0 18px rgba(112, 0, 255, .16) !important;
+    color: var(--tactical-white) !important;
+    filter: none !important;
+    transform: translateY(-2px) !important;
+}
+
+.hud-btn-arena {
+    background: var(--tactical-bg) !important;
+    border: 1px solid var(--tactical-border) !important;
+    box-shadow: none !important;
+    color: var(--tactical-white) !important;
+}
+
+input,
+select,
+textarea,
+.search-box {
+    background: var(--tactical-bg) !important;
+    border-color: var(--tactical-border) !important;
+    color: var(--tactical-white) !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--tactical-cyan) !important;
+    box-shadow: 0 0 0 3px rgba(102, 252, 241, .08) !important;
+}
+
+@keyframes tactical-chroma-flow {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+@keyframes tactical-border-flow {
+    0%, 100% { background-position: 0 0, 0% 50%; }
+    50% { background-position: 0 0, 100% 50%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+    }
+}
+
+@media (max-width: 760px) {
+    .content-area {
+        padding: 0 16px 28px !important;
+    }
+}

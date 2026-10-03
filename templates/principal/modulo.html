@@ -9,7 +9,7 @@
   {% for item in items %}
     <article class="cyber-card cyber-module__card">
       {% if tipo_modulo == 'noticias' %}<span class="cyber-kicker">FLASH DE ARENA</span><h2>{{ item.titulo }}</h2><p>{{ item.resumen }}</p><small>{{ item.creada_el|date:"d/m/Y" }}</small>
-      {% elif tipo_modulo == 'transmisiones' %}<span class="cyber-badge">{% if item.en_vivo %}EN VIVO{% else %}PRÓXIMAMENTE{% endif %}</span><h2>{{ item.titulo }}</h2><p>{{ item.plataforma }}{% if item.torneo %} · {{ item.torneo.nombre }}{% endif %}</p><a class="cyber-btn-primary" href="{{ item.url }}" target="_blank" rel="noopener">ABRIR SEÑAL</a>
+      {% elif tipo_modulo == 'transmisiones' %}<span class="cyber-badge {% if item.en_vivo %}stream-live{% endif %}">{% if item.en_vivo %}EN VIVO{% else %}PRÓXIMAMENTE{% endif %}</span><h2>{{ item.titulo }}</h2><p>{{ item.plataforma }}{% if item.torneo %} · {{ item.torneo.nombre }}{% endif %}</p><a class="cyber-btn-primary" href="{{ item.url }}" target="_blank" rel="noopener">ABRIR SEÑAL</a>
       {% elif tipo_modulo == 'juegos' %}<h2>{{ item.nombre }}</h2><p>{{ item.torneos.count }} torneos registrados</p>
       {% elif tipo_modulo == 'chat' %}<strong>{{ item.usuario.username }}</strong><p>{{ item.contenido }}</p><small>{{ item.creado_el|date:"d/m H:i" }}</small>
       {% elif tipo_modulo == 'tienda' %}<span class="cyber-kicker">{{ item.get_categoria_display }}</span><h2>{{ item.nombre }}</h2><p>{{ item.descripcion }}</p><strong class="cyber-price">{{ item.precio }} FICHAS</strong>{% if item.id in compras %}<span class="cyber-owned">ADQUIRIDO</span>{% else %}<form method="post">{% csrf_token %}<input type="hidden" name="producto_id" value="{{ item.id }}"><button class="cyber-btn-primary">ADQUIRIR</button></form>{% endif %}

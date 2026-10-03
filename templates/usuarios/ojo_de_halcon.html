@@ -42,7 +42,7 @@
 
         <!-- Botón grande: Crear torneo -->
         <div class="halcon-crear-accion">
-            <a href="/admin-secreto/torneos/torneo/add/" class="halcon-boton--crear">
+            <a href="{% url 'admin:torneos_torneo_add' %}" class="halcon-boton--crear">
                 <i class="fas fa-plus-circle"></i>
                 + Crear Nuevo Torneo
             </a>
@@ -106,7 +106,7 @@
 
         <!-- Accesos rápidos -->
         <div class="halcon-acciones">
-            <a href="/admin-secreto/" class="halcon-boton halcon-boton--gold">
+            <a href="{% url 'admin:index' %}" class="halcon-boton halcon-boton--gold">
                 <i class="fas fa-database"></i> Django Admin
             </a>
             <a href="{% url 'panel_control' %}" class="halcon-boton halcon-boton--neon">

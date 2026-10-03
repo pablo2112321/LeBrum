@@ -13,6 +13,7 @@
     
     {% block css_extra %}
     {% endblock %}
+    <link rel="stylesheet" href="{% static 'css/cyberpunk_override.css' %}">
 
 
 </head>
@@ -46,7 +47,7 @@
                 {% if request.user.is_authenticated %}
                     {% if mi_equipo %}
                         <a href="{% url 'detalle_equipo' mi_equipo.id %}" class="{% if request.resolver_match.url_name == 'detalle_equipo' %}active{% endif %}">
-                            <i class="fas fa-shield-halved"></i> Mi EscuadrÃ³n
+                            <i class="fas fa-shield-halved"></i> Mis Crews
                         </a>
                     {% else %}
                         <a href="{% url 'crear_equipo' %}" class="{% if request.resolver_match.url_name == 'crear_equipo' %}active{% endif %}">
@@ -144,14 +145,14 @@
                                 {% if request.user.is_authenticated %}
                                     <a href="{% url 'mis_torneos' %}"><i class="fas fa-trophy"></i> Mis Torneos</a>
                                     {% if mi_equipo %}
-                                        <a href="{% url 'detalle_equipo' mi_equipo.id %}"><i class="fas fa-shield-halved"></i> Mi EscuadrÃ³n</a>
+                                        <a href="{% url 'detalle_equipo' mi_equipo.id %}"><i class="fas fa-shield-halved"></i> Mis Crews</a>
                                     {% else %}
                                         <a href="{% url 'crear_equipo' %}"><i class="fas fa-hammer"></i> Crear Equipo</a>
                                     {% endif %}
                                 {% endif %}
                                 
                                 {% if request.user.is_staff %}
-                                    <a href="{% url 'admin:index' %}"><i class="fas fa-shield-halved"></i> Panel de Control</a>
+                                    <a href="{% url 'ojo_de_halcon' %}"><i class="fas fa-shield-halved"></i> Ojo de Halcón</a>
                                 {% endif %}
 
                                 <form method="POST" action="{% url 'logout' %}" class="logout-form">

@@ -437,6 +437,107 @@
         padding: 24px;
     }
 
+    /* Dashboard Ojo de Halcón: interfaz gamer graffiti, sin superficies redondeadas. */
+    .halcon-shell {
+        background:
+            linear-gradient(135deg, rgba(var(--cyber-magenta-rgb), .08) 0 1px, transparent 1px 18px),
+            repeating-linear-gradient(0deg, rgba(255, 255, 255, .02) 0 1px, transparent 1px 5px),
+            var(--cyber-bg);
+        clip-path: var(--cyber-cut);
+        margin: 0 -40px;
+        padding: 42px 40px 70px;
+    }
+
+    .halcon-shell::after {
+        border: 1px solid rgba(var(--cyber-yellow-rgb), .5);
+        clip-path: var(--cyber-cut);
+        content: 'LIVE // CONTROL DE ARENA';
+        color: var(--cyber-yellow);
+        font-family: 'Orbitron', sans-serif;
+        font-size: .62rem;
+        letter-spacing: .16em;
+        padding: 8px 14px;
+        position: absolute;
+        right: 40px;
+        top: 18px;
+    }
+
+    .halcon-card {
+        background: rgba(var(--cyber-panel-rgb), .94);
+        border: 1px solid var(--cyber-cyan);
+        border-radius: 0;
+        box-shadow: 8px 8px 0 rgba(var(--cyber-magenta-rgb), .2), 0 0 28px rgba(var(--cyber-cyan-rgb), .1);
+        clip-path: var(--cyber-cut);
+    }
+
+    .halcon-welcome h1,
+    .halcon-tabla-card h3,
+    .halcon-stat .stat-label {
+        font-family: 'Orbitron', sans-serif;
+        letter-spacing: .12em;
+    }
+
+    .halcon-welcome h1 {
+        text-shadow: 3px 0 var(--cyber-magenta), -3px 0 var(--cyber-cyan);
+    }
+
+    .halcon-stat,
+    .halcon-vacio {
+        background: rgba(var(--cyber-bg-rgb), .8);
+        border: 1px solid var(--cyber-line);
+        border-radius: 0;
+        clip-path: var(--cyber-cut);
+    }
+
+    .halcon-stat:hover {
+        border-color: var(--cyber-yellow);
+        box-shadow: 0 0 18px rgba(var(--cyber-yellow-rgb), .25);
+    }
+
+    .halcon-boton,
+    .halcon-boton--crear {
+        border-radius: 0;
+        clip-path: var(--cyber-cut);
+        font-family: 'Orbitron', sans-serif;
+        position: relative;
+    }
+
+    .halcon-boton--neon,
+    .halcon-boton--crear {
+        background: linear-gradient(110deg, var(--cyber-magenta), var(--cyber-cyan));
+        box-shadow: 0 0 24px rgba(var(--cyber-magenta-rgb), .35);
+    }
+
+    .halcon-boton--gold {
+        background: var(--cyber-yellow);
+    }
+
+    .halcon-tabla-wrap {
+        border: 1px solid var(--cyber-cyan);
+        border-radius: 0;
+    }
+
+    .halcon-tabla thead th {
+        background: rgba(var(--cyber-cyan-rgb), .1);
+        border-bottom-color: var(--cyber-cyan);
+        font-family: 'Orbitron', sans-serif;
+    }
+
+    .halcon-tabla tbody tr:hover {
+        background: linear-gradient(90deg, rgba(var(--cyber-magenta-rgb), .12), rgba(var(--cyber-cyan-rgb), .06));
+    }
+
+    @media (max-width: 640px) {
+        .halcon-shell {
+            margin: 0 -24px;
+            padding: 42px 24px 50px;
+        }
+
+        .halcon-shell::after {
+            right: 24px;
+        }
+    }
+
     .halcon-crear-accion {
         justify-content: center;
     }
@@ -446,4 +547,3 @@
         justify-content: center;
     }
 }
-

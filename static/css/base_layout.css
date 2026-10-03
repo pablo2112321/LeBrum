@@ -209,7 +209,7 @@
         }
 
 .construction-page {
-    animation: rgb-glow 3s infinite;
+    animation: none;
     margin-top: 100px;
     text-align: center;
 }
@@ -259,4 +259,3 @@
 .admin-control-page__card {
     border: 1px solid rgba(255, 230, 0, .4);
 }
-
