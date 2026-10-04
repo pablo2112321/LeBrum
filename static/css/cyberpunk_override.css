@@ -294,47 +294,74 @@ a,
 .cyber-tournament-card {
     border-radius: 12px !important;
     clip-path: none !important;
-    margin: 0 auto !important;
-    max-width: 900px !important;
+    margin: 0 !important;
+    max-width: none !important;
     overflow: hidden !important;
     width: 100% !important;
 }
 
 .cyber-tournament-card.border-rgb-animado {
-    --tournament-chroma: linear-gradient(
+    --tournament-soft-rgb: linear-gradient(
         105deg,
-        #8e8cff,
-        #8de8e0,
-        #c5a4ff,
-        #8e8cff
+        #b9a8b8,
+        #a9bec5,
+        #b7c6aa,
+        #c5b4a5,
+        #b9a8b8
     );
-    animation: tournament-border-flow 12s ease-in-out infinite !important;
-    background-image: linear-gradient(var(--tactical-panel), var(--tactical-panel)), var(--tournament-chroma) !important;
+    animation: tournament-border-flow 18s ease-in-out infinite !important;
+    background-image: linear-gradient(var(--tactical-panel), var(--tactical-panel)), var(--tournament-soft-rgb) !important;
+    border: 2px solid transparent !important;
     border-radius: 12px !important;
     background-clip: padding-box, border-box !important;
-    background-size: 100% 100%, 260% 100% !important;
+    background-size: 100% 100%, 320% 100% !important;
     overflow: hidden !important;
+}
+
+.cyber-tournament-card .cyber-game-cover {
+    height: 112px !important;
+}
+
+.cyber-tournament-card .cyber-tournament-body {
+    padding: 16px !important;
 }
 
 .cyber-tournament-card .cyber-tournament-body h3 {
     font-size: clamp(1.45rem, 3vw, 2rem) !important;
     font-weight: 800 !important;
     line-height: 1.1;
+    margin: 18px 0 6px !important;
+}
+
+.cyber-tournament-card .cyber-tournament-meta {
+    margin: 12px 0 !important;
 }
 
 .cyber-tournament-card .cyber-status {
-    background: var(--tactical-cyan) !important;
+    background: linear-gradient(105deg, #b7d6d2, #d2c2d6, #b7d6d2) !important;
+    background-size: 220% 100% !important;
     border: 0 !important;
+    box-shadow: 0 4px 12px rgba(183, 214, 210, .16) !important;
     color: #071014 !important;
     font-weight: 800 !important;
     padding: 8px 12px !important;
+    position: relative;
+    animation: tournament-badge-flow 8s ease-in-out infinite;
+}
+
+.cyber-tournament-card .cyber-tournament-body > p {
+    color: #c5d0d6 !important;
+    font-size: 1.05rem !important;
+    font-weight: 700 !important;
+    letter-spacing: .04em;
+    margin: 8px 0 14px !important;
 }
 
 .cyber-tournament-card .cyber-card-action {
-    background-image: linear-gradient(var(--tactical-panel), var(--tactical-panel)), var(--tournament-chroma) !important;
+    background-image: linear-gradient(var(--tactical-panel), var(--tactical-panel)), var(--tournament-soft-rgb) !important;
     background-clip: padding-box, border-box !important;
-    background-size: 100% 100%, 260% 100% !important;
-    border: 1px solid transparent !important;
+    background-size: 100% 100%, 320% 100% !important;
+    border: 2px solid transparent !important;
     border-radius: 8px !important;
     transition: all 0.3s ease !important;
 }
@@ -342,8 +369,8 @@ a,
 .cyber-tournament-card .cyber-card-action:hover {
     animation: tournament-border-flow 4s ease-in-out infinite !important;
     box-shadow:
-        0 0 12px rgba(102, 252, 241, .28),
-        0 0 16px rgba(142, 140, 255, .24) !important;
+        0 0 12px rgba(169, 190, 197, .25),
+        0 0 16px rgba(197, 180, 165, .2) !important;
     transform: scale(1.05) !important;
 }
 
@@ -412,6 +439,11 @@ a,
 @keyframes tournament-border-flow {
     0%, 100% { background-position: 0 0, 0% 50%; }
     50% { background-position: 0 0, 100% 50%; }
+}
+
+@keyframes tournament-badge-flow {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
 }
 
 .cyber-card::after,
