@@ -148,10 +148,10 @@
                         <h3>{{ torneo.nombre }}</h3>
                         <p>{{ torneo.juego.nombre }} · {{ torneo.modalidad }}</p>
                         <div class="cyber-tournament-meta">
-                            <span>CUOTA</span>
-                            <strong>{{ torneo.cuota }} fichas</strong>
+                            <span>Valor de Inscripción:</span>
+                            <strong>${{ torneo.cuota|floatformat:0 }} CLP</strong>
                         </div>
-                        <a href="{% url 'detalle_torneo' torneo.id %}" class="cyber-btn-primary cyber-card-action">VER TORNEO</a>
+                        <a href="{% url 'detalle_torneo' torneo.id %}" class="cyber-btn-primary cyber-card-action border-rgb-animado">VER TORNEO</a>
                     </div>
                 </article>
             {% empty %}

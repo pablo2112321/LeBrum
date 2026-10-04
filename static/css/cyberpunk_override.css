@@ -158,8 +158,8 @@ a,
 }
 
 .user-avatar-frame {
-    height: 58px !important;
-    width: 58px !important;
+    height: 80px !important;
+    width: 80px !important;
     background: var(--tactical-panel) !important;
     background-size: auto !important;
     animation: none !important;
@@ -185,11 +185,14 @@ a,
     background-size: 100% 100%, 220% 100% !important;
     animation: tactical-border-flow 6s ease-in-out infinite;
     box-sizing: border-box;
+    height: 80px !important;
+    object-fit: cover !important;
+    width: 80px !important;
 }
 
 .ghost-frame {
-    height: 58px !important;
-    width: 58px !important;
+    height: 80px !important;
+    width: 80px !important;
 }
 
 .ghost-frame .avatar-rgb-border {
@@ -298,9 +301,50 @@ a,
 }
 
 .cyber-tournament-card.border-rgb-animado {
+    --tournament-chroma: linear-gradient(
+        105deg,
+        #8e8cff,
+        #8de8e0,
+        #c5a4ff,
+        #8e8cff
+    );
+    animation: tournament-border-flow 12s ease-in-out infinite !important;
+    background-image: linear-gradient(var(--tactical-panel), var(--tactical-panel)), var(--tournament-chroma) !important;
     border-radius: 12px !important;
     background-clip: padding-box, border-box !important;
+    background-size: 100% 100%, 260% 100% !important;
     overflow: hidden !important;
+}
+
+.cyber-tournament-card .cyber-tournament-body h3 {
+    font-size: clamp(1.45rem, 3vw, 2rem) !important;
+    font-weight: 800 !important;
+    line-height: 1.1;
+}
+
+.cyber-tournament-card .cyber-status {
+    background: var(--tactical-cyan) !important;
+    border: 0 !important;
+    color: #071014 !important;
+    font-weight: 800 !important;
+    padding: 8px 12px !important;
+}
+
+.cyber-tournament-card .cyber-card-action {
+    background-image: linear-gradient(var(--tactical-panel), var(--tactical-panel)), var(--tournament-chroma) !important;
+    background-clip: padding-box, border-box !important;
+    background-size: 100% 100%, 260% 100% !important;
+    border: 1px solid transparent !important;
+    border-radius: 8px !important;
+    transition: all 0.3s ease !important;
+}
+
+.cyber-tournament-card .cyber-card-action:hover {
+    animation: tournament-border-flow 4s ease-in-out infinite !important;
+    box-shadow:
+        0 0 12px rgba(102, 252, 241, .28),
+        0 0 16px rgba(142, 140, 255, .24) !important;
+    transform: scale(1.05) !important;
 }
 
 .player-bar-card {
@@ -308,21 +352,26 @@ a,
 }
 
 .player-bar-card {
+    background-clip: padding-box, padding-box, border-box !important;
     background-color: var(--tactical-panel) !important;
-    background-image: var(--player-banner, linear-gradient(110deg, rgba(17, 20, 27, .98), rgba(112, 0, 255, .12))) !important;
+    background-image:
+        linear-gradient(rgba(17, 20, 27, .18), rgba(17, 20, 27, .18)),
+        url('/static/img/crear-cuenta.jpg'),
+        var(--tactical-chroma) !important;
     background-position: center !important;
-    background-size: cover !important;
-    overflow: hidden;
+    background-repeat: no-repeat !important;
+    background-size: cover, cover, 220% 100% !important;
+    border-radius: 12px !important;
+    clip-path: none !important;
+    margin-bottom: 20px !important;
+    overflow: hidden !important;
     position: relative;
 }
 
 .player-bar-card::before {
-    animation: player-banner-shift 8s ease-in-out infinite alternate;
-    background: linear-gradient(115deg, rgba(11, 12, 16, .94), rgba(112, 0, 255, .2), rgba(102, 252, 241, .12));
-    background-size: 220% 100%;
+    background: rgba(0, 0, 0, .7);
     content: '';
     inset: 0;
-    opacity: .82;
     pointer-events: none;
     position: absolute;
     z-index: 0;
@@ -339,8 +388,13 @@ a,
 }
 
 .hud-btn-arena.border-rgb-animado:hover,
-.cyber-card-action:hover {
-    animation: tactical-button-glitch .32s steps(2, end);
+.cyber-card-action.border-rgb-animado:hover {
+    animation: none !important;
+    box-shadow:
+        0 0 15px rgba(0, 255, 255, 0.5),
+        0 0 15px rgba(128, 0, 128, 0.5) !important;
+    transform: scale(1.03) !important;
+    transition: all 0.3s ease !important;
 }
 
 @keyframes player-banner-shift {
@@ -353,6 +407,11 @@ a,
     45% { transform: translate(1px, -2px) scale(1.02); }
     70% { transform: translate(-1px, -2px) scale(1.01); }
     100% { transform: translateY(-2px) scale(1.02); }
+}
+
+@keyframes tournament-border-flow {
+    0%, 100% { background-position: 0 0, 0% 50%; }
+    50% { background-position: 0 0, 100% 50%; }
 }
 
 .cyber-card::after,
@@ -375,6 +434,11 @@ button[type='submit'] {
     box-shadow: none !important;
     clip-path: var(--tactical-cut) !important;
     color: var(--tactical-white) !important;
+}
+
+.hud-btn-arena.border-rgb-animado,
+.cyber-card-action.border-rgb-animado {
+    transition: all 0.3s ease !important;
 }
 
 .cyber-card-action:hover,
