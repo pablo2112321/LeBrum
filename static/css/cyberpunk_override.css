@@ -158,10 +158,48 @@ a,
 }
 
 .user-avatar-frame {
-    background: var(--tactical-chroma) !important;
-    background-size: 200% 100% !important;
-    animation: tactical-chroma-flow 6s ease-in-out infinite !important;
+    height: 58px !important;
+    width: 58px !important;
+    background: var(--tactical-panel) !important;
+    background-size: auto !important;
+    animation: none !important;
     box-shadow: 0 0 12px rgba(112, 0, 255, .18) !important;
+    padding: 0 !important;
+}
+
+.border-rgb-animado {
+    border: 1px solid transparent !important;
+    background-image: linear-gradient(var(--tactical-panel), var(--tactical-panel)), var(--tactical-chroma) !important;
+    background-origin: border-box !important;
+    background-clip: padding-box, border-box !important;
+    background-size: 100% 100%, 220% 100% !important;
+    animation: tactical-border-flow 6s ease-in-out infinite;
+}
+
+.avatar-rgb-border {
+    border: 2px solid transparent !important;
+    border-radius: 50% !important;
+    background-image: linear-gradient(var(--tactical-panel), var(--tactical-panel)), var(--tactical-chroma) !important;
+    background-origin: border-box !important;
+    background-clip: padding-box, border-box !important;
+    background-size: 100% 100%, 220% 100% !important;
+    animation: tactical-border-flow 6s ease-in-out infinite;
+    box-sizing: border-box;
+}
+
+.ghost-frame {
+    height: 58px !important;
+    width: 58px !important;
+}
+
+.ghost-frame .avatar-rgb-border {
+    opacity: .45;
+    filter: grayscale(70%) brightness(.7);
+}
+
+.user-stacked-trigger:hover .ghost-frame .avatar-rgb-border {
+    opacity: .85;
+    filter: grayscale(0%) brightness(.95);
 }
 
 .user-stacked-trigger:hover .user-avatar-frame {
@@ -240,6 +278,81 @@ a,
     box-shadow: 0 14px 32px rgba(0, 0, 0, .32), 0 0 18px rgba(112, 0, 255, .1) !important;
     filter: none !important;
     transform: translateY(-3px) !important;
+}
+
+.cyber-tournament-grid,
+.top-players-bar {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 24px !important;
+    width: 100% !important;
+}
+
+.cyber-tournament-card {
+    border-radius: 12px !important;
+    clip-path: none !important;
+    margin: 0 auto !important;
+    max-width: 900px !important;
+    overflow: hidden !important;
+    width: 100% !important;
+}
+
+.cyber-tournament-card.border-rgb-animado {
+    border-radius: 12px !important;
+    background-clip: padding-box, border-box !important;
+    overflow: hidden !important;
+}
+
+.player-bar-card {
+    width: 100% !important;
+}
+
+.player-bar-card {
+    background-color: var(--tactical-panel) !important;
+    background-image: var(--player-banner, linear-gradient(110deg, rgba(17, 20, 27, .98), rgba(112, 0, 255, .12))) !important;
+    background-position: center !important;
+    background-size: cover !important;
+    overflow: hidden;
+    position: relative;
+}
+
+.player-bar-card::before {
+    animation: player-banner-shift 8s ease-in-out infinite alternate;
+    background: linear-gradient(115deg, rgba(11, 12, 16, .94), rgba(112, 0, 255, .2), rgba(102, 252, 241, .12));
+    background-size: 220% 100%;
+    content: '';
+    inset: 0;
+    opacity: .82;
+    pointer-events: none;
+    position: absolute;
+    z-index: 0;
+}
+
+.player-bar-card > * {
+    position: relative;
+    z-index: 1;
+}
+
+.player-bar-card:hover {
+    box-shadow: 0 14px 32px rgba(0, 0, 0, .32), 0 0 20px rgba(102, 252, 241, .14) !important;
+    transform: translateY(-2px) scale(1.01) !important;
+}
+
+.hud-btn-arena.border-rgb-animado:hover,
+.cyber-card-action:hover {
+    animation: tactical-button-glitch .32s steps(2, end);
+}
+
+@keyframes player-banner-shift {
+    from { background-position: 0% 50%; }
+    to { background-position: 100% 50%; }
+}
+
+@keyframes tactical-button-glitch {
+    0% { transform: translateY(-2px) scale(1.01); }
+    45% { transform: translate(1px, -2px) scale(1.02); }
+    70% { transform: translate(-1px, -2px) scale(1.01); }
+    100% { transform: translateY(-2px) scale(1.02); }
 }
 
 .cyber-card::after,

@@ -67,7 +67,7 @@
 
         <div class="hud-arena">
             <span class="hud-sub">Centro de Mando DeLaBruma</span>
-            <a href="{% url 'torneos' %}" class="hud-btn-arena">
+            <a href="{% url 'torneos' %}" class="hud-btn-arena border-rgb-animado">
                 <i class="fas fa-trophy"></i> Buscar Torneo
             </a>
             <p class="hud-arena-desc">Tu crew te espera, {{ user.username }}. Encuentra tu próxima batalla y sube tu rango.</p>
@@ -135,7 +135,7 @@
         </div>
         <div class="cyber-tournament-grid">
             {% for torneo in torneos %}
-                <article class="cyber-card cyber-tournament-card">
+                <article class="cyber-card cyber-tournament-card border-rgb-animado">
                     <div class="cyber-game-cover">
                         {% if torneo.juego.imagen_portada %}
                             <img src="{{ torneo.juego.imagen_portada.url }}" alt="{{ torneo.juego.nombre }}">
@@ -163,15 +163,15 @@
     <div class="top-players-section">
         <div class="section-title-box">
             <div>
-                <h3 class="section-title"><i class="fas fa-crown section-icon-gold"></i> TOP 3 CLASIFICACIÓN GLOBAL</h3>
-                <p class="section-subtitle">Los líderes del ranking en tiempo real</p>
+                <h3 class="section-title"><i class="fas fa-crown section-icon-gold"></i> TRINIDAD DE LEYENDAS</h3>
+                <p class="section-subtitle">El podio inquebrantable de LeBrum</p>
             </div>
-            <a href="{% url 'ranking' %}" class="view-all-link">Ver Tabla Completa <i class="fas fa-arrow-right"></i></a>
+            <a href="{% url 'ranking' %}" class="view-all-link">Explorar el Ranking Total <i class="fas fa-arrow-right"></i></a>
         </div>
 
         <div class="top-players-bar">
             {% for jugador in top_jugadores %}
-            <div class="player-bar-card {% if forloop.counter == 1 %}card-gold{% elif forloop.counter == 2 %}card-silver{% elif forloop.counter == 3 %}card-bronze{% endif %}">
+            <div class="player-bar-card border-rgb-animado {% if forloop.counter == 1 %}card-gold{% elif forloop.counter == 2 %}card-silver{% elif forloop.counter == 3 %}card-bronze{% endif %}">
                 
                 <div class="rank-tag">
                     {% if forloop.counter == 1 %}
@@ -185,7 +185,11 @@
 
                 <div class="player-info-wrapper">
                     <div class="player-avatar-box">
-                        <img src="{% static 'img/Usuario.jpg' %}" alt="{{ jugador.username }}">
+                        {% if jugador.avatar %}
+                            <img src="{{ jugador.avatar.url }}" alt="{{ jugador.username }}">
+                        {% else %}
+                            <img src="{% static 'img/Usuario.jpg' %}" alt="{{ jugador.username }}">
+                        {% endif %}
                     </div>
 
                     <div class="player-details">

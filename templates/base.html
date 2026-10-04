@@ -129,7 +129,11 @@
                             <div class="user-stacked-trigger" id="user-btn">
                                 <div class="user-avatar-frame">
                                     <div class="user-avatar-inner">
-                                        <img src="{% static 'img/Usuario.jpg' %}" alt="{{ request.user.username }}" class="user-avatar-img">
+                                        {% if request.user.avatar %}
+                                            <img src="{{ request.user.avatar.url }}" alt="{{ request.user.username }}" class="user-avatar-img avatar-rgb-border">
+                                        {% else %}
+                                            <img src="{% static 'img/Usuario.jpg' %}" alt="{{ request.user.username }}" class="user-avatar-img avatar-rgb-border">
+                                        {% endif %}
                                     </div>
                                 </div>
                                 <span class="stacked-username">{{ request.user.username }}</span>
@@ -168,7 +172,7 @@
                             <a href="{% url 'login' %}" class="user-stacked-trigger" title="Iniciar sesiÃ³n o Registrarse">
                                 <div class="user-avatar-frame ghost-frame">
                                     <div class="user-avatar-inner ghost-avatar-inner">
-                                        <img src="{% static 'img/Usuario.jpg' %}" alt="Usuario Visitante" class="ghost-img">
+                                        <img src="{% static 'img/Usuario.jpg' %}" alt="Usuario Visitante" class="ghost-img avatar-rgb-border">
                                     </div>
                                 </div>
                                 <span class="stacked-username guest-username">Ingresar</span>
