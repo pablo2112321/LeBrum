@@ -111,6 +111,15 @@ class Usuario(AbstractUser):
         help_text='Imagen de perfil del jugador.'
     )
 
+    banner_perfil = models.ImageField(
+        upload_to='banners_perfil/',
+        blank=True,
+        null=True,
+        validators=[validate_image_upload],
+        verbose_name='Banner de perfil',
+        help_text='Imagen horizontal que aparece en el podio y en el perfil.'
+    )
+
     # Título equipado por el jugador (Loadout DeLaBruma)
     titulo_equipado = models.CharField(
         max_length=40,
@@ -127,6 +136,14 @@ class Usuario(AbstractUser):
     derrotas = models.PositiveIntegerField(
         default=0,
         verbose_name='Derrotas'
+    )
+
+    kda = models.DecimalField(
+        max_digits=6,
+        decimal_places=2,
+        default=0,
+        verbose_name='KDA',
+        help_text='Ratio KDA competitivo registrado para el jugador.'
     )
 
     # Estado equipado (frase visible bajo el nombre en el perfil)

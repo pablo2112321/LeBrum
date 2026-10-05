@@ -32,6 +32,7 @@ class UsuarioAdmin(UserAdmin):
                     "puntos_xp",
                     "victorias",
                     "derrotas",
+                    "kda",
                     "saldo_fichas",
                 )
             },
@@ -41,6 +42,7 @@ class UsuarioAdmin(UserAdmin):
             {
                 "fields": (
                     "avatar",
+                    "banner_perfil",
                     "titulo_equipado",
                     "estado_equipado",
                     "estado_conexion",
