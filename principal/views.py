@@ -46,42 +46,6 @@ class LobbyView(TemplateView):
             })
         return contexto
 
-def lobby_principal(request):
-    # 1. Buscamos a los 3 mejores jugadores ordenados por puntos (asumiendo que usas 'puntos_globales')
-    top_jugadores = Usuario.objects.order_by('-puntos_globales')[:3]
-    
-    # 2. Inicializamos las variables de notificaciones
-    notificaciones = []
-    notificaciones_no_leidas_count = 0
-    
-    # Si el usuario está autenticado, buscamos sus notificaciones reales
-    if request.user.is_authenticated:
-        notificaciones = Notificacion.objects.filter(usuario=request.user).order_by('-creada_el')[:10]
-        notificaciones_no_leidas_count = Notificacion.objects.filter(usuario=request.user, leida=False).count()
-
-    # 3. Empaquetamos todo
-    contexto = {
-        'top_jugadores': top_jugadores,
-        'notificaciones': notificaciones,
-        'notificaciones_no_leidas_count': notificaciones_no_leidas_count,
-    }
-
-    # Datos del jugador logueado (rango DeLaBruma + vitrina de trofeos)
-    if request.user.is_authenticated:
-        contexto['rango_jugador'] = request.user.rango
-        contexto['rango_nivel_jugador'] = request.user.rango_nivel
-        contexto['xp_jugador'] = request.user.puntos_xp
-        contexto['progreso_rango'] = request.user.progreso_rango
-        contexto['rango_siguiente'] = request.user.rango_siguiente
-        contexto['trofeos_ganados'] = request.user.trofeos_ganados
-        # Equipables del Loadout (Hero Banner dinámico)
-        contexto['titulo_equipado'] = request.user.titulo_equipado
-        contexto['estado_equipado'] = request.user.estado_equipado
-        contexto['estado_conexion_css'] = request.user.estado_conexion.lower().replace(' ', '_')
-        contexto['estado_conexion_display'] = request.user.get_estado_conexion_display()
-
-    return render(request, 'principal/lobby.html', contexto)
-
 def en_construccion(request):
     return render(request, 'principal/en_construccion.html')
 

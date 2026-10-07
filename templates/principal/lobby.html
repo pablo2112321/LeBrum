@@ -171,15 +171,22 @@
 
         <div class="top-players-bar">
             {% for jugador in top_jugadores %}
-            <div class="player-bar-card border-rgb-animado {% if forloop.counter == 1 %}card-gold{% elif forloop.counter == 2 %}card-silver{% elif forloop.counter == 3 %}card-bronze{% endif %}">
-                
-                <div class="rank-tag">
+            <article class="player-bar-card border-rgb-animado {% if forloop.counter == 1 %}card-gold{% elif forloop.counter == 2 %}card-silver{% elif forloop.counter == 3 %}card-bronze{% endif %}">
+                <div class="player-banner" aria-hidden="true">
+                    {% if jugador.banner_perfil %}
+                        <img src="{{ jugador.banner_perfil.url }}" alt="">
+                    {% else %}
+                        <img src="{% static 'img/crear-cuenta.jpg' %}" alt="">
+                    {% endif %}
+                </div>
+
+                <div class="rank-emblem">
                     {% if forloop.counter == 1 %}
-                        <span class="tag-gold"><i class="fas fa-crown"></i> #1 ORO</span>
+                        <span class="tag-gold"><i class="fas fa-crown"></i> #1</span>
                     {% elif forloop.counter == 2 %}
-                        <span class="tag-silver"><i class="fas fa-medal"></i> #2 PLATA</span>
+                        <span class="tag-silver"><i class="fas fa-medal"></i> #2</span>
                     {% elif forloop.counter == 3 %}
-                        <span class="tag-bronze"><i class="fas fa-award"></i> #3 BRONCE</span>
+                        <span class="tag-bronze"><i class="fas fa-award"></i> #3</span>
                     {% endif %}
                 </div>
 
@@ -204,12 +211,22 @@
                     </div>
                 </div>
 
-                <div class="player-pts-box">
-                    <span class="pts-val">{{ jugador.puntos_globales|default:0 }}</span>
-                    <span class="pts-lbl">PTS</span>
+                <div class="player-stats">
+                    <div class="player-stat">
+                        <span class="pts-val">{{ jugador.puntos_globales|default:0 }}</span>
+                        <span class="pts-lbl">PUNTOS</span>
+                    </div>
+                    <div class="player-stat">
+                        <span class="stat-val">{{ jugador.victorias|default:0 }}</span>
+                        <span class="pts-lbl">VICTORIAS</span>
+                    </div>
+                    <div class="player-stat">
+                        <span class="stat-val">{{ jugador.kda|default:"0.00" }}</span>
+                        <span class="pts-lbl">KDA</span>
+                    </div>
                 </div>
 
-            </div>
+            </article>
             {% empty %}
             <div class="no-players-msg">
                 <i class="fas fa-info-circle"></i> Aún no hay jugadores clasificados en el ranking.

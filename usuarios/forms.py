@@ -146,9 +146,20 @@ class EditarPerfilForm(forms.ModelForm):
 
     class Meta:
         model = Usuario
-        fields = ('avatar', 'titulo_equipado', 'tag_jugador', 'riot_id', 'steam_id')
+        fields = (
+            'avatar',
+            'banner_perfil',
+            'titulo_equipado',
+            'tag_jugador',
+            'riot_id',
+            'steam_id',
+        )
         widgets = {
             'avatar': forms.ClearableFileInput(attrs={
+                'class': 'neo-input',
+                'accept': 'image/*',
+            }),
+            'banner_perfil': forms.ClearableFileInput(attrs={
                 'class': 'neo-input',
                 'accept': 'image/*',
             }),
